@@ -58,7 +58,7 @@ export class Game {
     // Run once from constructor
     #Initialize() {
         this.#m_Grid = new Grid(this.#m_Scene);
-        this.#m_Bat = new Bat();
+        this.#m_Bat = new Bat(this.#m_Scene);
 
         // Lighting
         this.#m_Light = new THREE.PointLight(0xffffff);
