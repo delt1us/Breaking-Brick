@@ -62,9 +62,9 @@ export class Game {
 
         // Lighting
         this.#m_Light = new THREE.PointLight(0xffffff);
-        this.#m_Light.position.set(this.#m_BorderObject.m_WallBack.x - 200, this.#m_BorderObject.m_WallBack.y, this.#m_BorderObject.m_WallBack.z);
-        var ambientLight = new THREE.AmbientLight(0xffffff);
-        this.#m_Scene.add(this.#m_Light, ambientLight);
+        this.#m_Light.position.set(this.#m_Camera.position.x, this.#m_Camera.position.y, this.#m_Camera.position.z + 10);
+        // var ambientLight = new THREE.AmbientLight(0xffffff);
+        this.#m_Scene.add(this.#m_Light);
     }
 
     // Run once from constructor
