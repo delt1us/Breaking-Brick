@@ -2,9 +2,9 @@ import './style.css'
 
 import {Game} from '/scripts/Game';
 
-function animate()
+function animate(timeNow)
 {
-    m_Game.Update();
+    m_Game.Update(timeNow);
     m_Game.Draw();
     window.requestAnimationFrame(animate);
 }

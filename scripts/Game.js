@@ -22,12 +22,15 @@ export class Game {
     #m_GLTFLoader;
     #vec3_CameraPosition;
     #m_BorderObject;
-
+    
+    #f_TimeSincePreviousFrame;
+    #f_TimeAtPreviousFrame;
+    
     // Helpers 
     #m_LightHelper;
     #m_GridHelper;
     #m_Controls;
-
+    
     constructor() {
         this.#SetupScene();
         this.#SetupRenderer();
@@ -37,7 +40,19 @@ export class Game {
         // this.#LoadContent();
         this.#SetupHelpers();
     }
+    
+    // Run every frame
+    Update(timeNow) {
+        this.UpdateTimeSincePreviousFrame(timeNow);
+        this.#m_Bat.Update(this.#f_TimeSincePreviousFrame);
+        this.#m_Grid.Update();
+    }
 
+    // Run every frame
+    Draw() {
+        this.#m_Renderer.render(this.#m_Scene, this.#m_Camera);
+    }
+    
     // Run once from constructor
     #MakeBorderObject() {
         this.#m_BorderObject = new Frame(this.#m_Scene);
@@ -118,13 +133,10 @@ export class Game {
         // End of copied code
     }
 
-    // Run every frame
-    Update() {
-        this.#m_Grid.Update();
-    }
-
-    // Run every frame
-    Draw() {
-        this.#m_Renderer.render(this.#m_Scene, this.#m_Camera);
+    UpdateTimeSincePreviousFrame(timeNow) {
+        // Gets time since last frame and then sets the time at previous frame to current time
+        // Works because the function is then called by window.requestAnimationFrame(gameLoop);
+        this.#f_TimeSincePreviousFrame = timeNow - this.#f_TimeAtPreviousFrame;
+        this.#f_TimeAtPreviousFrame = timeNow;
     }
 }
