@@ -50,9 +50,9 @@ export class Game {
         // Draws 2D grid 
         this.#m_GridHelper = new THREE.GridHelper(200, 50);
         this.#m_Scene.add(this.#m_LightHelper, this.#m_GridHelper);
-
-        // Controls
-        this.#m_Controls = new OrbitControls(this.#m_Camera, this.#m_Renderer.domElement);
+        
+        // OrbitControls messes with camera movement, only enable this if necessary
+        // this.#m_Controls = new OrbitControls(this.#m_Camera, this.#m_Renderer.domElement);
     }
 
     // Run once from constructor
@@ -95,7 +95,7 @@ export class Game {
 
         // Camera
         this.#m_Camera = new THREE.PerspectiveCamera(fov, window.innerWidth / window.innerHeight, 0.1, 10000);
-        this.#vec3_CameraPosition = new THREE.Vector3(0, 100, dist);
+        this.#vec3_CameraPosition = new THREE.Vector3(960, 590, dist - 200);
         this.#m_Camera.position.set(this.#vec3_CameraPosition.x, this.#vec3_CameraPosition.y, this.#vec3_CameraPosition.z);
     }
 
