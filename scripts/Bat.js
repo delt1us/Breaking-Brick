@@ -16,7 +16,7 @@ export class Bat {
             this.#m_BatCuboid.translateX(-1 * f_TimeSincePreviousFrame * this.#m_Speed)
         }
 
-        else if (KeyStates.d) {
+        if (KeyStates.d) {
             this.#m_BatCuboid.translateX(f_TimeSincePreviousFrame * this.#m_Speed)
         }
     }

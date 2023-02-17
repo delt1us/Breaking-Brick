@@ -12,7 +12,7 @@ document.addEventListener("keydown", function onEvent(event) {
         KeyStates.d = true;
     }
     // Go left
-    else if (event.key == "a" || event.key == "A") {
+    if (event.key == "a" || event.key == "A") {
         KeyStates.a = true;
     }
 });
@@ -24,7 +24,7 @@ document.addEventListener("keyup", function onEvent(event) {
         KeyStates.d = false;
     }
     // Stop left
-    else if (event.key == "a" || event.key == "A") {
+    if (event.key == "a" || event.key == "A") {
         KeyStates.a = false;
     }
 });
