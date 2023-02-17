@@ -13,6 +13,8 @@ export class Game {
     #m_Bat;
     // Ball object
     #m_Ball;
+    // Frame object
+    #m_BorderObject;
     // Threejs PointLight object
     #m_Light;
     // Threejs Scene object
@@ -24,7 +26,6 @@ export class Game {
     // Threejs m_GLTFLoader object 
     #m_GLTFLoader;
     #vec3_CameraPosition;
-    #m_BorderObject;
     
     #f_TimeSincePreviousFrame;
     #f_TimeAtPreviousFrame;
@@ -79,7 +80,7 @@ export class Game {
         this.#m_Bat = new Bat(this.#m_Scene);
 
         var batTopLocation = structuredClone(this.#m_Bat.m_BatCuboid.position);
-        batTopLocation.y += this.#m_Bat.m_BoundingBoxSize.y / 2; 
+        batTopLocation.y += this.#m_Bat.vec_BoundingBoxSize.y / 2; 
 
         this.#m_Ball = new Ball(this.#m_Scene, batTopLocation);
 

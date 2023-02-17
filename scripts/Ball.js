@@ -2,6 +2,7 @@ import * as THREE from 'three';
 
 // Class for ball
 export class Ball {
+    // Sphere, THREE.Mesh object
     #m_BallSphere;
 
     constructor(scene, batLocation) {

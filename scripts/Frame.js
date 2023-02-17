@@ -2,6 +2,7 @@ import * as THREE from 'three';
 
 // Class to hold Object3Ds
 export class Frame {
+    // THREE.Mesh objects
     m_WallLeft;
     m_WallRight;
     m_WallTop;

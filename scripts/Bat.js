@@ -3,13 +3,16 @@ import { KeyStates } from './Controls';
 
 // Bat is what the player controls
 export class Bat {
+    // THREE.Mesh object
     m_BatCuboid;
+    // THREE.Box3 object
     #m_BoundingBox;
-    m_BoundingBoxSize;
-    #m_Speed;
+    // Vector3
+    vec_BoundingBoxSize;
+    #i_Speed;
 
     constructor(scene) {
-        this.#m_Speed = 1;
+        this.#i_Speed = 1;
         this.#MakeCuboid(scene);
     }
 
@@ -21,27 +24,27 @@ export class Bat {
     // Called every frame from Update
     #UpdateLocation(f_TimeSincePreviousFrame) {
         if (KeyStates.a) {
-            this.m_BatCuboid.translateX(-1 * f_TimeSincePreviousFrame * this.#m_Speed);
+            this.m_BatCuboid.translateX(-1 * f_TimeSincePreviousFrame * this.#i_Speed);
 
             // Checks if bat is on edge of map
-            if (this.m_BatCuboid.position.x <= 100 + this.m_BoundingBoxSize.x / 2) {
-                this.m_BatCuboid.position.x = 100 + this.m_BoundingBoxSize.x / 2;
+            if (this.m_BatCuboid.position.x <= 100 + this.vec_BoundingBoxSize.x / 2) {
+                this.m_BatCuboid.position.x = 100 + this.vec_BoundingBoxSize.x / 2;
             }
         }
     
         if (KeyStates.d) {
-            this.m_BatCuboid.translateX(f_TimeSincePreviousFrame * this.#m_Speed);
+            this.m_BatCuboid.translateX(f_TimeSincePreviousFrame * this.#i_Speed);
             
             // Checks if bat is on edge of map
-            if (this.m_BatCuboid.position.x >= 1820 - this.m_BoundingBoxSize.x / 2) {
-                this.m_BatCuboid.position.x = 1820 - this.m_BoundingBoxSize.x / 2;
+            if (this.m_BatCuboid.position.x >= 1820 - this.vec_BoundingBoxSize.x / 2) {
+                this.m_BatCuboid.position.x = 1820 - this.vec_BoundingBoxSize.x / 2;
             }
         }
     }
 
     // Used whenever the size of the bat is changed 
     #UpdateBoundingBoxSize() { 
-        this.#m_BoundingBox.getSize(this.m_BoundingBoxSize);
+        this.#m_BoundingBox.getSize(this.vec_BoundingBoxSize);
     }
     
     #MakeCuboid(scene) {
@@ -54,7 +57,7 @@ export class Bat {
         // Bounding box
         this.#m_BoundingBox = new THREE.Box3();
         this.#m_BoundingBox.setFromObject(this.m_BatCuboid);
-        this.m_BoundingBoxSize = new THREE.Vector3(); 
+        this.vec_BoundingBoxSize = new THREE.Vector3(); 
         this.#UpdateBoundingBoxSize();
     }
 }
