@@ -4,12 +4,15 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { Grid } from './Grid.js'
 import { Bat } from './Bat';
 import { Frame } from './Frame.js';
+import { Ball } from './Ball.js';
 
 export class Game {
     // Grid object 
     #m_Grid;
     // Bat object
     #m_Bat;
+    // Ball object
+    #m_Ball;
     // Threejs PointLight object
     #m_Light;
     // Threejs Scene object
@@ -38,7 +41,7 @@ export class Game {
         this.#MakeBorderObject();
         this.#Initialize();
         // this.#LoadContent();
-        this.#SetupHelpers();
+        // this.#SetupHelpers();
     }
     
     // Run every frame
@@ -67,13 +70,18 @@ export class Game {
         this.#m_Scene.add(this.#m_LightHelper, this.#m_GridHelper);
         
         // OrbitControls messes with camera movement, only enable this if necessary
-        // this.#m_Controls = new OrbitControls(this.#m_Camera, this.#m_Renderer.domElement);
+        this.#m_Controls = new OrbitControls(this.#m_Camera, this.#m_Renderer.domElement);
     }
 
     // Run once from constructor
     #Initialize() {
         this.#m_Grid = new Grid(this.#m_Scene);
         this.#m_Bat = new Bat(this.#m_Scene);
+
+        var batTopLocation = structuredClone(this.#m_Bat.m_BatCuboid.position);
+        batTopLocation.y += this.#m_Bat.m_BoundingBoxSize.y / 2; 
+
+        this.#m_Ball = new Ball(this.#m_Scene, batTopLocation);
 
         // Lighting
         this.#m_Light = new THREE.PointLight(0xffffff);
