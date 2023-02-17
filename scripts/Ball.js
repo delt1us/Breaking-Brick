@@ -10,7 +10,7 @@ export class Ball {
 
     constructor(scene, batLocation) {
         // Facing up
-        this.#f_Rotation = Math.PI / 2;
+        this.#f_Rotation = 0;
         this.#f_Speed = 0.5;
 
         this.#MakeBallSpehere(scene, batLocation);
@@ -25,7 +25,8 @@ export class Ball {
         // DeltaTime is always NaN on the first frame
         if (!f_TimeSincePreviousFrame) { return; }
 
-        var f_Angle = this.#f_Rotation; 
+        // Displaces angle so that rotation = 0 is facing up
+        var f_Angle = this.#f_Rotation + Math.PI / 2; 
         // Gets angle to work with (needs to be smaller than 90)
         while (f_Angle - Math.PI / 2 > 0) {
             f_Angle -= Math.PI / 2;
