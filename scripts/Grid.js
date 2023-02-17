@@ -6,7 +6,7 @@ export class Grid {
     #a_GridArray;
     #vec3_GRID_START_LOCATION;
     constructor(m_Scene) {
-        this.#vec3_GRID_START_LOCATION = new Vector3(320, 795, 0)
+        this.#vec3_GRID_START_LOCATION = new Vector3(350, 795, 0)
         this.#a_GridArray = [];
         this.#MakeBricks(m_Scene);
     }
