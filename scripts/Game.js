@@ -48,7 +48,10 @@ export class Game {
     // Run every frame
     Update(timeNow) {
         this.UpdateTimeSincePreviousFrame(timeNow);
+        
         this.#m_Bat.Update(this.#f_TimeSincePreviousFrame);
+        this.#m_Ball.Update(this.#f_TimeSincePreviousFrame);
+
         this.#m_Grid.Update();
     }
 
