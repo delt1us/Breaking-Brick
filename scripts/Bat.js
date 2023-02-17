@@ -4,6 +4,8 @@ import { KeyStates } from './Controls';
 // Bat is what the player controls
 export class Bat {
     #m_BatCuboid;
+    #m_BoundingBox;
+    #m_BoundingBoxSize;
     #m_Speed;
     constructor(scene) {
         this.#m_Speed = 1;
@@ -12,20 +14,45 @@ export class Bat {
 
     // Called every frame from Game.js Update()
     Update(f_TimeSincePreviousFrame) {
+        this.#UpdateLocation(f_TimeSincePreviousFrame);
+    }
+    
+    #UpdateLocation(f_TimeSincePreviousFrame) {
         if (KeyStates.a) {
-            this.#m_BatCuboid.translateX(-1 * f_TimeSincePreviousFrame * this.#m_Speed)
-        }
+            this.#m_BatCuboid.translateX(-1 * f_TimeSincePreviousFrame * this.#m_Speed);
 
+            // Checks if bat is on edge of map
+            if (this.#m_BatCuboid.position.x <= 100 + this.#m_BoundingBoxSize.x / 2) {
+                this.#m_BatCuboid.position.x = 100 + this.#m_BoundingBoxSize.x / 2;
+            }
+        }
+    
         if (KeyStates.d) {
-            this.#m_BatCuboid.translateX(f_TimeSincePreviousFrame * this.#m_Speed)
+            this.#m_BatCuboid.translateX(f_TimeSincePreviousFrame * this.#m_Speed);
+            
+            // Checks if bat is on edge of map
+            if (this.#m_BatCuboid.position.x >= 1820 - this.#m_BoundingBoxSize.x / 2) {
+                this.#m_BatCuboid.position.x = 1820 - this.#m_BoundingBoxSize.x / 2;
+            }
         }
     }
 
+    // Used whenever the size of the bat is changed 
+    #UpdateBoundingBoxSize() { 
+        this.#m_BoundingBox.getSize(this.#m_BoundingBoxSize);
+    }
+    
     #MakeCuboid(scene) {
         const geometry = new THREE.BoxGeometry(200, 40, 60);
         const texture = new THREE.MeshStandardMaterial({color: 0x808080});
         this.#m_BatCuboid = new THREE.Mesh(geometry, texture);
         this.#m_BatCuboid.position.set(960, 200, 0);
         scene.add(this.#m_BatCuboid);
+        
+        // Bounding box
+        this.#m_BoundingBox = new THREE.Box3();
+        this.#m_BoundingBox.setFromObject(this.#m_BatCuboid);
+        this.#m_BoundingBoxSize = new THREE.Vector3(); 
+        this.#UpdateBoundingBoxSize();
     }
 }
