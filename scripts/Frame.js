@@ -8,7 +8,7 @@ export class Frame {
     m_WallBack;
     constructor(scene) {
         const m_Material = new THREE.MeshStandardMaterial({ color: 0x808080 });
-        this.#CreateLeftWall(m_Material);
+        this.#CreateWallLeft(m_Material);
         this.#CreateWallRight(m_Material);
         this.#CreateWallTop(m_Material);
         this.#CreateWallBack(m_Material);
@@ -16,7 +16,7 @@ export class Frame {
         scene.add(this.m_WallLeft, this.m_WallRight, this.m_WallTop, this.m_WallBack);
     }
     // Called from constructor
-    #CreateLeftWall(material) {
+    #CreateWallLeft(material) {
         const geometry = new THREE.BoxGeometry(100, 1080, 60);
         this.m_WallLeft = new THREE.Mesh(geometry, material);
         this.m_WallLeft.position.set(50, 590, 0);
