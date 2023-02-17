@@ -51,7 +51,7 @@ export class Bat {
         const geometry = new THREE.BoxGeometry(200, 40, 60);
         const texture = new THREE.MeshStandardMaterial({color: 0x808080});
         this.m_BatCuboid = new THREE.Mesh(geometry, texture);
-        this.m_BatCuboid.position.set(910, 200, 0);
+        this.m_BatCuboid.position.set(960, 200, 0);
         scene.add(this.m_BatCuboid);
         
         // Bounding box
