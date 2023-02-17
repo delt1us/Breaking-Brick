@@ -7,6 +7,7 @@ export class Bat {
     #m_BoundingBox;
     #m_BoundingBoxSize;
     #m_Speed;
+    
     constructor(scene) {
         this.#m_Speed = 1;
         this.#MakeCuboid(scene);
@@ -17,6 +18,7 @@ export class Bat {
         this.#UpdateLocation(f_TimeSincePreviousFrame);
     }
     
+    // Called every frame from Update
     #UpdateLocation(f_TimeSincePreviousFrame) {
         if (KeyStates.a) {
             this.#m_BatCuboid.translateX(-1 * f_TimeSincePreviousFrame * this.#m_Speed);
