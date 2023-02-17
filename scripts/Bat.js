@@ -9,10 +9,10 @@ export class Bat {
     #m_BoundingBox;
     // Vector3
     vec_BoundingBoxSize;
-    #i_Speed;
+    #f_Speed;
 
     constructor(scene) {
-        this.#i_Speed = 1;
+        this.#f_Speed = 1;
         this.#MakeCuboid(scene);
     }
 
@@ -24,7 +24,7 @@ export class Bat {
     // Called every frame from Update
     #UpdateLocation(f_TimeSincePreviousFrame) {
         if (KeyStates.a) {
-            this.m_BatCuboid.translateX(-1 * f_TimeSincePreviousFrame * this.#i_Speed);
+            this.m_BatCuboid.translateX(-1 * f_TimeSincePreviousFrame * this.#f_Speed);
 
             // Checks if bat is on edge of map
             if (this.m_BatCuboid.position.x <= 100 + this.vec_BoundingBoxSize.x / 2) {
@@ -33,7 +33,7 @@ export class Bat {
         }
     
         if (KeyStates.d) {
-            this.m_BatCuboid.translateX(f_TimeSincePreviousFrame * this.#i_Speed);
+            this.m_BatCuboid.translateX(f_TimeSincePreviousFrame * this.#f_Speed);
             
             // Checks if bat is on edge of map
             if (this.m_BatCuboid.position.x >= 1820 - this.vec_BoundingBoxSize.x / 2) {
