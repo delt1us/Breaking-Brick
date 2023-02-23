@@ -85,7 +85,7 @@ export class Game {
         var batTopLocation = structuredClone(this.#m_Bat.m_BatCuboid.position);
         batTopLocation.y += this.#m_Bat.vec_BoundingBoxSize.y / 2; 
 
-        this.#m_Ball = new Ball(this.#m_Scene, batTopLocation);
+        this.#m_Ball = new Ball(this.#m_Scene, batTopLocation, this.#m_Grid);
 
         // Lighting
         this.#m_Light = new THREE.PointLight(0xffffff);

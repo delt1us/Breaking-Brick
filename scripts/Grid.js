@@ -3,18 +3,18 @@ import { L1Brick } from "./Brick.js";
 
 // Grid that will be used to hold bricks
 export class Grid {
-    #a_GridArray;
+    a_GridArray;
     #vec3_GRID_START_LOCATION;
     constructor(m_Scene) {
         this.#vec3_GRID_START_LOCATION = new Vector3(350, 795, 0)
-        this.#a_GridArray = [];
+        this.a_GridArray = [];
         this.#MakeBricks(m_Scene);
     }
 
     // Called every frame from Game.js
     Update() {
         // Updates all bricks
-        this.#a_GridArray.forEach(row => row.forEach(brick => brick.Update()));
+        this.a_GridArray.forEach(row => row.forEach(brick => brick.Update()));
     }
 
     // !Temporarily set to make a 13x4 grid of l1 bricks
@@ -31,7 +31,7 @@ export class Grid {
                 nextBrickX += thisBrick.vec3_BOX_SIZE.x + 15;
             }
             nextBrickY -= thisBrick.vec3_BOX_SIZE.y + 15;
-            this.#a_GridArray.push(thisRow);
+            this.a_GridArray.push(thisRow);
         }
     }
 }
