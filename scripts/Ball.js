@@ -1,12 +1,11 @@
 import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 // Class for ball
 export class Ball {
     #i_RADIUS;
     // Sphere, THREE.Mesh object
     #m_BallSphere;
-    // Rotation in radians
-    #f_Rotation;
     #f_Speed;
     #vec_Velocity;
     // The grid object used for brick collision
@@ -17,8 +16,6 @@ export class Ball {
 
     constructor(scene, batLocation, grid, frame, bat) {
         this.#i_RADIUS = 20;
-        // Facing up
-        this.#f_Rotation = Math.PI / 2;
         this.#f_Speed = 0.5;
         this.#vec_Velocity = new THREE.Vector3(0, 1, 0);
         this.#m_Grid = grid;
@@ -26,8 +23,19 @@ export class Ball {
         this.#m_Frame = frame;
         this.#m_Bat = bat;
 
+        //this.#LoadBallModel();
         this.#MakeBallSpehere(scene, batLocation);
     }
+
+    // Loads a rocket league ball 3d model
+    #LoadBallModel() {
+        // Copied from three js docs
+        let loader = new GLTFLoader();
+        loader.load('models/ball.glb', (glb) => {
+            this.#m_BallSphere = glb.scene;
+        });
+        // End of copied code
+    }    
 
     // Called every frame from Game.Update()
     Update(f_TimeSincePreviousFrame) {
