@@ -10,6 +10,7 @@ export class Ball {
     #f_Speed;
     // The grid object used for brick collision
     #m_Grid;
+    #m_Scene;
 
     constructor(scene, batLocation, grid) {
         this.#i_RADIUS = 30;
@@ -17,6 +18,7 @@ export class Ball {
         this.#f_Rotation = Math.PI / 2;
         this.#f_Speed = 0.5;
         this.#m_Grid = grid;
+        this.#m_Scene = scene;
 
         this.#MakeBallSpehere(scene, batLocation);
     }
@@ -42,8 +44,7 @@ export class Ball {
         }
         else {
             // Undos movement of ball
-            this.#m_BallSphere.position.x -= translation[0];
-            this.#m_BallSphere.position.y -= translation[1];        
+            collision.Destroy(this.#m_Grid.a_GridArray, this.#m_Scene);
         }
     }
 
@@ -67,12 +68,10 @@ export class Ball {
 
     #CheckForCollision() {
         let collided = null;
-        for (let row = 0; row < this.#m_Grid.a_GridArray.length; row++) {
-            for (let brick = 0; brick < this.#m_Grid.a_GridArray[row].length; brick++) {
-                if (this.#CollidesWith(this.#m_Grid.a_GridArray[row][brick])) {
-                    collided = this.#m_Grid.a_GridArray[row][brick];
-                    break;
-                }
+        for (let index = 0; index < this.#m_Grid.a_GridArray.length; index++) {
+            if (this.#CollidesWith(this.#m_Grid.a_GridArray[index])) {
+                collided = this.#m_Grid.a_GridArray[index];
+                break;
             }
             if (collided) {
                 break;

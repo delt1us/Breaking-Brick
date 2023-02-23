@@ -20,6 +20,16 @@ class Brick {
     // Called every frame from Grid.js
     Update() {
     }
+
+    // Destroys the brick and removes it from the grid
+    Destroy(grid, scene) {
+        // Finds and removes brick from grid array 
+        grid.splice(grid.indexOf(this), 1);
+        scene.remove(this.m_Cube);
+        this.m_Cube.geometry.dispose();
+        this.m_Cube.material.dispose();
+        this.m_Cube = undefined;
+    }
 }
 
 // L1Brick has 1 health and does nothing special
