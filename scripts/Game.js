@@ -14,7 +14,7 @@ export class Game {
     // Ball object
     #m_Ball;
     // Frame object
-    #m_BorderObject;
+    #m_Frame;
     // Threejs PointLight object
     #m_Light;
     // Threejs Scene object
@@ -62,7 +62,7 @@ export class Game {
     
     // Run once from constructor
     #MakeBorderObject() {
-        this.#m_BorderObject = new Frame(this.#m_Scene);
+        this.#m_Frame = new Frame(this.#m_Scene);
     }
 
     // Run once from constructor
@@ -85,7 +85,7 @@ export class Game {
         var batTopLocation = structuredClone(this.#m_Bat.m_BatCuboid.position);
         batTopLocation.y += this.#m_Bat.vec_BoundingBoxSize.y / 2; 
 
-        this.#m_Ball = new Ball(this.#m_Scene, batTopLocation, this.#m_Grid);
+        this.#m_Ball = new Ball(this.#m_Scene, batTopLocation, this.#m_Grid, this.#m_Frame, this.#m_Bat);
 
         // Lighting
         this.#m_Light = new THREE.PointLight(0xffffff);
@@ -133,14 +133,14 @@ export class Game {
         this.#m_GLTFLoader = new GLTFLoader();
         this.#m_GLTFLoader.load('models/frame.glb', (glb) => {
             // Object3D object 
-            this.#m_BorderObject = glb.scene;
+            this.#m_Frame = glb.scene;
             // https://stackoverflow.com/questions/36201880/threejs-rotate-on-y-axis-to-face-camera
             // Slightly changed to rotate it 90 degrees so it actually faces camera
-            // this.#m_BorderObject.rotation.y = Math.atan2((this.#m_Camera.position.x - this.#m_BorderObject.position.x), (this.#m_Camera.position.z - this.#m_BorderObject.position.z)) + Math.PI * 0.5;
+            // this.#m_Frame.rotation.y = Math.atan2((this.#m_Camera.position.x - this.#m_Frame.position.x), (this.#m_Camera.position.z - this.#m_Frame.position.z)) + Math.PI * 0.5;
             // Rotates 90 degrees
-            this.#m_BorderObject.rotation.y -= Math.PI * 0.5
-            this.#m_BorderObject.scale.set(1.5, 1.5, 1.5);
-            this.#m_Scene.add(this.#m_BorderObject);
+            this.#m_Frame.rotation.y -= Math.PI * 0.5
+            this.#m_Frame.scale.set(1.5, 1.5, 1.5);
+            this.#m_Scene.add(this.#m_Frame);
         });
         // End of copied code
     }
