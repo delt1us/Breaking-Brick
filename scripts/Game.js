@@ -5,6 +5,7 @@ import { Grid } from './Grid.js'
 import { Bat } from './Bat';
 import { Frame } from './Frame.js';
 import { Ball } from './Ball.js';
+import { Level } from './Level.js';
 
 export class Game {
     // Grid object 
@@ -15,6 +16,8 @@ export class Game {
     #m_Ball;
     // Frame object
     #m_Frame;
+    // Level object
+    #m_Level;
     // Threejs PointLight object
     #m_Light;
     // Threejs Scene object
@@ -79,7 +82,15 @@ export class Game {
 
     // Run once from constructor
     #Initialize() {
+        // !this is unnecessary and will be changed once tested
+        this.#m_Level = new Level();
+        // this.#m_Level.CreateTempLevel();
+        // this.#m_Level.SaveLevel("templevel");
+        this.#m_Level = this.#m_Level.LoadLevel("templevel");
+
         this.#m_Grid = new Grid(this.#m_Scene);
+        this.#m_Grid.LoadLevel(this.#m_Scene, this.#m_Level);
+
         this.#m_Bat = new Bat(this.#m_Scene);
 
         var batTopLocation = structuredClone(this.#m_Bat.m_BatCuboid.position);

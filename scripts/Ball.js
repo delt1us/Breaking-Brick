@@ -59,6 +59,7 @@ export class Ball {
     
     // Called from UpdateLocation
     #BounceOffBrick(objectCollidedWith, objectSize) {
+        // Needs improvement, ball doesn't bounce properly off of edges. Would take too long for me to figure out so it's only if I have too much time
         // If object is above or below
         if (objectCollidedWith.position.y - objectSize.y / 2 > this.#m_BallSphere.position.y || objectCollidedWith.position.y + objectSize.y / 2 < this.#m_BallSphere.position.y) {
             this.#vec_Velocity.y *= -1;
