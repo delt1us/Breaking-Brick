@@ -7,14 +7,17 @@ export class Frame {
     m_WallRight;
     m_WallTop;
     m_WallBack;
-    
+
     vec_WallSideSize;
     vec_WallTopSize;
 
     constructor(scene) {
+        // Material gets re used for walls and ceiling
         const m_Material = new THREE.MeshStandardMaterial({ color: 0x1a2749 });
 
+        // Size gets re used for left and right walls
         this.vec_WallSideSize = new THREE.Vector3(200, 1080, 60);
+        // Size for ceiling
         this.vec_WallTopSize = new THREE.Vector3(1920, 100, 60);
 
         this.#CreateWallLeft(m_Material);

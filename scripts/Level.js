@@ -5,12 +5,12 @@ export class Level {
     constructor() {
         this.a_Bricks = [];
     }
-    
+
     // Loads from localstorage, called from Game.Initiliaze()
     LoadLevel(levelName) {
         return JSON.parse(localStorage.getItem(levelName));
     }
-    
+
     // Saving uses localstorage which is similar to cookies but they do not expire. Called from Game.Initialize() 
     SaveLevel(levelName) {
         // Converts this level to a JSON string
@@ -26,8 +26,8 @@ export class Level {
                 let location = new THREE.Vector2(column, row);
                 let thisBrick = new Brick(location, "L1");
                 this.a_Bricks.push(thisBrick);
-            }            
-        }   
+            }
+        }
     }
 }
 

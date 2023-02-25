@@ -21,10 +21,10 @@ export class Grid {
         for (let index = 0; index < level.a_Bricks.length; index++) {
             let brick = level.a_Bricks[index];
             let brickLocation = [this.#vec3_GRID_START_LOCATION.x + brick.vec_GridLocation.x * 140, this.#vec3_GRID_START_LOCATION.y - brick.vec_GridLocation.y * 80];
-            
+
             // For now there is only 1 type of brick but later there will be more types
             let thisBrick;
-            switch (brick.str_BrickType){
+            switch (brick.str_BrickType) {
                 case "L1":
                     thisBrick = new L1Brick(scene, brickLocation);
                     break;
@@ -32,7 +32,7 @@ export class Grid {
             this.a_GridArray.push(thisBrick);
         }
     }
-    
+
     // Old method of making the grid, see Level.js
     // // !Temporarily set to make 11x6 grid 
     // // Called from constructor to load the level

@@ -31,15 +31,15 @@ export class Game {
     // Threejs m_GLTFLoader object 
     #m_GLTFLoader;
     #vec3_CameraPosition;
-    
+
     #f_TimeSincePreviousFrame;
     #f_TimeAtPreviousFrame;
-    
+
     // Helpers 
     #m_LightHelper;
     #m_GridHelper;
     #m_Controls;
-    
+
     constructor() {
         this.#SetupScene();
         this.#SetupRenderer();
@@ -49,11 +49,11 @@ export class Game {
         // this.#LoadContent();
         // this.#SetupHelpers();
     }
-    
+
     // Run every frame
     Update(timeNow) {
         this.UpdateTimeSincePreviousFrame(timeNow);
-        
+
         this.#m_Bat.Update(this.#f_TimeSincePreviousFrame);
         this.#m_Ball.Update(this.#f_TimeSincePreviousFrame);
 
@@ -64,7 +64,7 @@ export class Game {
     Draw() {
         this.#m_Renderer.render(this.#m_Scene, this.#m_Camera);
     }
-    
+
     // Run once from constructor
     #MakeBorderObject() {
         this.#m_Frame = new Frame(this.#m_Scene);
@@ -77,7 +77,7 @@ export class Game {
         // Draws 2D grid 
         this.#m_GridHelper = new THREE.GridHelper(200, 50);
         this.#m_Scene.add(this.#m_LightHelper, this.#m_GridHelper);
-        
+
         // OrbitControls messes with camera movement, only enable this if necessary
         this.#m_Controls = new OrbitControls(this.#m_Camera, this.#m_Renderer.domElement);
     }
@@ -155,6 +155,7 @@ export class Game {
         // End of copied code
     }
 
+    // Called from Update
     UpdateTimeSincePreviousFrame(timeNow) {
         // Gets time since last frame and then sets the time at previous frame to current time
         // Works because the function is then called by window.requestAnimationFrame(gameLoop);

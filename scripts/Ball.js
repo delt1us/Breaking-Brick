@@ -7,16 +7,23 @@ export class Ball {
     #i_RADIUS;
     // Sphere, THREE.Mesh object
     #m_BallSphere;
+    // How fast the ball goes
     #f_Speed;
+    // How fast the ball is going in each direction
     #vec_Velocity;
+    // Boolean for if the ball has left the bat yet or not
     #b_Launched;
     // The grid object used for brick collision
     #m_Grid;
     #m_Scene;
+    // Frame used for wall collision
     #m_Frame;
+    // Bat used for bat collision
     #m_Bat;
-    
+
+    // Image for lives (hearts)
     #m_LivesImage;
+    // Internal value for lives 
     #i_LivesInternal;
     // Prevents forgetting to update lives display whenever lives is changed
     set #i_Lives(newValue) {
@@ -49,6 +56,7 @@ export class Ball {
     // Loads image, called once from constructor 
     #LoadImage() {
         this.#m_LivesImage = document.createElement("img");
+        // SetAttribute is faster than setting them manually
         this.#m_LivesImage.setAttribute("src", "textures/lives.png");
         this.#m_LivesImage.setAttribute("width", "72");
         this.#m_LivesImage.setAttribute("height", "60");
@@ -77,21 +85,24 @@ export class Ball {
             this.#m_BallSphere = glb.scene;
         });
         // End of copied code
-    }    
+    }
 
     // Called every frame from Game.Update()
     Update(f_TimeSincePreviousFrame) {
         this.#UpdateLocation(f_TimeSincePreviousFrame);
+        this.#HandleCollisions();
 
+        // If ball is not in the frame then it removes a life and resets the ball
         if (!this.#CheckInFrame()) {
             this.#RemoveLife();
         }
-    
+
+        // If ball is waiting to be launched and spacebar is pressed it will launch the ball
         if (KeyStates.space && !this.#b_Launched) {
             this.#LaunchBall();
         }
     }
- 
+
     // Called when ball leaves the screen
     #RemoveLife() {
         this.#i_Lives -= 1;
@@ -123,21 +134,20 @@ export class Ball {
         }
     }
 
+    // Updates location, called from Update
     #UpdateLocation(f_TimeSincePreviousFrame) {
         // DeltaTime is always NaN on the first frame
         if (!f_TimeSincePreviousFrame || !this.#b_Launched) { return; }
-        
+
         // Updates sphere location
         // Annoying that this is so long because position is readonly. If it wasn't you could just add the vectors 
         this.#m_BallSphere.position.set(
             this.#m_BallSphere.position.x + this.#vec_Velocity.x * this.#f_Speed * f_TimeSincePreviousFrame,
-            this.#m_BallSphere.position.y + this.#vec_Velocity.y * this.#f_Speed * f_TimeSincePreviousFrame, 
+            this.#m_BallSphere.position.y + this.#vec_Velocity.y * this.#f_Speed * f_TimeSincePreviousFrame,
             this.#m_BallSphere.position.z + this.#vec_Velocity.z * this.#f_Speed * f_TimeSincePreviousFrame
         );
-
-        this.#HandleCollisions();
     }
-    
+
     // Called from UpdateLocation
     #BounceOffBrick(objectCollidedWith, objectSize) {
         // Needs improvement, ball doesn't bounce properly off of edges. Would take too long for me to figure out so it's only if I have too much time
@@ -149,7 +159,8 @@ export class Ball {
             this.#vec_Velocity.x *= -1;
         }
     }
-    
+
+    // Deals with all collision detection and handling
     #HandleCollisions() {
         // TODO: change so that the ball will travel the correct distance in frames where it bounces
         // Brick collision
@@ -160,7 +171,7 @@ export class Ball {
             this.#BounceOffBrick(collision.m_Cube, collision.vec3_BOX_SIZE);
             collision.Destroy(this.#m_Grid.a_GridArray, this.#m_Scene);
         }
-    
+
         // Wall collision
         this.#HandleWallCollision();
         // Bat collision
@@ -169,7 +180,7 @@ export class Ball {
             this.#HandleBatCollision();
         }
     }
-    
+
     // Called from UpdateLocation
     #HandleWallCollision() {
         // Checks each wall in m_Frame
@@ -217,36 +228,36 @@ export class Ball {
     #CollidesWith(object3d, objectSize) {
         // Checks distance from center of sphere to other objects, a lot like raycasting but more 2D
         // This is effectively 2D collision because the ball will never travel in the z axis so it can be ignored
-         
+
         // https://stackoverflow.com/questions/401847/circle-rectangle-collision-detection-intersection
         // Really smart way of doing it that can be applied here since the sphere never moves in the z axis so it can be treated as a 2d circle
         let circleDistance = new THREE.Vector2();
 
         circleDistance.x = Math.abs(this.#m_BallSphere.position.x - object3d.position.x);
         circleDistance.y = Math.abs(this.#m_BallSphere.position.y - object3d.position.y);
-    
-        if (circleDistance.x > (objectSize.x/2 + this.#i_RADIUS)) { return false; }
-        if (circleDistance.y > (objectSize.y/2 + this.#i_RADIUS)) { return false; }
-    
-        if (circleDistance.x <= (objectSize.x/2)) { return true; } 
-        if (circleDistance.y <= (objectSize.y/2)) { return true; }
-    
-        let cornerDistance_sq = (circleDistance.x - objectSize.x/2)^2 + (circleDistance.y - objectSize.y/2)^2;
-    
-        return (cornerDistance_sq <= (this.#i_RADIUS^2));
+
+        if (circleDistance.x > (objectSize.x / 2 + this.#i_RADIUS)) { return false; }
+        if (circleDistance.y > (objectSize.y / 2 + this.#i_RADIUS)) { return false; }
+
+        if (circleDistance.x <= (objectSize.x / 2)) { return true; }
+        if (circleDistance.y <= (objectSize.y / 2)) { return true; }
+
+        let cornerDistance_sq = (circleDistance.x - objectSize.x / 2) ^ 2 + (circleDistance.y - objectSize.y / 2) ^ 2;
+
+        return (cornerDistance_sq <= (this.#i_RADIUS ^ 2));
     }
 
     // Resets ball location to the bat
     #ResetBallLocation() {
         let batLocation = structuredClone(this.#m_Bat.m_BatCuboid.position);
-        batLocation.y += this.#m_Bat.vec_BoundingBoxSize.y / 2; 
+        batLocation.y += this.#m_Bat.vec_BoundingBoxSize.y / 2;
         this.#m_BallSphere.position.set(batLocation.x, batLocation.y + this.#i_RADIUS, batLocation.z);
     }
 
     // Called once from constructor
     #MakeBallSpehere(scene) {
         const geometry = new THREE.SphereGeometry(this.#i_RADIUS);
-        const texture = new THREE.MeshStandardMaterial({color: 0xffffff});
+        const texture = new THREE.MeshStandardMaterial({ color: 0xffffff });
         this.#m_BallSphere = new THREE.Mesh(geometry, texture)
         scene.add(this.#m_BallSphere);
     }
