@@ -41,8 +41,8 @@ export class Ball {
     }
 
     constructor(scene, grid, frame, bat, timer, scoreCounter) {
-        this.#i_RADIUS = 10;
-        this.#f_Speed = 1;
+        this.#i_RADIUS = 15;
+        this.#f_Speed = 0.75;
         this.#vec_Velocity = new THREE.Vector3(0, 0, 0);
         this.#m_Grid = grid;
         this.#m_Scene = scene;
@@ -215,8 +215,8 @@ export class Ball {
         let angleToBounceAt = -1 * Math.PI * 0.5 * percentageOfBatBeforeLandingLocation;
         // Offsets 0 pointing east
         angleToBounceAt += Math.PI * 0.5;
-        this.#vec_Velocity.x = Math.cos(angleToBounceAt);
-        this.#vec_Velocity.y = Math.sin(angleToBounceAt);
+        this.#vec_Velocity.x = this.#f_Speed * Math.cos(angleToBounceAt);
+        this.#vec_Velocity.y = this.#f_Speed * Math.sin(angleToBounceAt);
     }
 
     // Called from UpdateLocation
