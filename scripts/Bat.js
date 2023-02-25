@@ -54,13 +54,19 @@ export class Bat {
         this.#m_BoundingBox.getSize(this.vec_BoundingBoxSize);
     }
 
-    // Makes object3d of the bat and the bounding box
+    // Called from ball when ball is reset
+    // Also called from MakeCuboid
+    Reset() {
+        this.m_BatCuboid.position.set(960, 200, 0);
+    }
+    
+       // Makes object3d of the bat and the bounding box
     #MakeCuboid(scene) {
         // Cuboid
         const geometry = new THREE.BoxGeometry(200, 40, 40);
         const texture = new THREE.MeshStandardMaterial({ color: 0x89a9ff });
         this.m_BatCuboid = new THREE.Mesh(geometry, texture);
-        this.m_BatCuboid.position.set(960, 200, 0);
+        this.Reset();
         scene.add(this.m_BatCuboid);
 
         // Bounding box

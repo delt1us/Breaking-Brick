@@ -250,6 +250,7 @@ export class Ball {
 
     // Resets ball location to the bat
     #ResetBallLocation() {
+        this.#m_Bat.Reset();
         let batLocation = structuredClone(this.#m_Bat.m_BatCuboid.position);
         batLocation.y += this.#m_Bat.vec_BoundingBoxSize.y / 2;
         this.#m_BallSphere.position.set(batLocation.x, batLocation.y + this.#i_RADIUS, batLocation.z);
