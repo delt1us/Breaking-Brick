@@ -1,6 +1,53 @@
-canvas
-{
+canvas {
     position: fixed;
     top: 0;
     left: 0;
+}
+
+@font-face {
+    font-family: upheavtt;
+    src: url('upheavtt.ttf');
+}
+
+#timer {
+    position: fixed;
+    top: 870px;
+    left: 1820px;
+    width: 100px;
+    height: 50px;
+    z-index: 100;
+    display: block;
+    color: #ffffff;
+    font-family: upheavtt;
+    font-size: 48px;
+}
+
+#score {
+    /* Centers the div */
+    margin: auto;
+    position: fixed;
+    z-index: 100;
+    text-align: center;
+    vertical-align: text-top;
+    width: 100%;
+    color: #ffffff;
+    font-family: upheavtt;
+    font-size: 72px;
+}
+
+#lives {
+    position: fixed;
+    z-index: 100;
+    right: 170px;
+    top: 10px;
+}
+
+#level {
+    position: fixed;
+    z-index: 100;
+    top: 0px;
+    left: 170px;
+    color: #ffffff;
+    font-family: upheavtt;
+    font-size: 72px;
 }

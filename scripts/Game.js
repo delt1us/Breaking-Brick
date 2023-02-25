@@ -20,6 +20,8 @@ export class Game {
     #m_Level;
     // Threejs PointLight object
     #m_Light;
+    // Threejs AmbientLight object
+    #m_AmbientLight;
     // Threejs Scene object
     #m_Scene;
     // Threejs Renderer obejct
@@ -93,16 +95,13 @@ export class Game {
 
         this.#m_Bat = new Bat(this.#m_Scene);
 
-        var batTopLocation = structuredClone(this.#m_Bat.m_BatCuboid.position);
-        batTopLocation.y += this.#m_Bat.vec_BoundingBoxSize.y / 2; 
-
-        this.#m_Ball = new Ball(this.#m_Scene, batTopLocation, this.#m_Grid, this.#m_Frame, this.#m_Bat);
+        this.#m_Ball = new Ball(this.#m_Scene, this.#m_Grid, this.#m_Frame, this.#m_Bat);
 
         // Lighting
-        this.#m_Light = new THREE.PointLight(0xffffff);
-        this.#m_Light.position.set(this.#m_Camera.position.x, this.#m_Camera.position.y, this.#m_Camera.position.z + 10);
-        // var ambientLight = new THREE.AmbientLight(0xffffff);
-        this.#m_Scene.add(this.#m_Light);
+        this.#m_Light = new THREE.PointLight(0xbbbbbb);
+        this.#m_Light.position.set(this.#m_Camera.position.x, this.#m_Camera.position.y, this.#m_Camera.position.z + 5);
+        this.#m_AmbientLight = new THREE.AmbientLight(0x909090);
+        this.#m_Scene.add(this.#m_Light, this.#m_AmbientLight);
     }
 
     // Run once from constructor
@@ -129,11 +128,11 @@ export class Game {
         var dist = 1100;
         var aspect = 1920 / 1080;
         // var fov = 2 * Math.atan( height / ( 2 * dist ) ) * ( 180 / Math.PI );
-        var fov = 2 * Math.atan((width / aspect) / (2 * dist)) * (180 / Math.PI);
+        var fov = 2 * Math.atan((width / aspect) / (2 * dist)) * (180 / Math.PI) + 7;
 
         // Camera
         this.#m_Camera = new THREE.PerspectiveCamera(fov, window.innerWidth / window.innerHeight, 0.1, 10000);
-        this.#vec3_CameraPosition = new THREE.Vector3(960, 590, dist - 200);
+        this.#vec3_CameraPosition = new THREE.Vector3(960, 620, dist - 200);
         this.#m_Camera.position.set(this.#vec3_CameraPosition.x, this.#vec3_CameraPosition.y, this.#vec3_CameraPosition.z);
     }
 

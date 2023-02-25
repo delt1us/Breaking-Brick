@@ -39,8 +39,9 @@ export class L1Brick extends Brick {
         this._i_Health = 1;
         // Moves brick to proper location on grid
         this.m_Cube.position.set(location[0], location[1], 0);
-        // Sets colour of L1Brick to white
-        var BrickColour = { color: 0x808080 };
+        // Sets colour of L1Brick to purple
+        // !To get more colours, change hue for this 
+        var BrickColour = { color: 0x89a9ff };
         this.m_Cube.material = new THREE.MeshStandardMaterial(BrickColour);
     }
 }

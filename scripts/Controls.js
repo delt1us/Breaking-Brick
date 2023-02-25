@@ -2,7 +2,8 @@
 // KeySates object
 export const KeyStates = {
     d: false,
-    a: false
+    a: false,
+    space: false
 };
 
 // Keypress detection
@@ -15,6 +16,10 @@ document.addEventListener("keydown", function onEvent(event) {
     if (event.key == "a" || event.key == "A") {
         KeyStates.a = true;
     }
+
+    if (event.key == " ") {
+        KeyStates.space = true;
+    }
 });
 
 // Key release detection
@@ -26,5 +31,9 @@ document.addEventListener("keyup", function onEvent(event) {
     // Stop left
     if (event.key == "a" || event.key == "A") {
         KeyStates.a = false;
+    }
+
+    if (event.key == " ") {
+        KeyStates.space = false;
     }
 });

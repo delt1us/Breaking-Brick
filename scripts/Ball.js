@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { KeyStates } from './Controls';
 
 // Class for ball
 export class Ball {
@@ -8,23 +9,64 @@ export class Ball {
     #m_BallSphere;
     #f_Speed;
     #vec_Velocity;
+    #b_Launched;
     // The grid object used for brick collision
     #m_Grid;
     #m_Scene;
     #m_Frame;
     #m_Bat;
+    
+    #m_LivesImage;
+    #i_LivesInternal;
+    // Prevents forgetting to update lives display whenever lives is changed
+    set #i_Lives(newValue) {
+        this.#i_LivesInternal = newValue;
+        this.#UpdateLivesDisplay();
+    }
 
-    constructor(scene, batLocation, grid, frame, bat) {
-        this.#i_RADIUS = 20;
-        this.#f_Speed = 0.5;
-        this.#vec_Velocity = new THREE.Vector3(0, 1, 0);
+    get #i_Lives() {
+        return this.#i_LivesInternal;
+    }
+
+    constructor(scene, grid, frame, bat) {
+        this.#i_RADIUS = 10;
+        this.#f_Speed = 1;
+        this.#vec_Velocity = new THREE.Vector3(0, 0, 0);
         this.#m_Grid = grid;
         this.#m_Scene = scene;
         this.#m_Frame = frame;
         this.#m_Bat = bat;
+        this.#i_LivesInternal = 3;
+        this.#b_Launched = false;
 
         //this.#LoadBallModel();
-        this.#MakeBallSpehere(scene, batLocation);
+        this.#LoadImage();
+        this.#UpdateLivesDisplay();
+        this.#MakeBallSpehere(scene);
+        this.#ResetBallLocation();
+    }
+
+    // Loads image, called once from constructor 
+    #LoadImage() {
+        this.#m_LivesImage = document.createElement("img");
+        this.#m_LivesImage.setAttribute("src", "textures/lives.png");
+        this.#m_LivesImage.setAttribute("width", "72");
+        this.#m_LivesImage.setAttribute("height", "60");
+    }
+
+    // Updates life display, called whenever lives are changed 
+    #UpdateLivesDisplay() {
+        let div = document.getElementById("lives");
+
+        // Removes all lives from the list
+        while (div.hasChildNodes()) {
+            div.removeChild(div.children[0]);
+        }
+
+        // Adds correct number of lives to list
+        for (let index = 0; index < this.#i_Lives; index++) {
+            div.appendChild(this.#m_LivesImage.cloneNode(true));
+        }
     }
 
     // Loads a rocket league ball 3d model
@@ -40,11 +82,50 @@ export class Ball {
     // Called every frame from Game.Update()
     Update(f_TimeSincePreviousFrame) {
         this.#UpdateLocation(f_TimeSincePreviousFrame);
+
+        if (!this.#CheckInFrame()) {
+            this.#RemoveLife();
+        }
+    
+        if (KeyStates.space && !this.#b_Launched) {
+            this.#LaunchBall();
+        }
+    }
+ 
+    // Called when ball leaves the screen
+    #RemoveLife() {
+        this.#i_Lives -= 1;
+        this.#ResetBallLocation();
+        this.#ResetBallVelocity();
+        this.#b_Launched = false;
+    }
+
+    // Called from RemoveLife
+    #ResetBallVelocity() {
+        this.#vec_Velocity.x = 0;
+        this.#vec_Velocity.y = 0;
+    }
+
+    // TODO allow player to aim ball when launching it
+    // Called when player presses spacebar from Update()
+    #LaunchBall() {
+        this.#vec_Velocity.y = this.#f_Speed;
+        this.#b_Launched = true;
+    }
+
+    // Determines if ball is in frame or not
+    #CheckInFrame() {
+        if (this.#m_BallSphere.position.y < 0) {
+            return false;
+        }
+        else {
+            return true;
+        }
     }
 
     #UpdateLocation(f_TimeSincePreviousFrame) {
         // DeltaTime is always NaN on the first frame
-        if (!f_TimeSincePreviousFrame) { return; }
+        if (!f_TimeSincePreviousFrame || !this.#b_Launched) { return; }
         
         // Updates sphere location
         // Annoying that this is so long because position is readonly. If it wasn't you could just add the vectors 
@@ -155,12 +236,18 @@ export class Ball {
         return (cornerDistance_sq <= (this.#i_RADIUS^2));
     }
 
-    // Called once from constructor
-    #MakeBallSpehere(scene, batLocation) {
-        const geometry = new THREE.SphereGeometry(this.#i_RADIUS);
-        const texture = new THREE.MeshStandardMaterial({color: 0x808080});
-        this.#m_BallSphere = new THREE.Mesh(geometry, texture)
+    // Resets ball location to the bat
+    #ResetBallLocation() {
+        let batLocation = structuredClone(this.#m_Bat.m_BatCuboid.position);
+        batLocation.y += this.#m_Bat.vec_BoundingBoxSize.y / 2; 
         this.#m_BallSphere.position.set(batLocation.x, batLocation.y + this.#i_RADIUS, batLocation.z);
+    }
+
+    // Called once from constructor
+    #MakeBallSpehere(scene) {
+        const geometry = new THREE.SphereGeometry(this.#i_RADIUS);
+        const texture = new THREE.MeshStandardMaterial({color: 0xffffff});
+        this.#m_BallSphere = new THREE.Mesh(geometry, texture)
         scene.add(this.#m_BallSphere);
     }
 }
