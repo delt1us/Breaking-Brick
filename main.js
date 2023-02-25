@@ -9,5 +9,9 @@ function animate(timeNow)
     window.requestAnimationFrame(animate);
 }
 
-var m_Game = new Game();
-window.requestAnimationFrame(animate);
+let m_Game;
+
+window.onload = function() {
+    m_Game = new Game();
+    window.requestAnimationFrame(animate);
+}
