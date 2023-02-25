@@ -5,10 +5,12 @@ class Brick {
     vec3_BOX_SIZE;
     m_Cube;
     _i_Health;
+    i_ScoreValue;
     constructor(m_Scene) {
         this.vec3_BOX_SIZE = new THREE.Vector3(120, 60, 60);
         // Health gets changed in every subclass
         this._i_Health = 999;
+        this.i_ScoreValue = 10;
 
         var BrickColour = { color: 0x00ff00 };
         var BoxGeometry = new THREE.BoxGeometry(this.vec3_BOX_SIZE.x, this.vec3_BOX_SIZE.y, this.vec3_BOX_SIZE.z);
@@ -22,7 +24,9 @@ class Brick {
     }
 
     // Destroys the brick and removes it from the grid
-    Destroy(grid, scene) {
+    // Called from ball
+    Destroy(grid, scene, scoreCounter) {
+        scoreCounter.Add(this.i_ScoreValue);
         // Finds and removes brick from grid array 
         grid.splice(grid.indexOf(this), 1);
         scene.remove(this.m_Cube);

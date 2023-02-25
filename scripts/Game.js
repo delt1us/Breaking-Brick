@@ -7,6 +7,7 @@ import { Frame } from './Frame.js';
 import { Ball } from './Ball.js';
 import { Level } from './Level.js';
 import { Timer } from './Timer.js';
+import { ScoreCounter } from './Score.js';
 
 export class Game {
     // Grid object 
@@ -38,6 +39,8 @@ export class Game {
     #f_TimeSincePreviousFrame;
     #f_TimeAtPreviousFrame;
 
+    #m_ScoreCounter;
+
     // Helpers 
     #m_LightHelper;
     #m_GridHelper;
@@ -62,14 +65,9 @@ export class Game {
 
         this.#m_Grid.Update();
         this.#m_Timer.Update(this.#f_TimeSincePreviousFrame);
-        this.#UpdateScore();
+        this.#m_ScoreCounter.Update();
     }
 
-    // Called from Update
-    #UpdateScore() {
-
-    }
- 
     // Run every frame
     Draw() {
         this.#m_Renderer.render(this.#m_Scene, this.#m_Camera);
@@ -105,8 +103,9 @@ export class Game {
 
         this.#m_Bat = new Bat(this.#m_Scene);
         this.#m_Timer = new Timer("timer");    
+        this.#m_ScoreCounter = new ScoreCounter("score");
 
-        this.#m_Ball = new Ball(this.#m_Scene, this.#m_Grid, this.#m_Frame, this.#m_Bat, this.#m_Timer);
+        this.#m_Ball = new Ball(this.#m_Scene, this.#m_Grid, this.#m_Frame, this.#m_Bat, this.#m_Timer, this.#m_ScoreCounter);
 
         // Lighting
         this.#m_Light = new THREE.PointLight(0xbbbbbb);
