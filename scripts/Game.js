@@ -6,6 +6,7 @@ import { Bat } from './Bat';
 import { Frame } from './Frame.js';
 import { Ball } from './Ball.js';
 import { Level } from './Level.js';
+import { Timer } from './Timer.js';
 
 export class Game {
     // Grid object 
@@ -18,6 +19,8 @@ export class Game {
     #m_Frame;
     // Level object
     #m_Level;
+    // Timer object 
+    #m_Timer;
     // Threejs PointLight object
     #m_Light;
     // Threejs AmbientLight object
@@ -58,8 +61,15 @@ export class Game {
         this.#m_Ball.Update(this.#f_TimeSincePreviousFrame);
 
         this.#m_Grid.Update();
+        this.#m_Timer.Update(this.#f_TimeSincePreviousFrame);
+        this.#UpdateScore();
     }
 
+    // Called from Update
+    #UpdateScore() {
+
+    }
+ 
     // Run every frame
     Draw() {
         this.#m_Renderer.render(this.#m_Scene, this.#m_Camera);
@@ -84,8 +94,8 @@ export class Game {
 
     // Run once from constructor
     #Initialize() {
-        // !this is unnecessary and will be changed once tested
         this.#m_Level = new Level();
+        // !this is unnecessary and will be changed once tested
         // this.#m_Level.CreateTempLevel();
         // this.#m_Level.SaveLevel("templevel");
         this.#m_Level = this.#m_Level.LoadLevel("templevel");
@@ -94,8 +104,9 @@ export class Game {
         this.#m_Grid.LoadLevel(this.#m_Scene, this.#m_Level);
 
         this.#m_Bat = new Bat(this.#m_Scene);
+        this.#m_Timer = new Timer("timer");    
 
-        this.#m_Ball = new Ball(this.#m_Scene, this.#m_Grid, this.#m_Frame, this.#m_Bat);
+        this.#m_Ball = new Ball(this.#m_Scene, this.#m_Grid, this.#m_Frame, this.#m_Bat, this.#m_Timer);
 
         // Lighting
         this.#m_Light = new THREE.PointLight(0xbbbbbb);

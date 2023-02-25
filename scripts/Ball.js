@@ -20,6 +20,8 @@ export class Ball {
     #m_Frame;
     // Bat used for bat collision
     #m_Bat;
+    // Timer that needs to be started/stopped
+    #m_Timer;
 
     // Image for lives (hearts)
     #m_LivesImage;
@@ -35,7 +37,7 @@ export class Ball {
         return this.#i_LivesInternal;
     }
 
-    constructor(scene, grid, frame, bat) {
+    constructor(scene, grid, frame, bat, timer) {
         this.#i_RADIUS = 10;
         this.#f_Speed = 1;
         this.#vec_Velocity = new THREE.Vector3(0, 0, 0);
@@ -43,6 +45,7 @@ export class Ball {
         this.#m_Scene = scene;
         this.#m_Frame = frame;
         this.#m_Bat = bat;
+        this.#m_Timer = timer;
         this.#i_LivesInternal = 3;
         this.#b_Launched = false;
 
@@ -109,6 +112,7 @@ export class Ball {
         this.#ResetBallLocation();
         this.#ResetBallVelocity();
         this.#b_Launched = false;
+        this.#m_Timer.Stop();
     }
 
     // Called from RemoveLife
@@ -123,6 +127,7 @@ export class Ball {
         this.#vec_Velocity.y = this.#f_Speed;
         this.#b_Launched = true;
         this.#m_Bat.b_CanMove = true;
+        this.#m_Timer.Start();
     }
 
     // Determines if ball is in frame or not
