@@ -122,6 +122,7 @@ export class Ball {
     #LaunchBall() {
         this.#vec_Velocity.y = this.#f_Speed;
         this.#b_Launched = true;
+        this.#m_Bat.b_CanMove = true;
     }
 
     // Determines if ball is in frame or not
@@ -252,6 +253,7 @@ export class Ball {
         let batLocation = structuredClone(this.#m_Bat.m_BatCuboid.position);
         batLocation.y += this.#m_Bat.vec_BoundingBoxSize.y / 2;
         this.#m_BallSphere.position.set(batLocation.x, batLocation.y + this.#i_RADIUS, batLocation.z);
+        this.#m_Bat.b_CanMove = false;
     }
 
     // Called once from constructor

@@ -11,15 +11,19 @@ export class Bat {
     vec_BoundingBoxSize;
     // Speed of the bat when moving
     #f_Speed;
+    b_CanMove;
 
     constructor(scene) {
         this.#f_Speed = 1;
         this.#MakeCuboid(scene);
+        this.b_CanMove = false;    
     }
 
     // Called every frame from Game.js Update()
     Update(f_TimeSincePreviousFrame) {
-        this.#UpdateLocation(f_TimeSincePreviousFrame);
+        if (this.b_CanMove) {
+            this.#UpdateLocation(f_TimeSincePreviousFrame);
+        }
     }
 
     // Called every frame from Update
