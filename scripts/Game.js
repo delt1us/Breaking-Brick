@@ -36,16 +36,18 @@ export class Game {
         this.#SetupGameScenes();
     }
 
+    // Called every frame from main.js
     Update(timeNow) {
         this.#UpdateTimeSincePreviousFrame(timeNow);
-
         this.m_SceneGame.Update(this.#f_DeltaTime);
     }
 
+    // Called every frame from main.js
     Draw() {
         this.#m_Renderer.render(this.#m_Scene, this.#m_Camera);
     }
 
+    // Called from constructor
     #SetupGameScenes() {
         let level = 4;
         this.#CreateLevel(level);
@@ -62,10 +64,12 @@ export class Game {
         this.#f_TimeAtPreviousFrame = timeNow;
     }
     
+    // Called from constructor
     #SetupObjects() {
         this.#m_Level = new Level();
     }
     
+    // Called from constructor
     #SetupLighting() {
         // Lighting
         this.#m_Light = new THREE.PointLight(0xbbbbbb);
@@ -117,7 +121,7 @@ export class Game {
         // OrbitControls messes with camera movement, only enable this if necessary
         this.#m_Controls = new OrbitControls(this.#m_Camera, this.#m_Renderer.domElement);
     }
-    
+ 
     #CreateLevel(level) {
         this.#m_Level.CreateTempLevel(level);
         this.#m_Level.Save(level);
