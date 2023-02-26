@@ -1,7 +1,12 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { Level } from './Level.js';
-import { SceneGame } from './Scene.js';
+import { SceneGame, SceneMainMenu } from './Scene.js';
+
+const enum_GameState = {
+    Main: Symbol("main"),
+    Game: Symbol("game")
+};
 
 export class Game {
     // Level object
@@ -25,7 +30,9 @@ export class Game {
     #m_Controls;
 
     // GameScenes
+    enum_State;
     m_SceneGame;
+    m_SceneMainMenu;
 
     constructor() {
         this.#SetupScene();
@@ -39,21 +46,44 @@ export class Game {
     // Called every frame from main.js
     Update(timeNow) {
         this.#UpdateTimeSincePreviousFrame(timeNow);
-        this.m_SceneGame.Update(this.#f_DeltaTime);
+    
+        switch (this.enum_State) {
+            case enum_GameState.Main:
+                this.m_SceneMainMenu.Update();
+                break;
+
+            case enum_GameState.Game:
+                this.m_SceneGame.Update(this.#f_DeltaTime);
+                break;
+        }
     }
 
     // Called every frame from main.js
     Draw() {
         this.#m_Renderer.render(this.#m_Scene, this.#m_Camera);
+
+        switch (this.enum_State) {
+            case enum_GameState.Main:
+                this.m_SceneMainMenu.Draw();
+                break;
+
+            case enum_GameState.Game:
+                this.m_SceneGame.Draw();
+                break;
+        }
     }
 
     // Called from constructor
     #SetupGameScenes() {
+        this.enum_State = enum_GameState.Main;
+        
         let level = 4;
         this.#CreateLevel(level);
         this.#LoadLevel(level);
-
+        
+        this.m_SceneMainMenu = new SceneMainMenu();    
         this.m_SceneGame = new SceneGame(this.#m_Level, this.#m_Scene);
+        
     }
 
     // Called from Update
@@ -129,5 +159,14 @@ export class Game {
     
     #LoadLevel(level) {
         this.#m_Level = this.#m_Level.Load(level);
+        this.#UpdateLevelDiv();
+    }
+
+    #UpdateLevelDiv() {
+        let text = "";
+        if (this.#m_Level.i_Level != 0) {
+            text = `LEVEL:${this.#m_Level.i_Level}`;
+        }
+        document.getElementById("level").innerHTML = text;
     }
 }

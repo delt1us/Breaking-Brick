@@ -2,8 +2,10 @@ import * as THREE from 'three';
 
 export class Level {
     a_Bricks;
+    i_Level;
     constructor() {
         this.a_Bricks = [];
+        this.i_Level = 0;
     }
 
     // Loads from localstorage, called from Game.Initiliaze()
@@ -21,6 +23,7 @@ export class Level {
 
     // Creates temp level, a 12x6 grid
     CreateTempLevel(brickHealth) {
+        this.i_Level = brickHealth;
         for (let row = 0; row < 6; row++) {
             for (let column = 0; column < 12; column++) {
                 let location = new THREE.Vector2(column, row);

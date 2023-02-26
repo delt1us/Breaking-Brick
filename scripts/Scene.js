@@ -19,6 +19,21 @@ class Scene {
     }
 }
 
+export class SceneMainMenu extends Scene {
+    
+    constructor() {
+        super();
+    }
+
+    Update() {
+
+    }
+
+    Draw() {
+
+    }
+}
+
 export class SceneGame extends Scene {
     // Grid object 
     #m_Grid;
@@ -58,7 +73,7 @@ export class SceneGame extends Scene {
     // Run once from constructor
     #Initialize(level) {
         this.#m_Level = level;
-        
+
         this.#m_Grid = new Grid(this.#m_Scene);
         this.#m_Grid.LoadLevel(this.#m_Scene, this.#m_Level);
         
