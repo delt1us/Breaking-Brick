@@ -1,32 +1,94 @@
 import * as THREE from 'three';
 
 // Brick superclass
-class Brick {
+export class Brick {
     vec3_BOX_SIZE;
     m_Cube;
-    _i_Health;
-    i_ScoreValue;
-    constructor(m_Scene) {
-        this.vec3_BOX_SIZE = new THREE.Vector3(120, 60, 60);
-        // Health gets changed in every subclass
-        this._i_Health = 999;
-        this.i_ScoreValue = 10;
+    #i_Health;
+    #i_ScoreValue;
+    #a_Textures;
 
-        var BrickColour = { color: 0x00ff00 };
-        var BoxGeometry = new THREE.BoxGeometry(this.vec3_BOX_SIZE.x, this.vec3_BOX_SIZE.y, this.vec3_BOX_SIZE.z);
-        var BoxMaterial = new THREE.MeshStandardMaterial(BrickColour);
-        this.m_Cube = new THREE.Mesh(BoxGeometry, BoxMaterial);
-        m_Scene.add(this.m_Cube);
+    constructor(m_Scene, location, textures, health) {
+        this.vec3_BOX_SIZE = new THREE.Vector3(120, 60, 60);
+        this.#a_Textures = textures;
+        this.#i_ScoreValue = 10;
+        this.#i_Health = health;
+
+        this.#MakeCuboid(m_Scene);
+        this.#SetCuboidPosition(location);
+        this.#UpdateColour();
+    }
+
+    #AddHealth(health) {
+        this.#i_Health += health;
+        this.#UpdateColour();
+    }
+
+    // Determines what colur the brick should be
+    #UpdateColour() {
+        let colour;
+        switch(this.#i_Health) {
+            default:
+                colour = this.#a_Textures["Grey"];
+                break;
+            case 1:
+                colour = this.#a_Textures["Purple"];
+                break;
+            case 2:
+                colour = this.#a_Textures["Lime"];
+                break;
+            case 3:
+                colour = this.#a_Textures["Pink"];
+                break;
+            case 4:
+                colour = this.#a_Textures["Yellow"];
+                break;
+            case 5:
+                colour = this.#a_Textures["Hot Pink"];
+                break;
+            case 6:
+                colour = this.#a_Textures["Orange"];
+                break;
+            case 7:
+                colour = this.#a_Textures["Blue"];
+                break;
+            case 8: 
+                colour = this.#a_Textures["Green"];
+                break;
+        }
+        this.m_Cube.material = colour;
     }
 
     // Called every frame from Grid.js
     Update() {
     }
+    
+    Hit(grid, scene, scoreCounter) {
+        this.#AddHealth(-1);
+        if (this.#i_Health == 0) {
+            this.#Destroy(grid, scene, scoreCounter);
+        }
+    }
+
+    #SetCuboidPosition(location) {
+        // Moves brick to proper location on grid
+        this.m_Cube.position.set(location[0], location[1], 0);
+    }
+
+    #MakeCuboid(m_Scene) {
+        let BoxGeometry = this.#MakeGeometry();
+        this.m_Cube = new THREE.Mesh(BoxGeometry, this.#a_Textures["White"]);
+        m_Scene.add(this.m_Cube);
+    }
+
+    #MakeGeometry() {
+        let BoxGeometry = new THREE.BoxGeometry(this.vec3_BOX_SIZE.x, this.vec3_BOX_SIZE.y, this.vec3_BOX_SIZE.z);
+        return BoxGeometry;
+    }
 
     // Destroys the brick and removes it from the grid
-    // Called from ball
-    Destroy(grid, scene, scoreCounter) {
-        scoreCounter.Add(this.i_ScoreValue);
+    #Destroy(grid, scene, scoreCounter) {
+        scoreCounter.Add(this.#i_ScoreValue);
         // Finds and removes brick from grid array 
         grid.splice(grid.indexOf(this), 1);
         scene.remove(this.m_Cube);
@@ -36,16 +98,38 @@ class Brick {
     }
 }
 
-// L1Brick has 1 health and does nothing special
-export class L1Brick extends Brick {
-    constructor(m_Scene, location) {
-        super(m_Scene);
-        this._i_Health = 1;
-        // Moves brick to proper location on grid
-        this.m_Cube.position.set(location[0], location[1], 0);
-        // Sets colour of L1Brick to purple
-        // !To get more colours, change hue for this 
-        var BrickColour = { color: 0x89a9ff };
-        this.m_Cube.material = new THREE.MeshStandardMaterial(BrickColour);
-    }
-}
+// // Got these shaders from https://stackoverflow.com/questions/16287547/multiple-transparent-textures-on-the-same-mesh-face-in-three-js
+// function fragmentShader() {
+//     return `
+//         #ifdef GL_ES
+//         precision highp float;
+//         #endif
+        
+//         uniform sampler2D tOne;
+//         uniform sampler2D tSec;
+        
+//         varying vec2 vUv;
+        
+//         void main(void)
+//         {
+//             vec3 c;
+//             vec4 Ca = texture2D(tOne, vUv);
+//             vec4 Cb = texture2D(tSec, vUv);
+//             c = Ca.rgb * Ca.a + Cb.rgb * Cb.a * (1.0 - Ca.a);  // blending equation
+//             gl_FragColor= vec4(c, 1.0);
+//         }
+//     `
+// }
+
+// function vertexShader() {
+//     return `
+//         varying vec2 vUv;
+
+//         void main()
+//         {
+//             vUv = uv;
+//             vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
+//             gl_Position = projectionMatrix * mvPosition;
+//         }
+//     `
+// }

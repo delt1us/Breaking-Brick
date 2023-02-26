@@ -94,9 +94,10 @@ export class Game {
     #Initialize() {
         this.#m_Level = new Level();
         // !this is unnecessary and will be changed once tested
-        // this.#m_Level.CreateTempLevel();
-        // this.#m_Level.SaveLevel("templevel");
-        this.#m_Level = this.#m_Level.LoadLevel("templevel");
+
+        this.#m_Level.CreateTempLevel(3);
+        this.#m_Level.Save("templevel");
+        this.#m_Level = this.#m_Level.Load("templevel");
 
         this.#m_Grid = new Grid(this.#m_Scene);
         this.#m_Grid.LoadLevel(this.#m_Scene, this.#m_Level);

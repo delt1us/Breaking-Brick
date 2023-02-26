@@ -179,7 +179,7 @@ export class Ball {
         if (collision) {
             // Destroys brick what was hit
             this.#BounceOffBrick(collision.m_Cube, collision.vec3_BOX_SIZE);
-            collision.Destroy(this.#m_Grid.a_GridArray, this.#m_Scene, this.#m_ScoreCounter);
+            collision.Hit(this.#m_Grid.a_GridArray, this.#m_Scene, this.#m_ScoreCounter);
         }
 
         // Wall collision
