@@ -33,7 +33,7 @@ class Scene {
     }
     
     Update(timeNow) { 
-        
+
     }
 
     Draw() {
@@ -94,36 +94,21 @@ class Scene {
     }
 }
 
-export class SceneMainMenu extends Scene {
-    
-    constructor() {
-        super();
-    }
-
-    Update() {
-
-    }
-
-    Draw() {
-
-    }
-}
-
 export class SceneGame extends Scene {
     // Threejs Renderer
     // Grid object 
-    #m_Grid;
+    _m_Grid;
     // Bat object
-    #m_Bat;
+    _m_Bat;
     // Ball object
-    #m_Ball;
+    _m_Ball;
     // Frame object
-    #m_Frame;
+    _m_Frame;
     // Timer object 
-    #m_Timer;
-    #m_ScoreCounter;
-    #m_Level;
-    #f_DeltaTime;
+    _m_Timer;
+    _m_ScoreCounter;
+    _m_Level;
+    _f_DeltaTime;
 
     constructor(level) {
         super();
@@ -133,28 +118,59 @@ export class SceneGame extends Scene {
     
     // Run every frame
     Update(deltaTime) {
-        this.#f_DeltaTime = deltaTime;
+        this._f_DeltaTime = deltaTime;
 
-        this.#m_Bat.Update(this.#f_DeltaTime);
-        this.#m_Ball.Update(this.#f_DeltaTime);
+        this._m_Bat.Update(this._f_DeltaTime);
+        this._m_Ball.Update(this._f_DeltaTime);
 
-        this.#m_Grid.Update();
-        this.#m_Timer.Update(this.#f_DeltaTime);
-        this.#m_ScoreCounter.Update();
+        this._m_Grid.Update();
+        this._m_Timer.Update(this._f_DeltaTime);
+    }
+
+    GetCamera() {
+        return this._m_Camera;
     }
 
     // Run once from constructor
     #Initialize(level) {
-        this.#m_Level = level;
+        this._m_Level = level;
 
-        this.#m_Grid = new Grid(this._m_Scene);
-        this.#m_Grid.LoadLevel(this._m_Scene, this.#m_Level);
+        this._m_Grid = new Grid(this._m_Scene);
+        this._m_Grid.LoadLevel(this._m_Scene, this._m_Level);
         
-        this.#m_Bat = new Bat(this._m_Scene);
-        this.#m_Frame = new Frame(this._m_Scene);
-        this.#m_Timer = new Timer("timer");    
-        this.#m_ScoreCounter = new ScoreCounter("score");
+        this._m_Bat = new Bat(this._m_Scene);
+        this._m_Frame = new Frame(this._m_Scene);
+        this._m_Timer = new Timer("timer");    
+        this._m_ScoreCounter = new ScoreCounter("score");
         
-        this.#m_Ball = new Ball(this._m_Scene, this.#m_Grid, this.#m_Frame, this.#m_Bat, this.#m_Timer, this.#m_ScoreCounter);
+        this._m_Ball = new Ball(this._m_Scene, this._m_Grid, this._m_Frame, this._m_Bat, this._m_Timer, this._m_ScoreCounter);
+    }
+}
+
+export class SceneMainMenu extends SceneGame {
+    constructor(level) {
+        super(level);
+        this._m_Ball.HideLives();
+        this._m_Ball.b_Simulation = true;
+        this._m_ScoreCounter.Hide();
+        this._m_Timer.Hide();
+
+        this.#SetupCanvas();   
+
+        this._m_Ball.LaunchBallAtRandomAngle();
+    }
+    
+    Update(deltaTime) {
+        this._m_Bat.m_BatCuboid.position.x = this._m_Ball.m_BallSphere.position.x;
+        super.Update(deltaTime);
+    }
+
+    #SetupCanvas() {
+        let canvas = document.getElementById("bg");
+        canvas.setAttribute("width", "1200px");
+        canvas.setAttribute("height", "675px");
+        canvas.style.top = "250px";
+        canvas.style.left = "50px";
+        this._m_Renderer.setSize(canvas.width, canvas.height);
     }
 }

@@ -54,15 +54,13 @@ export class Game {
 
     // Called from constructor
     #SetupGameScenes() {
-        this.enum_State = enum_GameState.Game;
+        this.enum_State = enum_GameState.Main;
         
         let level = 8;
+        this.#m_Level.b_Hidden = true;
         this.#CreateLevel(level);
         this.#LoadLevel(level);
-        
-        this.m_SceneMainMenu = new SceneMainMenu();    
-        this.m_SceneGame = new SceneGame(this.#m_Level);
-        
+        this.m_SceneMainMenu = new SceneMainMenu(this.#m_Level);    
     }
 
     // Called from Update
@@ -90,7 +88,7 @@ export class Game {
 
     #UpdateLevelDiv() {
         let text = "";
-        if (this.#m_Level.i_Level != 0) {
+        if (this.#m_Level.i_Level > 0 && !this.#m_Level.b_Hidden) {
             text = `LEVEL:${this.#m_Level.i_Level}`;
         }
         document.getElementById("level").innerHTML = text;

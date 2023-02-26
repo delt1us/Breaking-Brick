@@ -24,28 +24,30 @@ export class Bat {
         if (this.b_CanMove) {
             this.#UpdateLocation(f_TimeSincePreviousFrame);
         }
+        this.#HandleCollision();
     }
 
+    #HandleCollision() {
+        // Checks if bat is on edge of map
+        if (this.m_BatCuboid.position.x <= 100 + this.vec_BoundingBoxSize.x / 2) {
+            this.m_BatCuboid.position.x = 100 + this.vec_BoundingBoxSize.x / 2;
+        }
+        // Checks if bat is on edge of map
+        if (this.m_BatCuboid.position.x >= 1820 - this.vec_BoundingBoxSize.x / 2) {
+            this.m_BatCuboid.position.x = 1820 - this.vec_BoundingBoxSize.x / 2;
+        }
+    }    
     // Called every frame from Update
     #UpdateLocation(f_TimeSincePreviousFrame) {
         // Move left
         if (KeyStates.a) {
             this.m_BatCuboid.translateX(-1 * f_TimeSincePreviousFrame * this.#f_Speed);
-
-            // Checks if bat is on edge of map
-            if (this.m_BatCuboid.position.x <= 100 + this.vec_BoundingBoxSize.x / 2) {
-                this.m_BatCuboid.position.x = 100 + this.vec_BoundingBoxSize.x / 2;
-            }
         }
 
         // Move right
         if (KeyStates.d) {
             this.m_BatCuboid.translateX(f_TimeSincePreviousFrame * this.#f_Speed);
 
-            // Checks if bat is on edge of map
-            if (this.m_BatCuboid.position.x >= 1820 - this.vec_BoundingBoxSize.x / 2) {
-                this.m_BatCuboid.position.x = 1820 - this.vec_BoundingBoxSize.x / 2;
-            }
         }
     }
 

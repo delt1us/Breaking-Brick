@@ -3,9 +3,11 @@ import * as THREE from 'three';
 export class Level {
     a_Bricks;
     i_Level;
+    b_Hidden;
     constructor() {
         this.a_Bricks = [];
         this.i_Level = 0;
+        this.b_Hidden = false;
     }
 
     // Loads from localstorage, called from Game.Initiliaze()

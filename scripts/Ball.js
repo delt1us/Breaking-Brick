@@ -6,7 +6,7 @@ import { KeyStates } from './Controls';
 export class Ball {
     #i_RADIUS;
     // Sphere, THREE.Mesh object
-    #m_BallSphere;
+    m_BallSphere;
     // How fast the ball goes
     #f_Speed;
     // How fast the ball is going in each direction
@@ -26,6 +26,8 @@ export class Ball {
     // Score value 
     #m_ScoreCounter;
 
+    #b_LivesHidden;
+    b_Simulation;
     // Image for lives (hearts)
     #m_LivesImage;
     // Internal value for lives 
@@ -52,12 +54,19 @@ export class Ball {
         this.#m_ScoreCounter = scoreCounter;
         this.#i_LivesInternal = 3;
         this.#b_Launched = false;
+        this.#b_LivesHidden = false;
+        this.b_Simulation = false;
 
         //this.#LoadBallModel();
         this.#LoadImage();
         this.#UpdateLivesDisplay();
         this.#MakeBallSpehere(scene);
         this.#ResetBallLocation();
+    }
+
+    HideLives() {
+        this.#b_LivesHidden = true;
+        this.#UpdateLivesDisplay();
     }
 
     // Loads image, called once from constructor 
@@ -78,9 +87,11 @@ export class Ball {
             div.removeChild(div.children[0]);
         }
 
-        // Adds correct number of lives to list
-        for (let index = 0; index < this.#i_Lives; index++) {
-            div.appendChild(this.#m_LivesImage.cloneNode(true));
+        if (!this.#b_LivesHidden) {
+            // Adds correct number of lives to list
+            for (let index = 0; index < this.#i_Lives; index++) {
+                div.appendChild(this.#m_LivesImage.cloneNode(true));
+            }
         }
     }
 
@@ -89,7 +100,7 @@ export class Ball {
         // Copied from three js docs
         let loader = new GLTFLoader();
         loader.load('models/ball.glb', (glb) => {
-            this.#m_BallSphere = glb.scene;
+            this.m_BallSphere = glb.scene;
         });
         // End of copied code
     }
@@ -134,9 +145,18 @@ export class Ball {
         this.#m_Timer.Start();
     }
 
+    LaunchBallAtRandomAngle() {
+        this.#LaunchBall();
+        this.#m_Bat.b_CanMove = false;
+        let percentageOfBatBeforeLandingLocation = Math.random() * 2;
+        let angleToBounceAt = -1 * Math.PI * 0.5 * percentageOfBatBeforeLandingLocation;
+        this.#vec_Velocity.x = this.#f_Speed * Math.cos(angleToBounceAt);
+        this.#vec_Velocity.y = this.#f_Speed * Math.sin(angleToBounceAt);
+    }
+
     // Determines if ball is in frame or not
     #CheckInFrame() {
-        if (this.#m_BallSphere.position.y < 0) {
+        if (this.m_BallSphere.position.y < 0) {
             return false;
         }
         else {
@@ -151,10 +171,10 @@ export class Ball {
 
         // Updates sphere location
         // Annoying that this is so long because position is readonly. If it wasn't you could just add the vectors 
-        this.#m_BallSphere.position.set(
-            this.#m_BallSphere.position.x + this.#vec_Velocity.x * this.#f_Speed * f_DeltaTime,
-            this.#m_BallSphere.position.y + this.#vec_Velocity.y * this.#f_Speed * f_DeltaTime,
-            this.#m_BallSphere.position.z + this.#vec_Velocity.z * this.#f_Speed * f_DeltaTime
+        this.m_BallSphere.position.set(
+            this.m_BallSphere.position.x + this.#vec_Velocity.x * this.#f_Speed * f_DeltaTime,
+            this.m_BallSphere.position.y + this.#vec_Velocity.y * this.#f_Speed * f_DeltaTime,
+            this.m_BallSphere.position.z + this.#vec_Velocity.z * this.#f_Speed * f_DeltaTime
         );
     }
 
@@ -162,7 +182,7 @@ export class Ball {
     #BounceOffBrick(objectCollidedWith, objectSize) {
         // Needs improvement, ball doesn't bounce properly off of edges. Would take too long for me to figure out so it's only if I have too much time
         // If object is above or below
-        if (objectCollidedWith.position.y - objectSize.y / 2 > this.#m_BallSphere.position.y || objectCollidedWith.position.y + objectSize.y / 2 < this.#m_BallSphere.position.y) {
+        if (objectCollidedWith.position.y - objectSize.y / 2 > this.m_BallSphere.position.y || objectCollidedWith.position.y + objectSize.y / 2 < this.m_BallSphere.position.y) {
             this.#vec_Velocity.y *= -1;
         }
         else {
@@ -210,7 +230,13 @@ export class Ball {
         Ball bounce angle is determined based on where it landed on the bat
         It can bounce at an angle of 90 degrees centred at the middle of the bat (45 degrees on each side of the normal to the bat)
         */
-        let ballLandingRelativeToBat = this.#m_BallSphere.position.x - this.#m_Bat.m_BatCuboid.position.x;
+        let ballLandingRelativeToBat = this.m_BallSphere.position.x - this.#m_Bat.m_BatCuboid.position.x;
+        
+        if (this.b_Simulation) {
+            this.#vec_Velocity.y *= -1;
+            return;
+        }
+
         let percentageOfBatBeforeLandingLocation = ballLandingRelativeToBat / this.#m_Bat.vec_BoundingBoxSize.x;
         let angleToBounceAt = -1 * Math.PI * 0.5 * percentageOfBatBeforeLandingLocation;
         // Offsets 0 pointing east
@@ -243,8 +269,8 @@ export class Ball {
         // Really smart way of doing it that can be applied here since the sphere never moves in the z axis so it can be treated as a 2d circle
         let circleDistance = new THREE.Vector2();
 
-        circleDistance.x = Math.abs(this.#m_BallSphere.position.x - object3d.position.x);
-        circleDistance.y = Math.abs(this.#m_BallSphere.position.y - object3d.position.y);
+        circleDistance.x = Math.abs(this.m_BallSphere.position.x - object3d.position.x);
+        circleDistance.y = Math.abs(this.m_BallSphere.position.y - object3d.position.y);
 
         if (circleDistance.x > (objectSize.x / 2 + this.#i_RADIUS)) { return false; }
         if (circleDistance.y > (objectSize.y / 2 + this.#i_RADIUS)) { return false; }
@@ -262,7 +288,7 @@ export class Ball {
         this.#m_Bat.Reset();
         let batLocation = structuredClone(this.#m_Bat.m_BatCuboid.position);
         batLocation.y += this.#m_Bat.vec_BoundingBoxSize.y / 2;
-        this.#m_BallSphere.position.set(batLocation.x, batLocation.y + this.#i_RADIUS, batLocation.z);
+        this.m_BallSphere.position.set(batLocation.x, batLocation.y + this.#i_RADIUS, batLocation.z);
         this.#m_Bat.b_CanMove = false;
     }
 
@@ -270,7 +296,7 @@ export class Ball {
     #MakeBallSpehere(scene) {
         const geometry = new THREE.SphereGeometry(this.#i_RADIUS);
         const texture = new THREE.MeshStandardMaterial({ color: 0xffffff });
-        this.#m_BallSphere = new THREE.Mesh(geometry, texture)
-        scene.add(this.#m_BallSphere);
+        this.m_BallSphere = new THREE.Mesh(geometry, texture)
+        scene.add(this.m_BallSphere);
     }
 }
