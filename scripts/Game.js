@@ -56,7 +56,7 @@ export class Game {
     #SetupGameScenes() {
         this.enum_State = enum_GameState.Main;
         
-        let level = 8;
+        let level = 7;
         this.#m_Level.b_Hidden = true;
         this.#CreateLevel(level);
         this.#LoadLevel(level);
