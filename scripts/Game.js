@@ -1,27 +1,11 @@
 import * as THREE from 'three';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import { Grid } from './Grid.js'
-import { Bat } from './Bat';
-import { Frame } from './Frame.js';
-import { Ball } from './Ball.js';
 import { Level } from './Level.js';
-import { Timer } from './Timer.js';
-import { ScoreCounter } from './Score.js';
+import { SceneGame } from './Scene.js';
 
 export class Game {
-    // Grid object 
-    #m_Grid;
-    // Bat object
-    #m_Bat;
-    // Ball object
-    #m_Ball;
-    // Frame object
-    #m_Frame;
     // Level object
     #m_Level;
-    // Timer object 
-    #m_Timer;
     // Threejs PointLight object
     #m_Light;
     // Threejs AmbientLight object
@@ -32,82 +16,57 @@ export class Game {
     #m_Renderer;
     // Threejs Camera object
     #m_Camera;
-    // Threejs m_GLTFLoader object 
-    #m_GLTFLoader;
     #vec3_CameraPosition;
-
-    #f_TimeSincePreviousFrame;
+    #f_DeltaTime;
     #f_TimeAtPreviousFrame;
-
-    #m_ScoreCounter;
-
     // Helpers 
     #m_LightHelper;
     #m_GridHelper;
     #m_Controls;
 
+    // GameScenes
+    m_SceneGame;
+
     constructor() {
         this.#SetupScene();
         this.#SetupRenderer();
-        this.#SetupCamera();
-        this.#MakeBorderObject();
-        this.#Initialize();
-        // this.#LoadContent();
-        // this.#SetupHelpers();
+        this.#SetupCamera();   
+        this.#SetupLighting();
+        this.#SetupObjects();
+        this.#SetupGameScenes();
     }
 
-    // Run every frame
     Update(timeNow) {
-        this.UpdateTimeSincePreviousFrame(timeNow);
+        this.#UpdateTimeSincePreviousFrame(timeNow);
 
-        this.#m_Bat.Update(this.#f_TimeSincePreviousFrame);
-        this.#m_Ball.Update(this.#f_TimeSincePreviousFrame);
-
-        this.#m_Grid.Update();
-        this.#m_Timer.Update(this.#f_TimeSincePreviousFrame);
-        this.#m_ScoreCounter.Update();
+        this.m_SceneGame.Update(this.#f_DeltaTime);
     }
 
-    // Run every frame
     Draw() {
         this.#m_Renderer.render(this.#m_Scene, this.#m_Camera);
     }
 
-    // Run once from constructor
-    #MakeBorderObject() {
-        this.#m_Frame = new Frame(this.#m_Scene);
+    #SetupGameScenes() {
+        let level = 4;
+        this.#CreateLevel(level);
+        this.#LoadLevel(level);
+
+        this.m_SceneGame = new SceneGame(this.#m_Level, this.#m_Scene);
     }
 
-    // Run once from constructor
-    #SetupHelpers() {
-        // Light helper shows where the light is
-        this.#m_LightHelper = new THREE.PointLightHelper(this.#m_Light);
-        // Draws 2D grid 
-        this.#m_GridHelper = new THREE.GridHelper(200, 50);
-        this.#m_Scene.add(this.#m_LightHelper, this.#m_GridHelper);
-
-        // OrbitControls messes with camera movement, only enable this if necessary
-        this.#m_Controls = new OrbitControls(this.#m_Camera, this.#m_Renderer.domElement);
+    // Called from Update
+    #UpdateTimeSincePreviousFrame(timeNow) {
+        // Gets time since last frame and then sets the time at previous frame to current time
+        // Works because the function is then called by window.requestAnimationFrame(gameLoop);
+        this.#f_DeltaTime = timeNow - this.#f_TimeAtPreviousFrame;
+        this.#f_TimeAtPreviousFrame = timeNow;
     }
-
-    // Run once from constructor
-    #Initialize() {
+    
+    #SetupObjects() {
         this.#m_Level = new Level();
-        // !this is unnecessary and will be changed once tested
-
-        this.#m_Level.CreateTempLevel(3);
-        this.#m_Level.Save("templevel");
-        this.#m_Level = this.#m_Level.Load("templevel");
-
-        this.#m_Grid = new Grid(this.#m_Scene);
-        this.#m_Grid.LoadLevel(this.#m_Scene, this.#m_Level);
-
-        this.#m_Bat = new Bat(this.#m_Scene);
-        this.#m_Timer = new Timer("timer");    
-        this.#m_ScoreCounter = new ScoreCounter("score");
-
-        this.#m_Ball = new Ball(this.#m_Scene, this.#m_Grid, this.#m_Frame, this.#m_Bat, this.#m_Timer, this.#m_ScoreCounter);
-
+    }
+    
+    #SetupLighting() {
         // Lighting
         this.#m_Light = new THREE.PointLight(0xbbbbbb);
         this.#m_Light.position.set(this.#m_Camera.position.x, this.#m_Camera.position.y, this.#m_Camera.position.z + 5);
@@ -148,29 +107,23 @@ export class Game {
     }
 
     // Run once from constructor
-    //This doesn't run, it is from when I was going to use models imported from blender
-    #LoadContent() {
-        // Copied from three js docs
-        this.#m_GLTFLoader = new GLTFLoader();
-        this.#m_GLTFLoader.load('models/frame.glb', (glb) => {
-            // Object3D object 
-            this.#m_Frame = glb.scene;
-            // https://stackoverflow.com/questions/36201880/threejs-rotate-on-y-axis-to-face-camera
-            // Slightly changed to rotate it 90 degrees so it actually faces camera
-            // this.#m_Frame.rotation.y = Math.atan2((this.#m_Camera.position.x - this.#m_Frame.position.x), (this.#m_Camera.position.z - this.#m_Frame.position.z)) + Math.PI * 0.5;
-            // Rotates 90 degrees
-            this.#m_Frame.rotation.y -= Math.PI * 0.5
-            this.#m_Frame.scale.set(1.5, 1.5, 1.5);
-            this.#m_Scene.add(this.#m_Frame);
-        });
-        // End of copied code
-    }
+    #SetupHelpers() {
+        // Light helper shows where the light is
+        this.#m_LightHelper = new THREE.PointLightHelper(this.#m_Light);
+        // Draws 2D grid 
+        this.#m_GridHelper = new THREE.GridHelper(200, 50);
+        this.#m_Scene.add(this.#m_LightHelper, this.#m_GridHelper);
 
-    // Called from Update
-    UpdateTimeSincePreviousFrame(timeNow) {
-        // Gets time since last frame and then sets the time at previous frame to current time
-        // Works because the function is then called by window.requestAnimationFrame(gameLoop);
-        this.#f_TimeSincePreviousFrame = timeNow - this.#f_TimeAtPreviousFrame;
-        this.#f_TimeAtPreviousFrame = timeNow;
+        // OrbitControls messes with camera movement, only enable this if necessary
+        this.#m_Controls = new OrbitControls(this.#m_Camera, this.#m_Renderer.domElement);
+    }
+    
+    #CreateLevel(level) {
+        this.#m_Level.CreateTempLevel(level);
+        this.#m_Level.Save(level);
+    }
+    
+    #LoadLevel(level) {
+        this.#m_Level = this.#m_Level.Load(level);
     }
 }

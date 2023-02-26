@@ -95,19 +95,19 @@ export class Ball {
     }
 
     // Called every frame from Game.Update()
-    Update(f_TimeSincePreviousFrame) {
-        this.#UpdateLocation(f_TimeSincePreviousFrame);
-        this.#HandleCollisions();
-
+    Update(f_DeltaTime) {
+        // If ball is waiting to be launched and spacebar is pressed it will launch the ball
+        if (KeyStates.space && !this.#b_Launched) {
+            this.#LaunchBall();
+        }
+        
         // If ball is not in the frame then it removes a life and resets the ball
         if (!this.#CheckInFrame()) {
             this.#RemoveLife();
         }
 
-        // If ball is waiting to be launched and spacebar is pressed it will launch the ball
-        if (KeyStates.space && !this.#b_Launched) {
-            this.#LaunchBall();
-        }
+        this.#UpdateLocation(f_DeltaTime);
+        this.#HandleCollisions();
     }
 
     // Called when ball leaves the screen
@@ -145,16 +145,16 @@ export class Ball {
     }
 
     // Updates location, called from Update
-    #UpdateLocation(f_TimeSincePreviousFrame) {
+    #UpdateLocation(f_DeltaTime) {
         // DeltaTime is always NaN on the first frame
-        if (!f_TimeSincePreviousFrame || !this.#b_Launched) { return; }
+        if (!f_DeltaTime || !this.#b_Launched) { return; }
 
         // Updates sphere location
         // Annoying that this is so long because position is readonly. If it wasn't you could just add the vectors 
         this.#m_BallSphere.position.set(
-            this.#m_BallSphere.position.x + this.#vec_Velocity.x * this.#f_Speed * f_TimeSincePreviousFrame,
-            this.#m_BallSphere.position.y + this.#vec_Velocity.y * this.#f_Speed * f_TimeSincePreviousFrame,
-            this.#m_BallSphere.position.z + this.#vec_Velocity.z * this.#f_Speed * f_TimeSincePreviousFrame
+            this.#m_BallSphere.position.x + this.#vec_Velocity.x * this.#f_Speed * f_DeltaTime,
+            this.#m_BallSphere.position.y + this.#vec_Velocity.y * this.#f_Speed * f_DeltaTime,
+            this.#m_BallSphere.position.z + this.#vec_Velocity.z * this.#f_Speed * f_DeltaTime
         );
     }
 
