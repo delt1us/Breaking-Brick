@@ -25,7 +25,7 @@ export class Grid {
             "Blue": new THREE.MeshStandardMaterial({ color: 0x89a9ff }),
             "Pink": new THREE.MeshStandardMaterial({ color: 0xE589FF }),
             "Lime": new THREE.MeshStandardMaterial({ color: 0xA3FF89 }),
-            "Green": new THREE.MeshMatcapMaterial({ color: 0x89FFBA }),
+            "Green": new THREE.MeshStandardMaterial({ color: 0x89FFBA }),
             "Purple": new THREE.MeshStandardMaterial({ color: 0x898DFF }),
             "Hot Pink": new THREE.MeshStandardMaterial({ color: 0xFF89B3 }),
             "Yellow": new THREE.MeshStandardMaterial({ color: 0xFFED89 }),
