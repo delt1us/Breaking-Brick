@@ -207,6 +207,8 @@ a:hover {
     background: var(--clr);
     color: var(--clr);
     box-shadow: 0 0 35px var(--clr);
+    transform: scale(1.1);
+    transition: 0.2s;
 }
 
 a:before {
@@ -291,6 +293,12 @@ a:hover i::after {
 }
 
 #backButtonLevelSelect {
+    position: fixed;
+    top: 750px;
+    left: 85px;
+}
+
+#backButtonLevelCreate {
     position: fixed;
     top: 750px;
     left: 85px;

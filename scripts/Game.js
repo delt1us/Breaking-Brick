@@ -89,6 +89,10 @@ export class Game {
             this.#SwitchTo(enum_GameState.Create);
             ButtonStates.Create = false;
         }
+        else if (ButtonStates.BackLevelCreate) {
+            this.#SwitchTo(enum_GameState.Level);
+            ButtonStates.BackLevelCreate = false;
+        }
     }
 
     #StartGame(level) {

@@ -2,7 +2,8 @@ export const ButtonStates = {
     Play: false,
     Settings: false,
     Back: false,
-    Create: false
+    Create: false,
+    BackLevelCreate: false
 };
 
 document.getElementById("playbutton").onclick = function () {
@@ -23,4 +24,10 @@ document.getElementById("backButtonLevelSelect").onclick = function() {
 document.getElementById("levelDesignerButton").onclick = function() {
     console.log("create button pressed");
     ButtonStates.Create = true;
+};
+
+
+document.getElementById("backButtonLevelCreate").onclick = function() {
+    console.log("back button pressed");
+    ButtonStates.BackLevelCreate = true;
 };
