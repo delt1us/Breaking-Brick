@@ -12,8 +12,8 @@ const enum_GameState = {
 
 export const d_DISABLED_BUTTONS = {
     Play: false,
-    Settings: false,
-}
+    Settings: false
+};
 
 export class Game {
     // Level object
@@ -60,7 +60,6 @@ export class Game {
             case enum_GameState.Main:
                 this.m_SceneMainMenu.Draw();
                 break;
-
             case enum_GameState.Game:
                 this.m_SceneGame.Draw();
                 break;
