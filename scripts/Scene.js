@@ -6,6 +6,32 @@ import { Ball } from './Ball.js';
 import { Timer } from './Timer.js';
 import { ScoreCounter } from './Score.js';
 
+// Used to convert index into number for css class ids in level select scene
+function toWord (integer) {
+    let string;
+    switch (integer){
+        case 1:
+            string = "one";
+            break;
+        case 2:
+            string = "two";
+            break;
+        case 3: 
+            string = "three";
+            break;
+        case 4:
+            string = "four";
+            break;
+        case 5:
+            string = "five";
+            break;
+        case 6:
+            string = "six"; 
+            break;
+    }
+    return string;
+}
+
 class Scene {
     // Threejs scene
     _m_Scene;
@@ -223,7 +249,273 @@ export class SceneSettingsMenu extends Scene {
 }
 
 export class SceneLevelSelect extends Scene {
+    #a_Grid;
     constructor() {
         super();
+
+        // Make a 5 row grid (1 for each season)
+        // Add each level name as a breaking bad episode
+        // Add html object for each level 
+        // Group them by season
+        // Change colours based on seasons
+        this.#MakeGrid();
+    }
+
+    #MakeGrid() {
+        let season1 = [
+            {
+                Name: "Pilot",
+                Abbreviation: "Pi"},
+            {
+                Name: "The Cat's in the Bag",  
+                Abbreviation: "Cb"},
+            {
+                Name: "And the Bag's in the River",
+                Abbreviation: "Br"},
+            {
+                Name: "Cancer Man",
+                Abbreviation: "Cm"},
+            {
+                Name: "Gray Matter",
+                Abbreviation: "Gm"},
+            {
+                Name: "Crazy Handful of Nothin'",
+                Abbreviation: "Ch"},
+            {
+                Name: "A No-Rough-Stuff-Type Deal",
+                Abbreviation: "Nr"},
+        ];
+
+        let season2 = [
+            {
+                Name: "Seven Thirty-Seven",
+                Abbreviation: "Sv"},
+            {
+                Name: "Grilled",
+                Abbreviation: "G"},
+            {
+                Name: "Bit by a Dead Bee",
+                Abbreviation: "Bb"},
+            {
+                Name: "Down",
+                Abbreviation: "Dn"},
+            {
+                Name: "Breakage",
+                Abbreviation: "Bk"},
+            {
+                Name: "Peekaboo",
+                Abbreviation: "Pkb"},
+            {
+                Name: "Negro y Azul",
+                Abbreviation: "Na"},
+            {
+                Name: "Better Call Saul",
+                Abbreviation: "Bcs"},
+            {
+                Name: "4 Days Out",
+                Abbreviation: "Do"},
+            {
+                Name: "Over",
+                Abbreviation: "O"},
+            {
+                Name: "Mandala",
+                Abbreviation: "M"},
+            {
+                Name: "Phoenix",
+                Abbreviation: "P"},
+            {
+                Name: "ABQ",
+                Abbreviation: "Abq"},
+        ];
+
+        let season3 = [
+            {
+                Name: "No Mas",
+                Abbreviation: "Nm"},
+            {
+                Name: "Caballo Sin Nombre",
+                Abbreviation: "Cn"},
+            {
+                Name: "I.F.T",
+                Abbreviation: "If"},
+            {
+                Name: "Green Light",
+                Abbreviation: "Gl"},
+            {
+                Name: "Mas",
+                Abbreviation: "Ma"},
+            {
+                Name: "Sunset",
+                Abbreviation: "S"},
+            {
+                Name: "One Minute",
+                Abbreviation: "Om"},
+            {
+                Name: "I See You",
+                Abbreviation: "Icu"},
+            {
+                Name: "Kafkaesque",
+                Abbreviation: "K"},
+            {
+                Name: "Fly",
+                Abbreviation: "F"},
+            {
+                Name: "Abiquiu",
+                Abbreviation: "Ab"},
+            {
+                Name: "Half Measures",
+                Abbreviation: "Hm"},
+            {
+                Name: "Full Measure",
+                Abbreviation: "Fm"},
+        ];
+
+        let season4 = [
+            {
+                Name: "Box Cutter",
+                Abbreviation: "Bc"},
+            {
+                Name: "Thirty-Eight Snub",
+                Abbreviation: "Ts"},
+            {
+                Name: "Open House",
+                Abbreviation: "Oh"},
+            {
+                Name: "Bullet Points",
+                Abbreviation: "Bp"},
+            {
+                Name: "Shotgun",
+                Abbreviation: "Sg"},
+            {
+                Name: "Cornered",
+                Abbreviation: "C"},
+            {
+                Name: "Problem Dog",
+                Abbreviation: "Pd"},
+            {
+                Name: "Hermanos",
+                Abbreviation: "H"},
+            {
+                Name: "Bug",
+                Abbreviation: "B"},
+            {
+                Name: "Salud",
+                Abbreviation: "Sa"},
+            {
+                Name: "Crawl Space",
+                Abbreviation: "Cs"},
+            {
+                Name: "End Times",
+                Abbreviation: "Et"},
+            {
+                Name: "Face Off",
+                Abbreviation: "Fo"},
+        ];
+
+        let season5 = [
+            {
+                Name: "Live Free or Die",
+                Abbreviation: "Lfd"},
+            {
+                Name: "Madrigal",
+                Abbreviation: "Ml"},
+            {
+                Name: "Hazard Pay",
+                Abbreviation: "Hp"},
+            {
+                Name: "Fifty One",
+                Abbreviation: "Fio"},
+            {
+                Name: "Dead Freight",
+                Abbreviation: "Df"},
+            {
+                Name: "Buyout",
+                Abbreviation: "Bo"},
+            {
+                Name: "Say My Name",
+                Abbreviation: "Smn"},
+            {
+                Name: "Gliding Over All",
+                Abbreviation: "Go"},
+            {
+                Name: "Blood Money",
+                Abbreviation: "Blm"},
+            {
+                Name: "Buried",
+                Abbreviation: "Bu"},
+            {
+                Name: "Confessions",
+                Abbreviation: "Co"},
+            {
+                Name: "Rabid Dog",
+                Abbreviation: "Rd"},
+            {
+                Name: "To'hajilee",
+                Abbreviation: "Th"},
+            {
+                Name: "Ozymandias",
+                Abbreviation: "Ozy"},
+            {
+                Name: "Granite State",
+                Abbreviation: "Gs"},
+            {
+                Name: "Felina",
+                Abbreviation: "Fe"},
+        ];
+
+        // Iterated through 
+        let seasons = [
+            season1,
+            season2,
+            season3,
+            season4,
+            season5
+        ];
+
+        let table = document.getElementById("table");
+        let level = 0;
+        
+        for (let seasonIndex = 0; seasonIndex < seasons.length; seasonIndex++) {
+            let season = seasons[seasonIndex];
+            
+            for (let index = 0; index < season.length; index++) {
+                level += 1;
+
+                // Makes elements in form:
+                // <div class="period 1">
+                //     <div class="period-inner">
+                //         <div class="title">L1</div>
+                //         <div class="desc">Level1</div>
+                //     </div>
+                // </div>
+                let period = document.createElement("div")
+                period.setAttribute("class", "period " + toWord(seasonIndex + 1));
+                let period_inner = document.createElement("div")
+                period_inner.setAttribute("class", "period-inner");
+
+                let title = document.createElement("div")
+                title.setAttribute("class", "title");
+                title.innerHTML = season[index].Abbreviation;
+                let desc = document.createElement("div")
+                desc.setAttribute("class", "desc"); 
+                desc.innerHTML = "Level " + level;
+
+                period_inner.appendChild(title);
+                period_inner.appendChild(desc);
+                period.appendChild(period_inner);
+                table.appendChild(period);
+            }
+        }
+
+        // Makes empty spaces 
+        for (let index = 0; index < 4; index++) {
+            let gap = document.createElement("div");
+            gap.setAttribute("class", "empty-space-" + (index + 1));
+            table.appendChild(gap);
+        }        
     }
 }
+
+// {
+//     Name: "",
+//     Abbreviation: ""},

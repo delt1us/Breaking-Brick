@@ -5,12 +5,149 @@ canvas {
     border-style: solid;
 }
 
+/* Got the periodic table css from  https://www.youtube.com/watch?v=qdwKLY45sh4&t=1146s*/
+.level-select {
+    font-family: "Poppins", sans-serif;
+    margin: 100px;
+}
 
+.table {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: repeat(16, 100px);
+    grid-template-rows: repeat(5, 100px);
+    grid-gap: 10px;
+    margin: auto;
+    max-width: 1200px;
+    justify-content: center;
+}
+
+.period {
+    padding: 4px;
+    position: relative;
+    z-index: 1;
+    cursor: default;
+    transition: all 0.3s ease;
+}
+
+.period .period-inner {
+    background: linear-gradient(to bottom right, #006811 0%, #00500d 100%);
+    padding: 10px 15px;
+    width: calc(100% - 30px);
+    height: calc(100% - 20px);
+    transition: inherit;
+}
+
+.period .title {
+    font: 700 26.1538px "Poppins", sans-serif;
+    margin: 0.3em 0 0;
+}
+
+.period .desc {
+    font: 500 12px "Poppins", sans-serif;
+    margin-top: -0.2em; 
+}
+
+.period:hover {
+    transform: scale(1.12);
+    z-index: 10;
+}
+
+.period:hover .period-inner {
+    background: transparent;
+}
+
+.period:hover .title, .period:hover .desc {
+    -webkit-text-fill-color: #222;
+}
+
+.period:hover:after {
+    top: 105%;
+    opacity: 1;
+}
+
+.level {
+    cursor: pointer;
+}
+
+.one {
+    background: linear-gradient(to bottom right, #1BFFFF 0%, #2E3192 100%);
+}
+
+.one .title, .one .desc {
+    background: -webkit-linear-gradient(#1BFFFF, #2E3192);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.two {
+    background: linear-gradient(to bottom right, #FBB03B 0%, #D4145A 100%);
+}
+
+.two .title, .two .desc {
+    background: -webkit-linear-gradient(#FBB03B, #D4145A);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.three {
+    background: linear-gradient(to bottom right, #FCEE21  0%, #009245 100%);
+}
+
+.three .title, .three .desc {
+    background: -webkit-linear-gradient(#FCEE21 , #009245);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.four {
+    background: linear-gradient(to bottom right, #667EEA 0%, #764BA2 100%);
+}
+
+.four .title, .four .desc {
+    background: -webkit-linear-gradient(#667EEA, #764BA2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.five {
+    background: linear-gradient(to bottom right, #E4EfE9 0%, #93A5CF    100%);
+}
+
+.five .title, .five .desc {
+    background: -webkit-linear-gradient(#E4EfE9, #93A5CF );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.empty-space-1 {
+    grid-column: 2/span 9;
+    grid-row: 1;
+}
+
+.empty-space-2 {
+    grid-column: 4/span 3;
+    grid-row: 2;
+}
+
+.empty-space-3 {
+    grid-column: 4/span 3;
+    grid-row: 3;
+}
+
+.empty-space-4 {
+    grid-column: 4/span 3;
+    grid-row: 4;
+}
 /* Got a lot of this from https://www.youtube.com/watch?v=xnltEHWWjiM */
 
 body {
-    display: flex;
     background-color: #27282c;
+}
+
+#mainmenu {
+    display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
@@ -94,6 +231,9 @@ a:hover i::after {
     position: fixed;
     top: 400px;
     right: 100px;
+    border-color: #ffffff;
+    border-radius: 5px;
+    border-style: solid;
 }
 
 #buttonsdiv {

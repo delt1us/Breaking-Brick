@@ -28,6 +28,7 @@ export class Game {
         this.#SetupGameScenes();
     
         this.#SwitchTo(enum_GameState.Main);
+        this.#SwitchTo(enum_GameState.Level);
     }
 
     // Called every frame from main.js
