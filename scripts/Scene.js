@@ -103,13 +103,16 @@ class Scene {
 
     // Run once from constructor
     _SetupRenderer(canvasID) {
-        let thisCanvas = document.getElementById(canvasID);
+        this._m_Canvas = document.getElementById(canvasID);
         // Renderer
         this._m_Renderer = new THREE.WebGLRenderer({
-            canvas: thisCanvas,
+            canvas: this._m_Canvas,
         });
         // Adds renderer to the html document
         document.body.appendChild(this._m_Renderer.domElement);
+        this._m_Canvas.width = window.innerWidth;
+        this._m_Canvas.height = window.innerHeight;
+        this._m_Renderer.setSize(this._m_Canvas.width, this._m_Canvas.height);
     }
 
     // Run once from constructor
@@ -140,11 +143,14 @@ export class SceneGame extends Scene {
     _m_ScoreCounter;
     _m_Level;
     _f_DeltaTime;
+    _m_Canvas;
 
-    constructor(level, canvasID) {
+    constructor(canvasID, level) {
         super();
+        this._m_Canvas;
+        this._m_Level = level;
         this._SetupThree(canvasID);
-        this.#Initialize(level);
+        this.#Initialize();
     }
     
     // Run every frame
@@ -158,6 +164,17 @@ export class SceneGame extends Scene {
         this._m_Timer.Update(this._f_DeltaTime);
     }
 
+    Enable() {
+        this.LoadLevel();
+        document.getElementById("gameui").style.display = "block";
+        document.getElementById("gameCanvas").style.display = "block";
+    }
+
+    Disable() {
+        document.getElementById("gameui").style.display = "none";
+        document.getElementById("gameCanvas").style.display = "none";
+    }
+
     Draw() {
         this._m_Renderer.render(this._m_Scene, this._m_Camera);
     }
@@ -166,12 +183,13 @@ export class SceneGame extends Scene {
         return this._m_Camera;
     }
 
-    // Run once from constructor
-    #Initialize(level) {
-        this._m_Level = level;
-
-        this._m_Grid = new Grid(this._m_Scene);
+    LoadLevel() {
         this._m_Grid.LoadLevel(this._m_Scene, this._m_Level);
+    }
+
+    // Run once from constructor
+    #Initialize() {
+        this._m_Grid = new Grid(this._m_Scene);
         
         this._m_Bat = new Bat(this._m_Scene);
         this._m_Frame = new Frame(this._m_Scene);
@@ -184,7 +202,8 @@ export class SceneGame extends Scene {
 
 export class SceneMainMenu extends SceneGame {
     constructor(level, canvasID) {
-        super(level, canvasID);
+        super(canvasID, level);
+        this.LoadLevel();
         this.m_Ball.b_Simulation = true;
     }
     
@@ -204,14 +223,14 @@ export class SceneMainMenu extends SceneGame {
    
     // Run once from constructor
     _SetupRenderer(canvasID) {
-        let thisCanvas = document.getElementById(canvasID);
+        this._m_Canvas = document.getElementById(canvasID);
    
-        thisCanvas.setAttribute("width", "1200px");
-        thisCanvas.setAttribute("height", "675px");
+        this._m_Canvas.setAttribute("width", "1200px");
+        this._m_Canvas.setAttribute("height", "675px");
         
         // Renderer
         this._m_Renderer = new THREE.WebGLRenderer({
-            canvas: thisCanvas,
+            canvas: this._m_Canvas,
         });
         // Adds renderer to the html document
         document.body.appendChild(this._m_Renderer.domElement);

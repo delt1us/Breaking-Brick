@@ -3,6 +3,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { Level } from './Level.js';
 import { SceneGame, SceneLevelSelect, SceneMainMenu, SceneSettingsMenu } from './Scene.js';
 import { ButtonStates } from './Button.js';
+import { m_SELECTED_LEVEL } from './Scene.js';
 
 const enum_GameState = {
     Main: Symbol("main"),
@@ -66,6 +67,11 @@ export class Game {
 
     // Used to check if buttons are pressed from Update()
     #CheckButtons() {
+        if (m_SELECTED_LEVEL.level > 0) {
+            this.#StartGame(m_SELECTED_LEVEL.level);    
+            m_SELECTED_LEVEL.level = 0;
+        }
+    
         if (ButtonStates.Play) {
             this.#SwitchTo(enum_GameState.Level);
             ButtonStates.Play = false;
@@ -77,6 +83,12 @@ export class Game {
         }        
     }
 
+    #StartGame(level) {
+        this.#CreateLevel(level);
+        this.#LoadLevel(level);
+        this.#SwitchTo(enum_GameState.Game);
+    }
+
     // Used to switch between scenes
     #SwitchTo(state) {
         // Disables previous scene
@@ -86,6 +98,9 @@ export class Game {
                 break;
             case enum_GameState.Level:
                 this.m_SceneLevelSelect.Disable();
+                break;
+            case enum_GameState.Game:
+                this.m_SceneGame.Disable();
                 break;
         }
 
@@ -99,17 +114,24 @@ export class Game {
                 this.m_SceneLevelSelect.Enable();
                 this.enum_State = enum_GameState.Level;
                 break;
-        }
+            case enum_GameState.Game:
+                this.m_SceneGame.Enable();
+                this.enum_State = enum_GameState.Game;
+                break;
+    
+            }
     }
 
     // Called from constructor
     #SetupGameScenes() {
+        localStorage.clear();
         let level = 7;
-        this.#m_Level.b_Hidden = true;
         this.#CreateLevel(level);
         this.#LoadLevel(level);
         this.m_SceneMainMenu = new SceneMainMenu(this.#m_Level, "mainMenuCanvas");
         this.m_SceneLevelSelect = new SceneLevelSelect();
+        this.m_SceneGame = new SceneGame("gameCanvas", this.#m_Level);
+        this.m_SceneGame.Disable();
     }
 
     // Called from Update
@@ -131,7 +153,7 @@ export class Game {
     }
     
     #LoadLevel(level) {
-        this.#m_Level = this.#m_Level.Load(level);
+        this.#m_Level.Load(level);
         this.#UpdateLevelDiv();
     }
 

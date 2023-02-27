@@ -5,6 +5,12 @@
     border-style: solid;
     top: 250px;
     left: 50px;
+    z-index: 100;
+}
+
+#gameCanvas {
+    position: fixed;
+    display: none;
 }
 
 /* Got the periodic table css from  https://www.youtube.com/watch?v=qdwKLY45sh4&t=1146s*/
