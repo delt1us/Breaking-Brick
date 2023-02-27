@@ -52,18 +52,21 @@ class Scene {
     _m_Controls;
 
     constructor() {
-        this._SetupScene();
-        this._SetupRenderer();
-        this._SetupCamera();   
-        this._SetupLighting();
     }
-    
+
     Update(timeNow) { 
 
     }
 
     Draw() {
         this._m_Renderer.render(this._m_Scene, this._m_Camera);
+    }
+
+    _SetupThree(canvasID) {
+        this._SetupScene();
+        this._SetupRenderer(canvasID);
+        this._SetupCamera();   
+        this._SetupLighting();
     }
 
     // Run once from constructor
@@ -96,13 +99,12 @@ class Scene {
     }
 
     // Run once from constructor
-    _SetupRenderer() {
+    _SetupRenderer(canvasID) {
+        let thisCanvas = document.getElementById(canvasID);
         // Renderer
         this._m_Renderer = new THREE.WebGLRenderer({
-            canvas: document.querySelector('#bg'),
+            canvas: thisCanvas,
         });
-        this._m_Renderer.setPixelRatio(window.devicePixelRatio);
-        this._m_Renderer.setSize(window.innerWidth, window.innerHeight);
         // Adds renderer to the html document
         document.body.appendChild(this._m_Renderer.domElement);
     }
@@ -136,9 +138,9 @@ export class SceneGame extends Scene {
     _m_Level;
     _f_DeltaTime;
 
-    constructor(level) {
+    constructor(level, canvasID) {
         super();
-        this._SetupCamera();
+        this._SetupThree(canvasID);
         this.#Initialize(level);
     }
     
@@ -174,12 +176,9 @@ export class SceneGame extends Scene {
 }
 
 export class SceneMainMenu extends SceneGame {
-    #d_OriginalCanvasProperties;
-    #vec_OriginalRendererSize;
-    constructor(level) {
-        super(level);
+    constructor(level, canvasID) {
+        super(level, canvasID);
         this.m_Ball.b_Simulation = true;
-        this.#vec_OriginalRendererSize = new THREE.Vector2;
     }
     
     Update(deltaTime) {
@@ -188,57 +187,41 @@ export class SceneMainMenu extends SceneGame {
     }
     
     Disable() {
-        this.#RevertCanvas();
         this.#Hide();
     }
 
     Enable() {
-        this.#SetupCanvas();
         this.#Unhide();
         this.#HideUI();
+    }
+   
+    // Run once from constructor
+    _SetupRenderer(canvasID) {
+        let thisCanvas = document.getElementById(canvasID);
+   
+        thisCanvas.setAttribute("width", "1200px");
+        thisCanvas.setAttribute("height", "675px");
+        
+        // Renderer
+        this._m_Renderer = new THREE.WebGLRenderer({
+            canvas: thisCanvas,
+        });
+        // Adds renderer to the html document
+        document.body.appendChild(this._m_Renderer.domElement);
     }
 
     #HideUI() {
         document.getElementById("gameui").style.display = "none";
     }
 
-    #SetupCanvas() {
-        let canvas = document.getElementById("bg");
-        this.#d_OriginalCanvasProperties = {
-            width: canvas.width,
-            height: canvas.height,
-            top: canvas.top,
-            left: canvas.left
-        }
-        
-        this._m_Renderer.getSize(this.#vec_OriginalRendererSize);
-        
-        canvas.setAttribute("width", "1200px");
-        canvas.setAttribute("height", "675px");
-        canvas.style.top = "250px";
-        canvas.style.left = "50px";
-        this._m_Renderer.setSize(canvas.width, canvas.height);
-    }
-
-    #RevertCanvas() {
-        let canvas = document.getElementById("bg");
-
-        canvas.setAttribute("width", this.#d_OriginalCanvasProperties.width);
-        canvas.setAttribute("height", this.#d_OriginalCanvasProperties.height);
-        canvas.style.top = this.#d_OriginalCanvasProperties.top;
-        canvas.style.left = this.#d_OriginalCanvasProperties.left;
-        
-        this._m_Renderer.setSize(this.#vec_OriginalRendererSize.x, this.#vec_OriginalRendererSize.y);
-    }
-
     #Hide() {
         document.getElementById("mainmenu").style.display = "none";
-        document.getElementById("bg").style.display = "none";
+        document.getElementById("mainMenuCanvas").style.display = "none";
     }
     
     #Unhide() {
         document.getElementById("mainmenu").style.display = "block";
-        document.getElementById("bg").style.display = "block";
+        document.getElementById("mainMenuCanvas").style.display = "block";
     }
 }
 

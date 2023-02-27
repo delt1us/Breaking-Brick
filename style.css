@@ -1,8 +1,10 @@
-canvas {
+#mainMenuCanvas {
     position: fixed;
     border-color: #ffffff;
     border-radius: 5px;
     border-style: solid;
+    top: 250px;
+    left: 50px;
 }
 
 /* Got the periodic table css from  https://www.youtube.com/watch?v=qdwKLY45sh4&t=1146s*/

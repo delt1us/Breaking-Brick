@@ -108,7 +108,7 @@ export class Game {
         this.#m_Level.b_Hidden = true;
         this.#CreateLevel(level);
         this.#LoadLevel(level);
-        this.m_SceneMainMenu = new SceneMainMenu(this.#m_Level);
+        this.m_SceneMainMenu = new SceneMainMenu(this.#m_Level, "mainMenuCanvas");
         this.m_SceneLevelSelect = new SceneLevelSelect();
     }
 
