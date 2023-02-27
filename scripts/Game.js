@@ -28,7 +28,6 @@ export class Game {
         this.#SetupGameScenes();
     
         this.#SwitchTo(enum_GameState.Main);
-        this.#SwitchTo(enum_GameState.Level);
     }
 
     // Called every frame from main.js
@@ -71,20 +70,33 @@ export class Game {
             this.#SwitchTo(enum_GameState.Level);
             ButtonStates.Play = false;
         }
+
+        else if (ButtonStates.Back) {
+            this.#SwitchTo(enum_GameState.Main);
+            ButtonStates.Back = false;
+        }        
     }
 
     // Used to switch between scenes
     #SwitchTo(state) {
-        if (this.enum_State == enum_GameState.Main) {
-            this.m_SceneMainMenu.Disable();
+        // Disables previous scene
+        switch (this.enum_State) {
+            case enum_GameState.Main:
+                this.m_SceneMainMenu.Disable();
+                break;
+            case enum_GameState.Level:
+                this.m_SceneLevelSelect.Disable();
+                break;
         }
-        
+
+        // Enables new scene
         switch (state) {
             case enum_GameState.Main:
                 this.m_SceneMainMenu.Enable();
                 this.enum_State = enum_GameState.Main;
                 break;
             case enum_GameState.Level:
+                this.m_SceneLevelSelect.Enable();
                 this.enum_State = enum_GameState.Level;
                 break;
         }

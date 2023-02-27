@@ -259,6 +259,16 @@ export class SceneLevelSelect extends Scene {
         // Group them by season
         // Change colours based on seasons
         this.#MakeGrid();
+        // Starts off disabled
+        this.Disable();
+    }
+
+    Enable() {
+        document.getElementById("levelselect").style.display = "block";
+    }
+
+    Disable() {
+        document.getElementById("levelselect").style.display = "none";
     }
 
     #MakeGrid() {
