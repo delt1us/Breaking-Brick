@@ -254,6 +254,12 @@ a:hover i::after {
     left: 65px;
 }
 
+#backButtonLevelSelect {
+    position: fixed;
+    top: 750px;
+    left: 85px;
+}
+
 #logo {
     position: fixed;
     top: -90px;
