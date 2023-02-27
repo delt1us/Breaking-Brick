@@ -168,7 +168,6 @@ export class SceneGame extends Scene {
         document.getElementById("gameui").style.display = "block";
         document.getElementById("gameCanvas").style.display = "block";
         this.LoadLevel();
-        this._m_ScoreCounter.UpdateDiv();
     }
 
     Disable() {
