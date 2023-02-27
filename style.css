@@ -68,8 +68,7 @@
 }
 
 .period .period-inner {
-    background: linear-gradient(to bottom right, #006811 0%, #00500d 100%);
-    padding: 10px 15px;
+    background: radial-gradient(circle at 10% 20%, #5a5c6a 0%, rgb(32, 45, 58) 81.3%);    padding: 10px 15px;
     width: calc(100% - 30px);
     height: calc(100% - 20px);
     transition: inherit;
@@ -138,11 +137,11 @@
 }
 
 .four {
-    background: linear-gradient(to bottom right, #667EEA 0%, #764BA2 100%);
+    background: linear-gradient(to top left, #13547a 0%, #80d0c7 100%);
 }
 
 .four .title, .four .desc {
-    background: -webkit-linear-gradient(#667EEA, #764BA2);
+    background: -webkit-linear-gradient(#13547a, #80d0c7);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
