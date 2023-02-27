@@ -90,6 +90,12 @@ a:hover i::after {
 
 /* The rest of this is mine */
 
+#legend {
+    position: fixed;
+    top: 400px;
+    right: 100px;
+}
+
 #buttonsdiv {
     position: fixed;
     display: flex;
