@@ -1,7 +1,8 @@
 export const ButtonStates = {
     Play: false,
     Settings: false,
-    Back: false
+    Back: false,
+    Create: false
 };
 
 document.getElementById("playbutton").onclick = function () {
@@ -17,4 +18,9 @@ document.getElementById("settingsbutton").onclick = function () {
 document.getElementById("backButtonLevelSelect").onclick = function() {
     console.log("back button pressed");
     ButtonStates.Back = true;
+};
+
+document.getElementById("levelDesignerButton").onclick = function() {
+    console.log("create button pressed");
+    ButtonStates.Create = true;
 };

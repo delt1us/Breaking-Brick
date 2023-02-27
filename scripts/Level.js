@@ -36,7 +36,7 @@ export class Level {
     }
 }
 
-class Brick {
+export class Brick {
     vec_GridLocation;
     i_Health;
     constructor(gridLocation, health) {

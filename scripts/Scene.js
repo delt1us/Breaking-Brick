@@ -5,10 +5,13 @@ import { Frame } from './Frame.js';
 import { Ball } from './Ball.js';
 import { Timer } from './Timer.js';
 import { ScoreCounter } from './Score.js';
+import { Brick } from './Level.js';
 
 export const m_SELECTED_LEVEL = {
     level: 0
 };
+
+const a_Clicks = [];
 
 // Used to convert index into number for css class ids in level select scene
 function toWord (integer) {
@@ -257,8 +260,46 @@ export class SceneSettingsMenu extends Scene {
     }
 }
 
-export class SceneLevelSelect extends Scene {
+export class SceneLevelCreate extends Scene {
+    #m_Level;
     #a_Grid;
+    constructor(level) {
+        super();
+        this.#m_Level = level;
+        this.#MakeGrid();
+        this.Disable();
+    }
+
+    Enable() {
+        document.getElementById("levelCreate").style.display = "block";
+    }
+
+    Disable () {
+        document.getElementById("levelCreate").style.display = "none";
+    }
+
+    #MakeGrid() {
+        let element = document.getElementById("bricks");
+        for (let row = 0; row < 6; row++) {
+            for (let column = 0; column < 12; column++) {
+                let thisBrick = document.createElement("div");
+                thisBrick.setAttribute("class", "brick");
+                thisBrick.setAttribute("row", row);
+                thisBrick.setAttribute("column", column);
+
+                thisBrick.onclick = function(event) {
+                    let x = Number(event.currentTarget.getAttribute("column"));
+                    let y = Number(event.currentTarget.getAttribute("row"));
+                    a_Clicks.push([x, y]);
+                    console.log(a_Clicks);
+                }
+                element.appendChild(thisBrick);
+            }
+        }
+    }
+}
+
+export class SceneLevelSelect extends Scene {
     constructor() {
         super();
 
