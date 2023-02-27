@@ -6,6 +6,10 @@ import { Ball } from './Ball.js';
 import { Timer } from './Timer.js';
 import { ScoreCounter } from './Score.js';
 
+export const m_SELECTED_LEVEL = {
+    level: 0
+};
+
 // Used to convert index into number for css class ids in level select scene
 function toWord (integer) {
     let string;
@@ -59,7 +63,6 @@ class Scene {
     }
 
     Draw() {
-        this._m_Renderer.render(this._m_Scene, this._m_Camera);
     }
 
     _SetupThree(canvasID) {
@@ -153,6 +156,10 @@ export class SceneGame extends Scene {
 
         this._m_Grid.Update();
         this._m_Timer.Update(this._f_DeltaTime);
+    }
+
+    Draw() {
+        this._m_Renderer.render(this._m_Scene, this._m_Camera);
     }
 
     GetCamera() {
@@ -495,6 +502,13 @@ export class SceneLevelSelect extends Scene {
 
                 period_inner.appendChild(title);
                 period_inner.appendChild(desc);
+             
+                period_inner.setAttribute("level", level)
+                period_inner.onclick = function(event) {
+                    m_SELECTED_LEVEL.level = event.currentTarget.getAttribute("level");
+                    console.log(m_SELECTED_LEVEL.level);
+                };
+
                 period.appendChild(period_inner);
                 table.appendChild(period);
             }
