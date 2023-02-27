@@ -101,7 +101,7 @@ export class SceneGame extends Scene {
     // Bat object
     _m_Bat;
     // Ball object
-    _m_Ball;
+    m_Ball;
     // Frame object
     _m_Frame;
     // Timer object 
@@ -121,7 +121,7 @@ export class SceneGame extends Scene {
         this._f_DeltaTime = deltaTime;
 
         this._m_Bat.Update(this._f_DeltaTime);
-        this._m_Ball.Update(this._f_DeltaTime);
+        this.m_Ball.Update(this._f_DeltaTime);
 
         this._m_Grid.Update();
         this._m_Timer.Update(this._f_DeltaTime);
@@ -143,34 +143,80 @@ export class SceneGame extends Scene {
         this._m_Timer = new Timer("timer");    
         this._m_ScoreCounter = new ScoreCounter("score");
         
-        this._m_Ball = new Ball(this._m_Scene, this._m_Grid, this._m_Frame, this._m_Bat, this._m_Timer, this._m_ScoreCounter);
+        this.m_Ball = new Ball(this._m_Scene, this._m_Grid, this._m_Frame, this._m_Bat, this._m_Timer, this._m_ScoreCounter);
     }
 }
 
 export class SceneMainMenu extends SceneGame {
+    #d_OriginalCanvasProperties;
+    #vec_OriginalRendererSize;
     constructor(level) {
         super(level);
-        this._m_Ball.HideLives();
-        this._m_Ball.b_Simulation = true;
+        this.m_Ball.HideLives();
+        this.m_Ball.b_Simulation = true;
         this._m_ScoreCounter.Hide();
         this._m_Timer.Hide();
 
-        this.#SetupCanvas();   
-
-        this._m_Ball.LaunchBallAtRandomAngle();
+        this.#vec_OriginalRendererSize = new THREE.Vector2;
     }
     
     Update(deltaTime) {
-        this._m_Bat.m_BatCuboid.position.x = this._m_Ball.m_BallSphere.position.x;
+        this._m_Bat.m_BatCuboid.position.x = this.m_Ball.m_BallSphere.position.x;
         super.Update(deltaTime);
     }
 
-    #SetupCanvas() {
+    SetupCanvas() {
         let canvas = document.getElementById("bg");
+        this.#d_OriginalCanvasProperties = {
+            width: canvas.width,
+            height: canvas.height,
+            top: canvas.top,
+            left: canvas.left
+        }
+
+        this._m_Renderer.getSize(this.#vec_OriginalRendererSize);
+
         canvas.setAttribute("width", "1200px");
         canvas.setAttribute("height", "675px");
         canvas.style.top = "250px";
         canvas.style.left = "50px";
         this._m_Renderer.setSize(canvas.width, canvas.height);
+    }
+
+    RevertCanvas() {
+        let canvas = document.getElementById("bg");
+
+        canvas.setAttribute("width", this.#d_OriginalCanvasProperties.width);
+        canvas.setAttribute("height", this.#d_OriginalCanvasProperties.height);
+        canvas.style.top = this.#d_OriginalCanvasProperties.top;
+        canvas.style.left = this.#d_OriginalCanvasProperties.left;
+
+        this._m_Renderer.setSize(this.#vec_OriginalRendererSize.x, this.#vec_OriginalRendererSize.y);
+    }
+
+    Hide() {
+        document.getElementById("playbutton").style.display = "none";
+        document.getElementById("settingsbutton").style.display = "none";
+        document.getElementById("logo").style.display = "none";
+        document.getElementById("bg").style.display = "none";
+    }
+
+    Unhide() {
+        document.getElementById("playbutton").style.display = "block";
+        document.getElementById("settingsbutton").style.display = "block";
+        document.getElementById("logo").style.display = "block";
+        document.getElementById("bg").style.display = "block";
+    }
+}
+
+export class SceneSettingsMenu extends Scene {
+    constructor() {
+        super();
+    }
+}
+
+export class SceneLevelSelect extends Scene {
+    constructor() {
+        super();
     }
 }

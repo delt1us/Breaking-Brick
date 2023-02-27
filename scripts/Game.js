@@ -1,11 +1,13 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { Level } from './Level.js';
-import { SceneGame, SceneMainMenu } from './Scene.js';
+import { SceneGame, SceneLevelSelect, SceneMainMenu } from './Scene.js';
+import { ButtonStates } from './Button.js';
 
 const enum_GameState = {
     Main: Symbol("main"),
-    Game: Symbol("game")
+    Game: Symbol("game"),
+    Level: Symbol("level")
 };
 
 export class Game {
@@ -18,16 +20,21 @@ export class Game {
     enum_State;
     m_SceneGame;
     m_SceneMainMenu;
+    m_SceneLevelSelect;
 
     constructor() {
+        this.enum_State;
         this.#SetupObjects();
         this.#SetupGameScenes();
+    
+        this.#SwitchTo(enum_GameState.Main);
     }
 
     // Called every frame from main.js
     Update(timeNow) {
         this.#UpdateTimeSincePreviousFrame(timeNow);
-    
+        this.#CheckButtons();
+
         switch (this.enum_State) {
             case enum_GameState.Main:
                 this.m_SceneMainMenu.Update(this.#f_DeltaTime);
@@ -35,6 +42,9 @@ export class Game {
 
             case enum_GameState.Game:
                 this.m_SceneGame.Update(this.#f_DeltaTime);
+                break;
+            case enum_GameState.Level:
+                this.m_SceneLevelSelect.Update(this.#f_DeltaTime);
                 break;
         }
     }
@@ -49,18 +59,47 @@ export class Game {
             case enum_GameState.Game:
                 this.m_SceneGame.Draw();
                 break;
+            case enum_GameState.Level:
+                this.m_SceneLevelSelect.Draw();
+                break;
+        }
+    }
+
+    // Used to check if buttons are pressed from Update()
+    #CheckButtons() {
+        if (ButtonStates.Play) {
+            this.#SwitchTo(enum_GameState.Level);
+            ButtonStates.Play = false;
+        }
+    }
+
+    // Used to switch between scenes
+    #SwitchTo(state) {
+        if (this.enum_State == enum_GameState.Main) {
+            this.m_SceneMainMenu.RevertCanvas();
+            this.m_SceneMainMenu.Hide();
+        }
+        
+        switch (state) {
+            case enum_GameState.Main:
+                this.m_SceneMainMenu.SetupCanvas();
+                this.m_SceneMainMenu.m_Ball.LaunchBallAtRandomAngle();
+                this.enum_State = enum_GameState.Main;
+                break;
+            case enum_GameState.Level:
+                this.enum_State = enum_GameState.Level;
+                break;
         }
     }
 
     // Called from constructor
     #SetupGameScenes() {
-        this.enum_State = enum_GameState.Main;
-        
         let level = 7;
         this.#m_Level.b_Hidden = true;
         this.#CreateLevel(level);
         this.#LoadLevel(level);
-        this.m_SceneMainMenu = new SceneMainMenu(this.#m_Level);    
+        this.m_SceneMainMenu = new SceneMainMenu(this.#m_Level);
+        this.m_SceneLevelSelect = new SceneLevelSelect();
     }
 
     // Called from Update
