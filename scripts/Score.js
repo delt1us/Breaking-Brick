@@ -10,11 +10,11 @@ export class ScoreCounter {
     // Called from Ball.HandleCollisions
     Add(value) {
         this.#i_Score += value;
-        this.#UpdateDiv();
+        this.UpdateDiv();
     }
 
-    // Updates the html scorecounter
-    #UpdateDiv() {
+    // Updates the html scorecounter. called here and in scenegame when game starts
+    UpdateDiv() {
         let string = this.#i_Score.toString();
         string = `SCORE:${("0".repeat(4 - string.length))}${string}`;
         this.#m_Div.innerHTML = string;

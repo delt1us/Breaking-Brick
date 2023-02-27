@@ -97,6 +97,7 @@ export class Ball {
         // If ball is waiting to be launched and spacebar is pressed it will launch the ball
         if (KeyStates.space && !this.#b_Launched) {
             this.#LaunchBall();
+            KeyStates.space = false;
         }
         
         if (!this.#b_Launched && this.b_Simulation) {
@@ -218,15 +219,13 @@ export class Ball {
     // Brick collision, called from HandleCollisions
     #BrickCollision() {
         // While loop as it can terminate early. Ball can only collide with 1 brick per frame
-        let collided = false;
-        let index = 0;
-        while (!collided && index < this.#m_Grid.a_GridArray.length) {
+        for (let index = 0; index <this.#m_Grid.a_GridArray.length; index++) {
             let brick = this.#m_Grid.a_GridArray[index];
             if (this.#CollidesWith(brick.m_BoundingBox)) {
                 this.#BounceOffBrick(brick.m_Cube, brick.vec3_BOX_SIZE);
                 brick.Hit(this.#m_Grid.a_GridArray, this.#m_Scene, this.#m_ScoreCounter);                
+                break;
             }
-            index++;
         }
     }
 

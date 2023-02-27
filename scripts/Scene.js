@@ -165,9 +165,10 @@ export class SceneGame extends Scene {
     }
 
     Enable() {
-        this.LoadLevel();
         document.getElementById("gameui").style.display = "block";
         document.getElementById("gameCanvas").style.display = "block";
+        this.LoadLevel();
+        this._m_ScoreCounter.UpdateDiv();
     }
 
     Disable() {
@@ -524,7 +525,7 @@ export class SceneLevelSelect extends Scene {
              
                 period_inner.setAttribute("level", level)
                 period_inner.onclick = function(event) {
-                    m_SELECTED_LEVEL.level = event.currentTarget.getAttribute("level");
+                    m_SELECTED_LEVEL.level = Number(event.currentTarget.getAttribute("level"));
                     console.log(m_SELECTED_LEVEL.level);
                 };
 

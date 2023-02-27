@@ -12,7 +12,7 @@ export class Brick {
     constructor(m_Scene, location, textures, health) {
         this.vec3_BOX_SIZE = new THREE.Vector3(120, 60, 60);
         this.#a_Textures = textures;
-        this.#i_ScoreValue = 10;
+        this.#i_ScoreValue = 10 * health;
         this.#i_Health = health;
 
         this.#MakeCuboid(m_Scene);
