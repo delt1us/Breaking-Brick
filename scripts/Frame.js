@@ -8,6 +8,10 @@ export class Frame {
     m_WallTop;
     m_WallBack;
 
+    m_LeftBoundingBox;
+    m_RightBoundingBox;
+    m_TopBoundingBox;
+
     vec_WallSideSize;
     vec_WallTopSize;
 
@@ -25,8 +29,17 @@ export class Frame {
         this.#CreateWallTop(m_Material);
         this.#CreateWallBack(m_Material);
 
+        this.#CreateBoundingBoxes();
+
         scene.add(this.m_WallLeft, this.m_WallRight, this.m_WallTop, this.m_WallBack);
     }
+    #CreateBoundingBoxes() {
+        // Makes bounding boxes
+        this.m_LeftBoundingBox = new THREE.Box3().setFromObject(this.m_WallLeft);
+        this.m_RightBoundingBox = new THREE.Box3().setFromObject(this.m_WallRight);
+        this.m_TopBoundingBox = new THREE.Box3().setFromObject(this.m_WallTop);
+    }
+ 
     // Called from constructor
     #CreateWallLeft(material) {
         const geometry = new THREE.BoxGeometry(this.vec_WallSideSize.x, this.vec_WallSideSize.y, this.vec_WallSideSize.z);

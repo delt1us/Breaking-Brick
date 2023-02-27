@@ -4,6 +4,7 @@ import * as THREE from 'three';
 export class Brick {
     vec3_BOX_SIZE;
     m_Cube;
+    m_BoundingBox;
     #i_Health;
     #i_ScoreValue;
     #a_Textures;
@@ -61,6 +62,7 @@ export class Brick {
 
     // Called every frame from Grid.js
     Update() {
+        this.m_BoundingBox.setFromObject(this.m_Cube);
     }
     
     Hit(grid, scene, scoreCounter) {
@@ -79,6 +81,8 @@ export class Brick {
         let BoxGeometry = this.#MakeGeometry();
         this.m_Cube = new THREE.Mesh(BoxGeometry, this.#a_Textures["White"]);
         m_Scene.add(this.m_Cube);
+    
+        this.m_BoundingBox = new THREE.Box3().setFromObject(this.m_Cube);
     }
 
     #MakeGeometry() {

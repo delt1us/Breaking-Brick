@@ -10,6 +10,11 @@ const enum_GameState = {
     Level: Symbol("level")
 };
 
+export const d_DISABLED_BUTTONS = {
+    Play: false,
+    Settings: false,
+}
+
 export class Game {
     // Level object
     #m_Level;
@@ -76,14 +81,12 @@ export class Game {
     // Used to switch between scenes
     #SwitchTo(state) {
         if (this.enum_State == enum_GameState.Main) {
-            this.m_SceneMainMenu.RevertCanvas();
-            this.m_SceneMainMenu.Hide();
+            this.m_SceneMainMenu.Disable();
         }
         
         switch (state) {
             case enum_GameState.Main:
-                this.m_SceneMainMenu.SetupCanvas();
-                this.m_SceneMainMenu.m_Ball.LaunchBallAtRandomAngle();
+                this.m_SceneMainMenu.Enable();
                 this.enum_State = enum_GameState.Main;
                 break;
             case enum_GameState.Level:

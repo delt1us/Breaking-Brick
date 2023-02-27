@@ -2,11 +2,17 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { KeyStates } from './Controls';
 
+// TODO turn ball into walter's head
 // Class for ball
 export class Ball {
     #i_RADIUS;
     // Sphere, THREE.Mesh object
     m_BallSphere;
+    // BoundingSphere
+    #m_BoundingSphere;
+    // BoundingBox for checking if it is inside a cube
+    #m_BoundingBox;
+
     // How fast the ball goes
     #f_Speed;
     // How fast the ball is going in each direction
@@ -95,16 +101,6 @@ export class Ball {
         }
     }
 
-    // Loads a rocket league ball 3d model
-    #LoadBallModel() {
-        // Copied from three js docs
-        let loader = new GLTFLoader();
-        loader.load('models/ball.glb', (glb) => {
-            this.m_BallSphere = glb.scene;
-        });
-        // End of copied code
-    }
-
     // Called every frame from Game.Update()
     Update(f_DeltaTime) {
         // If ball is waiting to be launched and spacebar is pressed it will launch the ball
@@ -112,12 +108,18 @@ export class Ball {
             this.#LaunchBall();
         }
         
+        if (!this.#b_Launched && this.b_Simulation) {
+            this.LaunchBallAtRandomAngle();
+        }
+
         // If ball is not in the frame then it removes a life and resets the ball
         if (!this.#CheckInFrame()) {
             this.#RemoveLife();
         }
 
         this.#UpdateLocation(f_DeltaTime);
+        this.#m_BoundingSphere.set(this.m_BallSphere.position, this.#i_RADIUS);
+        this.#m_BoundingSphere.getBoundingBox(this.#m_BoundingBox);
         this.#HandleCollisions();
     }
 
@@ -190,98 +192,98 @@ export class Ball {
         }
     }
 
+    // TODO: change so that the ball will travel the correct distance in frames where it bounces
     // Deals with all collision detection and handling
     #HandleCollisions() {
-        // TODO: change so that the ball will travel the correct distance in frames where it bounces
-        // Brick collision
-        let collision = this.#CheckBrickCollision();
-        // If collision happened
-        if (collision) {
-            // Destroys brick what was hit
-            this.#BounceOffBrick(collision.m_Cube, collision.vec3_BOX_SIZE);
-            collision.Hit(this.#m_Grid.a_GridArray, this.#m_Scene, this.#m_ScoreCounter);
-        }
-
-        // Wall collision
-        this.#HandleWallCollision();
+        this.#BrickCollision();
+        this.#WallCollision();
+        this.#BatCollision();
+    }
+    
+    // Bat collision, called from HandleCollisions
+    #BatCollision() {
         // Bat collision
-        if (this.#CollidesWith(this.#m_Bat.m_BatCuboid, this.#m_Bat.vec_BoundingBoxSize)) {
-            console.log("Bat hit");
-            this.#HandleBatCollision();
+        if (this.#CollidesWith(this.#m_Bat.m_BoundingBox)) {
+            /*
+            Ball bounce angle is determined based on where it landed on the bat
+            It can bounce at an angle of 90 degrees centred at the middle of the bat (45 degrees on each side of the normal to the bat)
+            */
+            let ballLandingRelativeToBat = this.m_BallSphere.position.x - this.#m_Bat.m_BatCuboid.position.x;
+            
+            if (this.b_Simulation) {
+                this.#vec_Velocity.y *= -1;
+                return;
+            }
+
+            let percentageOfBatBeforeLandingLocation = ballLandingRelativeToBat / this.#m_Bat.vec_BoundingBoxSize.x;
+            let angleToBounceAt = -1 * Math.PI * 0.5 * percentageOfBatBeforeLandingLocation;
+            // Offsets 0 pointing east
+            angleToBounceAt += Math.PI * 0.5;
+            this.#vec_Velocity.x = this.#f_Speed * Math.cos(angleToBounceAt);
+            this.#vec_Velocity.y = this.#f_Speed * Math.sin(angleToBounceAt);
         }
     }
 
-    // Called from UpdateLocation
-    #HandleWallCollision() {
+    // Brick collision, called from HandleCollisions
+    #BrickCollision() {
+        // While loop as it can terminate early. Ball can only collide with 1 brick per frame
+        let collided = false;
+        let index = 0;
+        while (!collided && index < this.#m_Grid.a_GridArray.length) {
+            let brick = this.#m_Grid.a_GridArray[index];
+            if (this.#CollidesWith(brick.m_BoundingBox)) {
+                this.#BounceOffBrick(brick.m_Cube, brick.vec3_BOX_SIZE);
+                brick.Hit(this.#m_Grid.a_GridArray, this.#m_Scene, this.#m_ScoreCounter);                
+            }
+            index++;
+        }
+    }
+
+    // Called from HandleCollisions
+    #WallCollision() {
         // Checks each wall in m_Frame
         // Top wall
-        if (this.#CollidesWith(this.#m_Frame.m_WallTop, this.#m_Frame.vec_WallTopSize)) {
+        if (this.#CollidesWith(this.#m_Frame.m_TopBoundingBox)) {
             this.#vec_Velocity.y *= -1;
         }
         // Side walls
-        else if (this.#CollidesWith(this.#m_Frame.m_WallRight, this.#m_Frame.vec_WallSideSize) || this.#CollidesWith(this.#m_Frame.m_WallLeft, this.#m_Frame.vec_WallSideSize)) {
+        else if (this.#CollidesWith(this.#m_Frame.m_RightBoundingBox) || this.#CollidesWith(this.#m_Frame.m_LeftBoundingBox)) {
             this.#vec_Velocity.x *= -1;
         }
     }
 
-    // Called from UpdateLocation
-    #HandleBatCollision() {
-        /*
-        Ball bounce angle is determined based on where it landed on the bat
-        It can bounce at an angle of 90 degrees centred at the middle of the bat (45 degrees on each side of the normal to the bat)
-        */
-        let ballLandingRelativeToBat = this.m_BallSphere.position.x - this.#m_Bat.m_BatCuboid.position.x;
-        
-        if (this.b_Simulation) {
-            this.#vec_Velocity.y *= -1;
-            return;
+    #CollidesWith(boundingBox) {
+        if (this.#m_BoundingSphere.intersectsBox(boundingBox)) {
+            return true;
         }
-
-        let percentageOfBatBeforeLandingLocation = ballLandingRelativeToBat / this.#m_Bat.vec_BoundingBoxSize.x;
-        let angleToBounceAt = -1 * Math.PI * 0.5 * percentageOfBatBeforeLandingLocation;
-        // Offsets 0 pointing east
-        angleToBounceAt += Math.PI * 0.5;
-        this.#vec_Velocity.x = this.#f_Speed * Math.cos(angleToBounceAt);
-        this.#vec_Velocity.y = this.#f_Speed * Math.sin(angleToBounceAt);
-    }
-
-    // Called from UpdateLocation
-    #CheckBrickCollision() {
-        let collided = null;
-        for (let index = 0; index < this.#m_Grid.a_GridArray.length; index++) {
-            if (this.#CollidesWith(this.#m_Grid.a_GridArray[index].m_Cube, this.#m_Grid.a_GridArray[index].vec3_BOX_SIZE)) {
-                collided = this.#m_Grid.a_GridArray[index];
-                break;
-            }
-            if (collided) {
-                break;
-            }
+        else if (boundingBox.containsBox(this.#m_BoundingBox)) {
+            return true;
         }
-        return collided;
+        return false;
     }
 
-    // Called from CheckCollisions. Returns boolean. object is object3d from threejs
-    #CollidesWith(object3d, objectSize) {
-        // Checks distance from center of sphere to other objects, a lot like raycasting but more 2D
-        // This is effectively 2D collision because the ball will never travel in the z axis so it can be ignored
+    // // Called from CheckCollisions. Returns boolean. object is object3d from threejs
+    // #CollidesWithOld(object3d, objectSize) {
+    //     // Checks distance from center of sphere to other objects, a lot like raycasting but more 2D
+    //     // This is effectively 2D collision because the ball will never travel in the z axis so it can be ignored
 
-        // https://stackoverflow.com/questions/401847/circle-rectangle-collision-detection-intersection
-        // Really smart way of doing it that can be applied here since the sphere never moves in the z axis so it can be treated as a 2d circle
-        let circleDistance = new THREE.Vector2();
+    //     // https://stackoverflow.com/questions/401847/circle-rectangle-collision-detection-intersection
+    //     // Really smart way of doing it that can be applied here since the sphere never moves in the z axis so it can be treated as a 2d circle
+    //     let circleDistance = new THREE.Vector2();
 
-        circleDistance.x = Math.abs(this.m_BallSphere.position.x - object3d.position.x);
-        circleDistance.y = Math.abs(this.m_BallSphere.position.y - object3d.position.y);
+    //     circleDistance.x = Math.abs(this.m_BallSphere.position.x - object3d.position.x);
+    //     circleDistance.y = Math.abs(this.m_BallSphere.position.y - object3d.position.y);
 
-        if (circleDistance.x > (objectSize.x / 2 + this.#i_RADIUS)) { return false; }
-        if (circleDistance.y > (objectSize.y / 2 + this.#i_RADIUS)) { return false; }
+    //     if (circleDistance.x > (objectSize.x / 2 + this.#i_RADIUS)) { return false; }
+    //     if (circleDistance.y > (objectSize.y / 2 + this.#i_RADIUS)) { return false; }
 
-        if (circleDistance.x <= (objectSize.x / 2)) { return true; }
-        if (circleDistance.y <= (objectSize.y / 2)) { return true; }
+    //     if (circleDistance.x <= (objectSize.x / 2)) { return true; }
+    //     if (circleDistance.y <= (objectSize.y / 2)) { return true; }
 
-        let cornerDistance_sq = (circleDistance.x - objectSize.x / 2) ^ 2 + (circleDistance.y - objectSize.y / 2) ^ 2;
+    //     let cornerDistance_sq = (circleDistance.x - objectSize.x / 2) ^ 2 + (circleDistance.y - objectSize.y / 2) ^ 2;
 
-        return (cornerDistance_sq <= (this.#i_RADIUS ^ 2));
-    }
+    //     return (cornerDistance_sq <= (this.#i_RADIUS ^ 2));
+    // }
 
     // Resets ball location to the bat
     #ResetBallLocation() {
@@ -298,5 +300,9 @@ export class Ball {
         const texture = new THREE.MeshStandardMaterial({ color: 0xffffff });
         this.m_BallSphere = new THREE.Mesh(geometry, texture)
         scene.add(this.m_BallSphere);
+    
+        this.#m_BoundingSphere = new THREE.Sphere(new THREE.Vector3, this.#i_RADIUS);
+        this.#m_BoundingBox = new THREE.Box3(new THREE.Vector3, new THREE.Vector3);
+        this.#m_BoundingSphere.getBoundingBox(this.#m_BoundingBox);
     }
 }

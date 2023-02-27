@@ -5,6 +5,7 @@ import { Frame } from './Frame.js';
 import { Ball } from './Ball.js';
 import { Timer } from './Timer.js';
 import { ScoreCounter } from './Score.js';
+import { d_DISABLED_BUTTONS } from './Game.js';
 
 class Scene {
     // Threejs scene
@@ -156,7 +157,7 @@ export class SceneMainMenu extends SceneGame {
         this.m_Ball.b_Simulation = true;
         this._m_ScoreCounter.Hide();
         this._m_Timer.Hide();
-
+        
         this.#vec_OriginalRendererSize = new THREE.Vector2;
     }
     
@@ -164,8 +165,22 @@ export class SceneMainMenu extends SceneGame {
         this._m_Bat.m_BatCuboid.position.x = this.m_Ball.m_BallSphere.position.x;
         super.Update(deltaTime);
     }
+    
+    Disable() {
+        this.#RevertCanvas();
+        this.#Hide();
+        d_DISABLED_BUTTONS.Play = true;
+        d_DISABLED_BUTTONS.Settings = true;
+    }
 
-    SetupCanvas() {
+    Enable() {
+        this.#SetupCanvas();
+        this.#Unhide();
+        d_DISABLED_BUTTONS.Play = false;
+        d_DISABLED_BUTTONS.Settings = false;
+    }
+
+    #SetupCanvas() {
         let canvas = document.getElementById("bg");
         this.#d_OriginalCanvasProperties = {
             width: canvas.width,
@@ -173,9 +188,9 @@ export class SceneMainMenu extends SceneGame {
             top: canvas.top,
             left: canvas.left
         }
-
+        
         this._m_Renderer.getSize(this.#vec_OriginalRendererSize);
-
+        
         canvas.setAttribute("width", "1200px");
         canvas.setAttribute("height", "675px");
         canvas.style.top = "250px";
@@ -183,25 +198,25 @@ export class SceneMainMenu extends SceneGame {
         this._m_Renderer.setSize(canvas.width, canvas.height);
     }
 
-    RevertCanvas() {
+    #RevertCanvas() {
         let canvas = document.getElementById("bg");
 
         canvas.setAttribute("width", this.#d_OriginalCanvasProperties.width);
         canvas.setAttribute("height", this.#d_OriginalCanvasProperties.height);
         canvas.style.top = this.#d_OriginalCanvasProperties.top;
         canvas.style.left = this.#d_OriginalCanvasProperties.left;
-
+        
         this._m_Renderer.setSize(this.#vec_OriginalRendererSize.x, this.#vec_OriginalRendererSize.y);
     }
 
-    Hide() {
+    #Hide() {
         document.getElementById("playbutton").style.display = "none";
         document.getElementById("settingsbutton").style.display = "none";
         document.getElementById("logo").style.display = "none";
         document.getElementById("bg").style.display = "none";
     }
 
-    Unhide() {
+    #Unhide() {
         document.getElementById("playbutton").style.display = "block";
         document.getElementById("settingsbutton").style.display = "block";
         document.getElementById("logo").style.display = "block";

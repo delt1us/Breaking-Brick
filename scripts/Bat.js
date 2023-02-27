@@ -6,7 +6,7 @@ export class Bat {
     // THREE.Mesh object
     m_BatCuboid;
     // THREE.Box3 object used for detecting the size of the bat
-    #m_BoundingBox;
+    m_BoundingBox;
     // Vector3
     vec_BoundingBoxSize;
     // Speed of the bat when moving
@@ -24,7 +24,12 @@ export class Bat {
         if (this.b_CanMove) {
             this.#UpdateLocation(f_TimeSincePreviousFrame);
         }
+        this.#UpdateBoundingBox();
         this.#HandleCollision();
+    }
+
+    #UpdateBoundingBox() {
+        this.m_BoundingBox.setFromObject(this.m_BatCuboid);
     }
 
     #HandleCollision() {
@@ -53,7 +58,7 @@ export class Bat {
 
     // Used whenever the size of the bat is changed 
     #UpdateBoundingBoxSize() {
-        this.#m_BoundingBox.getSize(this.vec_BoundingBoxSize);
+        this.m_BoundingBox.getSize(this.vec_BoundingBoxSize);
     }
 
     // Called from ball when ball is reset
@@ -72,8 +77,8 @@ export class Bat {
         scene.add(this.m_BatCuboid);
 
         // Bounding box
-        this.#m_BoundingBox = new THREE.Box3();
-        this.#m_BoundingBox.setFromObject(this.m_BatCuboid);
+        this.m_BoundingBox = new THREE.Box3();
+        this.m_BoundingBox.setFromObject(this.m_BatCuboid);
         this.vec_BoundingBoxSize = new THREE.Vector3();
         this.#UpdateBoundingBoxSize();
     }
