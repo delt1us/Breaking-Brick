@@ -43,7 +43,7 @@ export class Ball {
     }
 
     constructor(scene, grid, frame, bat, timer, scoreCounter) {
-        this.#i_RADIUS = 15;
+        this.#i_RADIUS = 20;
         this.#f_Speed = 0.75;
         this.#vec_Velocity = new THREE.Vector3(0, 0, 0);
         this.#m_Grid = grid;
