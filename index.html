@@ -13,22 +13,26 @@
 </head>
 
 <body>
-  <div id="buttonsdiv">
-    <!-- Got this from https://www.youtube.com/watch?v=xnltEHWWjiM -->
-    <a id="playbutton" href="#" style="--clr:#6eff3e"><span>Play</span><i></i></a>
-    <a id="settingsbutton" href="#" style="--clr:#6eff3e"><span>4ttings</span><i></i></a>
+  <div id="mainmenu">
+    <div id="buttonsdiv">
+      <!-- Got this from https://www.youtube.com/watch?v=xnltEHWWjiM -->
+      <a id="playbutton" href="#" style="--clr:#6eff3e"><span>Play</span><i></i></a>
+      <a id="settingsbutton" href="#" style="--clr:#6eff3e"><span>4ttings</span><i></i></a>
+    </div>
+
+    <img id="logo" src="textures/Title screen.png">
+    <img id="legend" src="textures/hank.png">
   </div>
 
-  <img id="logo" src="textures/Title screen.png">
-  <img id="legend" src="textures/hank.png">
+  <div id="gameui">
+    <div id="timer"></div>
+    <div id="score"></div>
+    <div id="level"></div>
+    <!-- TODO: make hearts look shiny -->
+    <div id="lives"></div>
+  </div>
 
-  <div id="timer"></div>
-  <div id="score"></div>
-  <div id="level"></div>
-  <!-- TODO: make hearts look shiny -->
-  <div id="lives"></div>
   <canvas id="bg"></canvas>
-  <script type="module" src="scripts/Game.js"></script>
   <script type="module" src="scripts/Button.js"></script>
   <script type="module" src="/main.js"></script>
 </body>

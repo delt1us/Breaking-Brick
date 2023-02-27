@@ -32,7 +32,6 @@ export class Ball {
     // Score value 
     #m_ScoreCounter;
 
-    #b_LivesHidden;
     b_Simulation;
     // Image for lives (hearts)
     #m_LivesImage;
@@ -60,7 +59,6 @@ export class Ball {
         this.#m_ScoreCounter = scoreCounter;
         this.#i_LivesInternal = 3;
         this.#b_Launched = false;
-        this.#b_LivesHidden = false;
         this.b_Simulation = false;
 
         //this.#LoadBallModel();
@@ -68,11 +66,6 @@ export class Ball {
         this.#UpdateLivesDisplay();
         this.#MakeBallSpehere(scene);
         this.#ResetBallLocation();
-    }
-
-    HideLives() {
-        this.#b_LivesHidden = true;
-        this.#UpdateLivesDisplay();
     }
 
     // Loads image, called once from constructor 
@@ -93,11 +86,9 @@ export class Ball {
             div.removeChild(div.children[0]);
         }
 
-        if (!this.#b_LivesHidden) {
-            // Adds correct number of lives to list
-            for (let index = 0; index < this.#i_Lives; index++) {
-                div.appendChild(this.#m_LivesImage.cloneNode(true));
-            }
+        // Adds correct number of lives to list
+        for (let index = 0; index < this.#i_Lives; index++) {
+            div.appendChild(this.#m_LivesImage.cloneNode(true));
         }
     }
 

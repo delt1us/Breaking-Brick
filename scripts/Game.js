@@ -1,18 +1,13 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { Level } from './Level.js';
-import { SceneGame, SceneLevelSelect, SceneMainMenu } from './Scene.js';
+import { SceneGame, SceneLevelSelect, SceneMainMenu, SceneSettingsMenu } from './Scene.js';
 import { ButtonStates } from './Button.js';
 
 const enum_GameState = {
     Main: Symbol("main"),
     Game: Symbol("game"),
     Level: Symbol("level")
-};
-
-export const d_DISABLED_BUTTONS = {
-    Play: false,
-    Settings: false
 };
 
 export class Game {

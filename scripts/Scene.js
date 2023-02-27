@@ -5,7 +5,6 @@ import { Frame } from './Frame.js';
 import { Ball } from './Ball.js';
 import { Timer } from './Timer.js';
 import { ScoreCounter } from './Score.js';
-import { d_DISABLED_BUTTONS } from './Game.js';
 
 class Scene {
     // Threejs scene
@@ -153,11 +152,7 @@ export class SceneMainMenu extends SceneGame {
     #vec_OriginalRendererSize;
     constructor(level) {
         super(level);
-        this.m_Ball.HideLives();
         this.m_Ball.b_Simulation = true;
-        this._m_ScoreCounter.Hide();
-        this._m_Timer.Hide();
-        
         this.#vec_OriginalRendererSize = new THREE.Vector2;
     }
     
@@ -169,15 +164,16 @@ export class SceneMainMenu extends SceneGame {
     Disable() {
         this.#RevertCanvas();
         this.#Hide();
-        d_DISABLED_BUTTONS.Play = true;
-        d_DISABLED_BUTTONS.Settings = true;
     }
 
     Enable() {
         this.#SetupCanvas();
         this.#Unhide();
-        d_DISABLED_BUTTONS.Play = false;
-        d_DISABLED_BUTTONS.Settings = false;
+        this.#HideUI();
+    }
+
+    #HideUI() {
+        document.getElementById("gameui").style.display = "none";
     }
 
     #SetupCanvas() {
@@ -210,16 +206,12 @@ export class SceneMainMenu extends SceneGame {
     }
 
     #Hide() {
-        document.getElementById("playbutton").style.display = "none";
-        document.getElementById("settingsbutton").style.display = "none";
-        document.getElementById("logo").style.display = "none";
+        document.getElementById("mainmenu").style.display = "none";
         document.getElementById("bg").style.display = "none";
     }
-
+    
     #Unhide() {
-        document.getElementById("playbutton").style.display = "block";
-        document.getElementById("settingsbutton").style.display = "block";
-        document.getElementById("logo").style.display = "block";
+        document.getElementById("mainmenu").style.display = "block";
         document.getElementById("bg").style.display = "block";
     }
 }

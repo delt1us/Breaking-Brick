@@ -2,11 +2,9 @@ export class Timer {
     #f_Timer;
     #b_Paused;
     #m_Div;
-    #b_Hidden;
     constructor(divID) {
         this.#f_Timer = 0;
         this.#b_Paused = true;
-        this.#b_Hidden = false;
         this.#m_Div = document.getElementById(divID);
     }
 
@@ -28,10 +26,6 @@ export class Timer {
         this.#b_Paused = true;
     }
 
-    Hide() {
-        this.#b_Hidden = true;
-    }
-
     #AddTime(time) {
         if (time === NaN) {
             return;
@@ -42,11 +36,7 @@ export class Timer {
     #UpdateDiv() {
         let string = `${Math.round(this.#f_Timer)}`;
  
-        if (this.#b_Hidden) {
-            string = "";
-        }
-
-        else if (Math.round(this.#f_Timer) < 10) {
+        if (Math.round(this.#f_Timer) < 10) {
             string = "0" + string;
         }
         

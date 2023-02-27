@@ -63,7 +63,7 @@ a i::before {
     height: 4px;
     background: #27282c;
     transform: translateX(-50%) skewX(325deg);
-    transition: 0.5s;
+    transition: 1s;
 }
 
 a:hover i::before {
@@ -80,7 +80,7 @@ a i::after {
     height: 4px;
     background: #27282c;
     transform: translateX(-50%) skewX(325deg);
-    transition: 0.5s;
+    transition: 1s;
 }
 
 a:hover i::after {
