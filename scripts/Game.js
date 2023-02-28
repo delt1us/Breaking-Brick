@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import { Level } from './Level.js';
+import { LevelHandler } from './Level.js';
 import { SceneGame, SceneLevelCreate, SceneLevelSelect, SceneMainMenu, ScenePauseMenu, SceneSettingsMenu } from './Scene.js';
 import { ButtonStates } from './Button.js';
 import { m_SELECTED_LEVEL } from './Scene.js';
@@ -42,8 +42,8 @@ export class Game {
         this.#m_SceneActive[this.#m_SceneActive.length - 1].Draw();
     }
 
-    #LoadLevel(level) {
-        this.#m_Level.Load(level);
+    #LoadLevel(i_Level) {
+        this.#m_Level.Load(i_Level);
         this.#UpdateLevelDiv();
         this.#m_SceneGame = new SceneGame("gameCanvas", this.#m_Level);
         this.#m_SceneGame.LoadLevel();
@@ -71,8 +71,10 @@ export class Game {
             }
             else {
                 this.#m_Level = this.#m_SceneLevelCreate.m_Level;
-                this.#m_Level.Save(m_SELECTED_LEVEL.level);
+                this.#m_Level.i_Level = m_SELECTED_LEVEL.level;
+                this.#m_Level.Save();
                 this.#m_SceneLevelSelect.ShowCreateButton();
+                this.#RemoveCurrentSceneFromSceneActiveArray();
                 this.#RemoveCurrentSceneFromSceneActiveArray();
                 this.#RemoveCurrentSceneFromSceneActiveArray();
                 this.#SwitchTo(this.#m_SceneLevelSelect);
@@ -141,8 +143,8 @@ export class Game {
     // Called from constructor
     #SetupGameScenes() {
         this.#m_Level.CreateSimulationLevel();
-        this.#m_Level.Save("simulation");
-        this.#m_Level.Load("simulation");
+        this.#m_Level.Load(63);
+        this.#m_Level.Save();
 
         this.#m_SceneMainMenu = new SceneMainMenu(this.#m_Level, "mainMenuCanvas");
         this.#m_SceneLevelSelect = new SceneLevelSelect();
@@ -162,7 +164,7 @@ export class Game {
     
     // Called from constructor
     #SetupObjects() {
-        this.#m_Level = new Level();
+        this.#m_Level = new LevelHandler();
     }
     
     #UpdateLevelDiv() {

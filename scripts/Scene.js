@@ -5,7 +5,7 @@ import { Frame } from './Frame.js';
 import { Ball } from './Ball.js';
 import { Timer } from './Timer.js';
 import { ScoreCounter } from './Score.js';
-import { Brick, Level } from './Level.js';
+import { Brick, LevelHandler } from './Level.js';
 
 export const m_SELECTED_LEVEL = {
     level: 0
@@ -292,7 +292,7 @@ export class SceneLevelCreate extends Scene {
     constructor() {
         super();
         this.#i_ActiveBrickHealth = 0;
-        this.m_Level = new Level();
+        this.m_Level = new LevelHandler();
         this.#MakeGrid();
         this.#InitColours();
         this.#MakeBrickSelectionButtons();
