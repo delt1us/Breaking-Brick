@@ -19,7 +19,7 @@ export class Game {
     #m_SceneLevelCreate;
 
     constructor() {
-        this.#m_SceneActive;
+        this.#m_SceneActive = [];
         this.#SetupObjects();
         this.#SetupGameScenes();
     
@@ -31,12 +31,12 @@ export class Game {
         this.#GetDeltaTime(time);
         this.#CheckButtons();
 
-        this.#m_SceneActive.Update(this.#f_DeltaTime);
+        this.#m_SceneActive[this.#m_SceneActive.length - 1].Update(this.#f_DeltaTime);
     }
 
     // Called every frame from main.js
     Draw() {
-        this.#m_SceneActive.Draw();
+        this.#m_SceneActive[this.#m_SceneActive.length - 1].Draw();
     }
 
     #LoadLevel(level) {
@@ -56,6 +56,8 @@ export class Game {
                 this.#m_Level = this.#m_SceneLevelCreate.m_Level;
                 this.#m_Level.Save(m_SELECTED_LEVEL.level);
                 this.#m_SceneLevelSelect.ShowCreateButton();
+                this.#RemoveCurrentSceneFromSceneActiveArray();
+                this.#RemoveCurrentSceneFromSceneActiveArray();
                 this.#SwitchTo(this.#m_SceneLevelSelect);
             }
             m_SELECTED_LEVEL.level = 0;
@@ -67,13 +69,9 @@ export class Game {
             ButtonStates.Play = false;
         }
 
+        // !change this
         else if (ButtonStates.Back) {
-            if (this.#m_SceneLevelSelect.b_CreateButton) {
-                this.#SwitchTo(this.#m_SceneMainMenu);
-            }
-            else {
-                this.#SwitchTo(this.#m_SceneLevelCreate);
-            }
+            this.#RemoveCurrentSceneFromSceneActiveArray();
             ButtonStates.Back = false;
         }        
     
@@ -84,12 +82,13 @@ export class Game {
 
         else if (ButtonStates.BackLevelCreate) {
             this.#m_SceneLevelSelect.ShowCreateButton();
-            this.#SwitchTo(this.#m_SceneLevelSelect);
+            this.#RemoveCurrentSceneFromSceneActiveArray();
             ButtonStates.BackLevelCreate = false;
         }
         
         else if (ButtonStates.SaveLevel) {
             this.#m_SceneLevelSelect.HideCreateButton();
+            this.#RemoveCurrentSceneFromSceneActiveArray();
             this.#SwitchTo(this.#m_SceneLevelSelect);
             ButtonStates.SaveLevel = false;
         }
@@ -97,9 +96,19 @@ export class Game {
 
     // Used to switch between scenes
     #SwitchTo(scene) {
-        this.#m_SceneActive.Disable();
-        this.#m_SceneActive = scene;
-        this.#m_SceneActive.Enable();
+        console.log(this.#m_SceneActive);
+        this.#m_SceneActive[this.#m_SceneActive.length - 1].Disable();
+        this.#m_SceneActive.push(scene);
+        this.#m_SceneActive[this.#m_SceneActive.length - 1].Enable();
+        console.log(this.#m_SceneActive);
+    }
+
+    #RemoveCurrentSceneFromSceneActiveArray() {
+        console.log(this.#m_SceneActive);
+        this.#m_SceneActive[this.#m_SceneActive.length - 1].Disable();
+        this.#m_SceneActive.pop();
+        this.#m_SceneActive[this.#m_SceneActive.length - 1].Enable();
+        console.log(this.#m_SceneActive);
     }
 
     // Called from constructor
@@ -112,7 +121,7 @@ export class Game {
         this.#m_SceneLevelSelect = new SceneLevelSelect();
         this.#m_SceneLevelCreate = new SceneLevelCreate();
     
-        this.#m_SceneActive = this.#m_SceneMainMenu;
+        this.#m_SceneActive.push(this.#m_SceneMainMenu);
     }
 
     // Called from Update
