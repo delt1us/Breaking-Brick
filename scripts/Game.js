@@ -39,13 +39,18 @@ export class Game {
         this.#m_SceneActive.Draw();
     }
 
+    #LoadLevel(level) {
+        this.#m_Level.Load(level);
+        this.#UpdateLevelDiv();
+        this.#m_SceneGame = new SceneGame("gameCanvas", this.#m_Level);
+        this.#SwitchTo(this.#m_SceneGame);
+    }
+
     // Used to check if buttons are pressed from Update()
     #CheckButtons() {
         if (m_SELECTED_LEVEL.level > 0) {
             if (this.#m_SceneLevelSelect.b_CreateButton) { 
-                this.#m_Level.Load(m_SELECTED_LEVEL.level);
-                this.#m_SceneGame.SetLevel(this.#m_Level);
-                this.#SwitchTo(this.#m_SceneGame);
+                this.#LoadLevel(m_SELECTED_LEVEL.level);
             }
             else {
                 this.#m_Level = this.#m_SceneLevelCreate.m_Level;
@@ -99,16 +104,12 @@ export class Game {
 
     // Called from constructor
     #SetupGameScenes() {
-        let level = 7;
-        this.#m_Level.CreateTempLevel(level);
-        this.#m_Level.Save(level);
-        this.#m_Level.Load(level);
+        this.#m_Level.CreateSimulationLevel();
+        this.#m_Level.Save("simulation");
+        this.#m_Level.Load("simulation");
 
         this.#m_SceneMainMenu = new SceneMainMenu(this.#m_Level, "mainMenuCanvas");
         this.#m_SceneLevelSelect = new SceneLevelSelect();
-        this.#m_SceneGame = new SceneGame("gameCanvas", this.#m_Level);
-        // This has to be here since SceneMainMenu inherits from SceneGame and it breaks if this is in SceneGame's constructor.
-        this.#m_SceneGame.Disable();
         this.#m_SceneLevelCreate = new SceneLevelCreate();
     
         this.#m_SceneActive = this.#m_SceneMainMenu;

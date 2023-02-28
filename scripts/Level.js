@@ -12,6 +12,7 @@ export class Level {
 
     // Loads from localstorage, called from Game.Initiliaze()
     Load(levelName) {
+        this.i_Level = levelName;
         this.a_Bricks = JSON.parse(localStorage.getItem(levelName));
     }
 
@@ -23,8 +24,8 @@ export class Level {
         localStorage.setItem(levelName, json);
     }
 
-    // Creates temp level, a 12x6 grid
-    CreateTempLevel(brickHealth) {
+    CreateSimulationLevel() {
+        let brickHealth = 7;
         this.i_Level = brickHealth;
         this.a_Bricks = [];
         for (let row = 0; row < 6; row++) {

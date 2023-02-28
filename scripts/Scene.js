@@ -534,6 +534,7 @@ export class SceneLevelSelect extends Scene {
     }
 
     #MakeGrid() {
+        // TODO move into text file
         let season1 = [
             {
                 Name: "Pilot",
