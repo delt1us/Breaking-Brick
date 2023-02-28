@@ -176,7 +176,7 @@ export class SceneGame extends Scene {
 
         this.m_Grid.Update();
         this._m_Timer.Update(this._f_DeltaTime);
-        if (this._CheckIfWon) {
+        if (this._CheckIfWon()) {
             this.#SetLevelCompleted();
         }
     }
@@ -202,7 +202,7 @@ export class SceneGame extends Scene {
 
     // Called from Update
     _CheckIfWon() {
-        if (this.m_Level.m_ActiveLevel.a_Bricks == []) {
+        if (this.m_Grid.a_GridArray.length == 0) {
             return true;
         }
         return false;

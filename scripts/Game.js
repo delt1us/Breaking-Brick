@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { LevelHandler } from './Level.js';
-import { SceneGame, SceneLevelCreate, SceneLevelSelect, SceneMainMenu, ScenePauseMenu, SceneSettingsMenu } from './Scene.js';
+import { SceneGame, SceneGameFinished, SceneLevelCreate, SceneLevelSelect, SceneMainMenu, ScenePauseMenu, SceneSettingsMenu } from './Scene.js';
 import { ButtonStates } from './Button.js';
 import { m_SELECTED_LEVEL } from './Scene.js';
 import { KeyStates } from './Controls.js';
@@ -19,6 +19,7 @@ export class Game {
     #m_SceneLevelSelect;
     #m_SceneLevelCreate;
     #m_ScenePauseMenu;
+    #m_SceneGameFinished;
 
     constructor() {
         this.#a_SceneActive = [];
@@ -37,8 +38,7 @@ export class Game {
         this.#a_SceneActive[this.#a_SceneActive.length - 1].Update(this.#f_DeltaTime);
 
         if (this.#m_SceneGame != null && this.#m_SceneGame.b_Won) {
-            // TODO
-            this.#SwitchTo()
+            this.#SwitchTo(this.#m_SceneGameFinished);
         }
     }
 
@@ -52,6 +52,7 @@ export class Game {
         this.#UpdateLevelDiv();
         this.#m_SceneGame = new SceneGame("gameCanvas", this.#m_Level);
         this.#m_SceneGame.m_Grid.LoadLevel(this.#m_SceneGame.m_Scene, this.#m_SceneGame.m_Level);
+
         this.#SwitchTo(this.#m_SceneGame);
     }
 
@@ -153,6 +154,7 @@ export class Game {
         this.#m_SceneLevelSelect = new SceneLevelSelect(this.#m_Level);
         this.#m_SceneLevelCreate = new SceneLevelCreate(this.#m_Level);
         this.#m_ScenePauseMenu = new ScenePauseMenu();
+        this.#m_SceneGameFinished = new SceneGameFinished();
 
         this.#a_SceneActive.push(this.#m_SceneMainMenu);
     }
