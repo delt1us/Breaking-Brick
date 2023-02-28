@@ -342,6 +342,12 @@ a:hover i::after {
     left: 85px;
 }
 
+#saveLevelButton {
+    position: fixed;
+    top: 750px;
+    left: 1300px;
+}
+
 #levelDesignerButton {
     position: fixed;
     top: 750px;

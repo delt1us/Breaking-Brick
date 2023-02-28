@@ -3,7 +3,8 @@ export const ButtonStates = {
     Settings: false,
     Back: false,
     Create: false,
-    BackLevelCreate: false
+    BackLevelCreate: false,
+    SaveLevel: false
 };
 
 document.getElementById("playbutton").onclick = function () {
@@ -30,4 +31,9 @@ document.getElementById("levelDesignerButton").onclick = function() {
 document.getElementById("backButtonLevelCreate").onclick = function() {
     console.log("back button pressed");
     ButtonStates.BackLevelCreate = true;
+};
+
+document.getElementById("saveLevelButton").onclick = function() {
+    console.log("save button pressed");
+    ButtonStates.SaveLevel = true;
 };

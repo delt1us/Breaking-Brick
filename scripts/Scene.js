@@ -193,6 +193,10 @@ export class SceneGame extends Scene {
         return this._m_Camera;
     }
 
+    SetLevel(level) {
+        this._m_Level = level;
+    }
+
     LoadLevel() {
         this._m_Grid.LoadLevel(this._m_Scene, this._m_Level);
     }
@@ -268,14 +272,14 @@ export class SceneSettingsMenu extends Scene {
 }
 
 export class SceneLevelCreate extends Scene {
-    #m_Level;
+    m_Level;
     #a_Grid;
     #i_ActiveBrickHealth;
     #d_BrickColours;
     constructor() {
         super();
         this.#i_ActiveBrickHealth = 0;
-        this.#m_Level = new Level();
+        this.m_Level = new Level();
         this.#a_Grid = [];
         this.#MakeGrid();
         this.#InitColours();
@@ -302,14 +306,14 @@ export class SceneLevelCreate extends Scene {
             let thisBrick = new Brick(new THREE.Vector2(a_Click[0], a_Click[1]), this.#i_ActiveBrickHealth);
             m_ClickedBrick.style.backgroundColor = this.#GetColourFromHealth(this.#i_ActiveBrickHealth);
             if (this.#i_ActiveBrickHealth != -1) {
-                this.#m_Level.a_Bricks.push(thisBrick);
+                this.m_Level.a_Bricks.push(thisBrick);
             }
             // Removes clicked cuboid from m_Level.a_Bricks
             else {
-                for (let index = 0; index < this.#m_Level.a_Bricks.length; index++) {
-                    if (this.#m_Level.a_Bricks[index].vec_GridLocation.x == a_Click[0]
-                        && this.#m_Level.a_Bricks[index].vec_GridLocation.y == a_Click[1]) {
-                        this.#m_Level.a_Bricks.splice(index, 1);
+                for (let index = 0; index < this.m_Level.a_Bricks.length; index++) {
+                    if (this.m_Level.a_Bricks[index].vec_GridLocation.x == a_Click[0]
+                        && this.m_Level.a_Bricks[index].vec_GridLocation.y == a_Click[1]) {
+                        this.m_Level.a_Bricks.splice(index, 1);
                         console.log("removed");
                         break;
                     }
@@ -317,7 +321,7 @@ export class SceneLevelCreate extends Scene {
             }
             m_ClickedBrick = null;
             a_Click = [];
-            console.log(this.#m_Level);
+            console.log(this.m_Level);
         }
         // This doesnt work as its a const
         // a_Click = [];
@@ -496,9 +500,11 @@ export class SceneLevelCreate extends Scene {
 }
 
 export class SceneLevelSelect extends Scene {
+    b_CreateButton;
     constructor() {
         super();
 
+        this.b_CreateButton = true;
         // Make a 5 row grid (1 for each season)
         // Add each level name as a breaking bad episode
         // Add html object for each level 
@@ -518,10 +524,12 @@ export class SceneLevelSelect extends Scene {
     }
 
     ShowCreateButton() {
+        this.b_CreateButton = true;
         document.getElementById("levelDesignerButton").style.display = "block";
     }
 
     HideCreateButton() {
+        this.b_CreateButton = false;
         document.getElementById("levelDesignerButton").style.display = "none";
     }
 
