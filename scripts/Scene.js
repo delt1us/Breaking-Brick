@@ -299,35 +299,49 @@ export class SceneLevelCreate extends Scene {
         this.#i_ActiveBrickHealth = Number(m_SelectedBrick.getAttribute("health"));
         this.#HandleInputs();
     }
-
+    
     // Called from update
     #HandleInputs() {
         if (m_ClickedBrick != null) {
-            let thisBrick = new Brick(new THREE.Vector2(a_Click[0], a_Click[1]), this.#i_ActiveBrickHealth);
-            m_ClickedBrick.style.backgroundColor = this.#GetColourFromHealth(this.#i_ActiveBrickHealth);
+            let thisBrick = this.#MakeBrickForGrid();
             if (this.#i_ActiveBrickHealth != -1) {
                 this.m_Level.a_Bricks.push(thisBrick);
             }
             // Removes clicked cuboid from m_Level.a_Bricks
             else {
-                for (let index = 0; index < this.m_Level.a_Bricks.length; index++) {
-                    if (this.m_Level.a_Bricks[index].vec_GridLocation.x == a_Click[0]
-                        && this.m_Level.a_Bricks[index].vec_GridLocation.y == a_Click[1]) {
-                        this.m_Level.a_Bricks.splice(index, 1);
-                        console.log("removed");
-                        break;
-                    }
-                }
+                this.#RemoveBrickAtClick();
             }
             m_ClickedBrick = null;
             a_Click = [];
             console.log(this.m_Level);
         }
+        this.#EmptyClicksArray();
+    }
+
+    #MakeBrickForGrid() {
+        let thisBrick = new Brick(new THREE.Vector2(a_Click[0], a_Click[1]), this.#i_ActiveBrickHealth);
+        m_ClickedBrick.style.backgroundColor = this.#GetColourFromHealth(this.#i_ActiveBrickHealth);
+        return thisBrick;
+    }
+    
+    #EmptyClicksArray() {
         // This doesnt work as its a const
         // a_Click = [];
         // So have to do this
         for (let index = 0; index < a_Click.length; index++) {
             a_Click.pop();
+        }
+    }
+
+
+    #RemoveBrickAtClick() {
+        for (let index = 0; index < this.m_Level.a_Bricks.length; index++) {
+            if (this.m_Level.a_Bricks[index].vec_GridLocation.x == a_Click[0]
+                && this.m_Level.a_Bricks[index].vec_GridLocation.y == a_Click[1]) {
+                this.m_Level.a_Bricks.splice(index, 1);
+                console.log("removed");
+                break;
+            }
         }
     }
 
