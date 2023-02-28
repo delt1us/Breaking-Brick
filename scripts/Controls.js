@@ -3,7 +3,8 @@
 export const KeyStates = {
     d: false,
     a: false,
-    space: false
+    space: false,
+    esc: false
 };
 
 // Keypress detection
@@ -20,6 +21,11 @@ document.addEventListener("keydown", function onEvent(event) {
     if (event.key == " ") {
         KeyStates.space = true;
     }
+
+    if (event.key === "Escape") {
+        KeyStates.esc = true;
+        console.log("escape");
+    }
 });
 
 // Key release detection
@@ -35,5 +41,9 @@ document.addEventListener("keyup", function onEvent(event) {
 
     if (event.key == " ") {
         KeyStates.space = false;
+    }
+
+    if (event.key == "Escape") {
+        KeyStates.esc = false;
     }
 });

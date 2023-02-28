@@ -177,7 +177,6 @@ export class SceneGame extends Scene {
     Enable() {
         document.getElementById("gameui").style.display = "block";
         document.getElementById("gameCanvas").style.display = "block";
-        this.LoadLevel();
     }
 
     Disable() {
@@ -268,6 +267,21 @@ export class SceneMainMenu extends SceneGame {
 export class SceneSettingsMenu extends Scene {
     constructor() {
         super();
+    }
+}
+
+export class ScenePauseMenu extends Scene {
+    constructor() {
+        super();
+        this.Disable();
+    }
+
+    Enable() {
+        document.getElementById("pauseUI").style.display = "block";
+    }
+
+    Disable() {
+        document.getElementById("pauseUI").style.display = "none";
     }
 }
 

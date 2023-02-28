@@ -4,7 +4,10 @@ export const ButtonStates = {
     Back: false,
     Create: false,
     BackLevelCreate: false,
-    SaveLevel: false
+    SaveLevel: false,
+    QuitPauseMenu: false,
+    ContinuePauseMenu: false,
+    SettingsPauseMenu: false
 };
 
 document.getElementById("playbutton").onclick = function () {
@@ -36,4 +39,19 @@ document.getElementById("backButtonLevelCreate").onclick = function() {
 document.getElementById("saveLevelButton").onclick = function() {
     console.log("save button pressed");
     ButtonStates.SaveLevel = true;
+};
+
+document.getElementById("quitButtonPauseUI").onclick = function() {
+    console.log("quit button pressed");
+    ButtonStates.QuitPauseMenu = true;
+};
+
+document.getElementById("settingsButtonPauseUI").onclick = function() {
+    console.log("settings button pressed");
+    ButtonStates.SettingsPauseMenu = true;
+};
+
+document.getElementById("continueButtonPauseUI").onclick = function() {
+    console.log("back button pressed");
+    ButtonStates.ContinuePauseMenu = true;
 };
