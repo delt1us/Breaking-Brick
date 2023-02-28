@@ -63,11 +63,16 @@ class Scene {
     constructor() {
     }
 
-    Update(timeNow) {
-
+    Update(deltaTime) {
     }
 
     Draw() {
+    }
+
+    Enable() {
+    }
+
+    Disable() {
     }
 
     _SetupThree(canvasID) {
@@ -286,7 +291,7 @@ export class SceneLevelCreate extends Scene {
         document.getElementById("levelCreate").style.display = "none";
     }
 
-    Update() {
+    Update(deltaTime) {
         this.#i_ActiveBrickHealth = Number(m_SelectedBrick.getAttribute("health"));
         this.#HandleInputs();
     }
@@ -510,6 +515,14 @@ export class SceneLevelSelect extends Scene {
 
     Disable() {
         document.getElementById("levelselect").style.display = "none";
+    }
+
+    ShowCreateButton() {
+        document.getElementById("levelDesignerButton").style.display = "block";
+    }
+
+    HideCreateButton() {
+        document.getElementById("levelDesignerButton").style.display = "none";
     }
 
     #MakeGrid() {
