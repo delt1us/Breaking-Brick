@@ -71,6 +71,9 @@ export class Game {
 
         // !change this
         else if (ButtonStates.Back) {
+            if (!this.#m_SceneLevelSelect.b_CreateButton) {
+                this.#m_SceneLevelSelect.ShowCreateButton();
+            }
             this.#RemoveCurrentSceneFromSceneActiveArray();
             ButtonStates.Back = false;
         }        
@@ -88,7 +91,6 @@ export class Game {
         
         else if (ButtonStates.SaveLevel) {
             this.#m_SceneLevelSelect.HideCreateButton();
-            this.#RemoveCurrentSceneFromSceneActiveArray();
             this.#SwitchTo(this.#m_SceneLevelSelect);
             ButtonStates.SaveLevel = false;
         }

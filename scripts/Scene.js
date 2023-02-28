@@ -273,14 +273,12 @@ export class SceneSettingsMenu extends Scene {
 
 export class SceneLevelCreate extends Scene {
     m_Level;
-    #a_Grid;
     #i_ActiveBrickHealth;
     #d_BrickColours;
     constructor() {
         super();
         this.#i_ActiveBrickHealth = 0;
         this.m_Level = new Level();
-        this.#a_Grid = [];
         this.#MakeGrid();
         this.#InitColours();
         this.#MakeBrickSelectionButtons();
@@ -289,6 +287,7 @@ export class SceneLevelCreate extends Scene {
 
     Enable() {
         document.getElementById("levelCreate").style.display = "block";
+        this.ResetCreationGrid();
     }
 
     Disable() {
@@ -300,6 +299,14 @@ export class SceneLevelCreate extends Scene {
         this.#HandleInputs();
     }
     
+    ResetCreationGrid() {
+        let bricksDiv = document.getElementById("bricks");
+        for (const brick of bricksDiv.children) {
+            brick.style.backgroundColor = "#ffffff";
+        }
+        this.m_Level.a_Bricks = [];
+    }
+
     // Called from update
     #HandleInputs() {
         if (m_ClickedBrick != null) {
@@ -332,7 +339,6 @@ export class SceneLevelCreate extends Scene {
             a_Click.pop();
         }
     }
-
 
     #RemoveBrickAtClick() {
         for (let index = 0; index < this.m_Level.a_Bricks.length; index++) {
