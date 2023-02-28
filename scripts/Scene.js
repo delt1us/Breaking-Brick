@@ -534,9 +534,11 @@ export class SceneLevelCreate extends Scene {
 
 export class SceneLevelSelect extends Scene {
     b_CreateButton;
-    constructor() {
+    m_LevelHandler;
+    constructor(m_LevelHandler) {
         super();
 
+        this.m_LevelHandler = m_LevelHandler;
         this.b_CreateButton = true;
         // Make a 5 row grid (1 for each season)
         // Add each level name as a breaking bad episode
@@ -544,6 +546,7 @@ export class SceneLevelSelect extends Scene {
         // Group them by season
         // Change colours based on seasons
         this.#MakeGrid();
+        this.UpdateColours();
         // Starts off disabled
         this.Disable();
     }
@@ -564,6 +567,29 @@ export class SceneLevelSelect extends Scene {
     HideCreateButton() {
         this.b_CreateButton = false;
         document.getElementById("levelDesignerButton").style.display = "none";
+    }
+
+    UpdateColours() {
+        // Sets all levels to unlocked
+        let a_LockedLevels = document.getElementsByClassName("locked");
+        for (let lockedIndex; lockedIndex < a_LockedLevels.length; lockedIndex++) {
+            let m_Level = a_LockedLevels[lockedIndex];
+            let newClassName = m_Level.getAttribute("class") - " locked";
+            m_Level.setAttribute("class", newClassName);
+        }
+
+        // Sets locked levels
+        let a_Periods = document.getElementsByClassName("period");
+        // The first will always be unlocked 
+        for (let index = 1; index < a_Periods.length; index++) {
+            let a_Period = a_Periods[index];
+            let i_Level = Number(a_Period.getAttribute("level"));
+            let m_PreviousLevel = this.m_LevelHandler.a_Levels[i_Level];
+
+            if (!m_PreviousLevel.b_Completed) {
+                a_Period.setAttribute("class", a_Period.getAttribute("class") + " locked");
+            }
+        }
     }
 
     #MakeGrid() {
@@ -857,6 +883,7 @@ export class SceneLevelSelect extends Scene {
                 //     </div>
                 // </div>
                 let period = document.createElement("div")
+
                 period.setAttribute("class", "period " + toWord(seasonIndex + 1));
                 let period_inner = document.createElement("div")
                 period_inner.setAttribute("class", "period-inner");

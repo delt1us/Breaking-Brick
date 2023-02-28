@@ -145,7 +145,7 @@ export class Game {
         this.#m_Level.Save();
 
         this.#m_SceneMainMenu = new SceneMainMenu(this.#m_Level, "mainMenuCanvas");
-        this.#m_SceneLevelSelect = new SceneLevelSelect();
+        this.#m_SceneLevelSelect = new SceneLevelSelect(this.#m_Level);
         this.#m_SceneLevelCreate = new SceneLevelCreate();
         this.#m_ScenePauseMenu = new ScenePauseMenu();
 

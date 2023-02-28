@@ -3,9 +3,10 @@ import * as THREE from 'three';
 export class LevelHandler {
     b_Hidden;
     m_ActiveLevel;
-    #a_Levels;
+    a_Levels;
     constructor() {
         this.m_ActiveLevel;
+        this.a_Levels = [];
         this.b_Hidden = false;
 
         this.#SetAllLevelsEmpty();
@@ -21,30 +22,30 @@ export class LevelHandler {
 
     // Called from constructor
     #LoadAllLevels() {
-        this.#a_Levels = JSON.parse(localStorage.getItem("levels"));
+        this.a_Levels = JSON.parse(localStorage.getItem("levels"));
     }
 
     // Usually not run
     #SetAllLevelsEmpty() {
-        this.#a_Levels = [];
+        this.a_Levels = [];
         for (let index = 0; index < 62; index++) {
             let level = index + 1;
-            this.#a_Levels.push(new Level([], level, false));
+            this.a_Levels.push(new Level([], level, false));
         }
     }
 
     // Saving uses localstorage which is similar to cookies but they do not expire. Called from Game.Initialize() 
     Save() {
-        this.#a_Levels[this.m_ActiveLevel.i_Level - 1] = this.m_ActiveLevel;
+        this.a_Levels[this.m_ActiveLevel.i_Level - 1] = this.m_ActiveLevel;
         // Converts this level to a JSON string
-        let json = JSON.stringify(this.#a_Levels);
+        let json = JSON.stringify(this.a_Levels);
         // Creates item in localstorage
         localStorage.setItem("levels", json);
     }
 
     // Loads from localstorage, called from Game.Initiliaze()
     Load(i_LevelIndex) {
-        this.m_ActiveLevel = this.#a_Levels[i_LevelIndex - 1];
+        this.m_ActiveLevel = this.a_Levels[i_LevelIndex - 1];
     }    
 
     CreateSimulationLevel() {
@@ -57,7 +58,7 @@ export class LevelHandler {
             }
         }
         this.m_ActiveLevel = new Level(a_Bricks, 63, false);
-        this.#a_Levels[62] = this.m_ActiveLevel;
+        this.a_Levels[62] = this.m_ActiveLevel;
     }
 }
 
