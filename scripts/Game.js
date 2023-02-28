@@ -13,7 +13,7 @@ export class Game {
     #f_TimeAtPreviousFrame;
 
     // GameScenes
-    #m_SceneActive;
+    #a_SceneActive;
     #m_SceneGame;
     #m_SceneMainMenu;
     #m_SceneLevelSelect;
@@ -21,7 +21,7 @@ export class Game {
     #m_ScenePauseMenu;
 
     constructor() {
-        this.#m_SceneActive = [];
+        this.#a_SceneActive = [];
         this.#SetupObjects();
         this.#SetupGameScenes();
     
@@ -34,29 +34,34 @@ export class Game {
         this.#CheckButtons();
         this.#CheckInputs();
 
-        this.#m_SceneActive[this.#m_SceneActive.length - 1].Update(this.#f_DeltaTime);
+        this.#a_SceneActive[this.#a_SceneActive.length - 1].Update(this.#f_DeltaTime);
+
+        if (this.#m_SceneGame != null && this.#m_SceneGame.b_Won) {
+            // TODO
+            this.#SwitchTo()
+        }
     }
 
     // Called every frame from main.js
     Draw() {
-        this.#m_SceneActive[this.#m_SceneActive.length - 1].Draw();
+        this.#a_SceneActive[this.#a_SceneActive.length - 1].Draw();
     }
 
     #LoadLevel(i_Level) {
         this.#m_Level.Load(i_Level);
         this.#UpdateLevelDiv();
         this.#m_SceneGame = new SceneGame("gameCanvas", this.#m_Level);
-        this.#m_SceneGame.LoadLevel();
+        this.#m_SceneGame.m_Grid.LoadLevel(this.#m_SceneGame.m_Scene, this.#m_SceneGame.m_Level);
         this.#SwitchTo(this.#m_SceneGame);
     }
 
     #CheckInputs() {
         // If game is active
         if (KeyStates.esc) {
-            if (this.#m_SceneActive[this.#m_SceneActive.length -1] == this.#m_SceneGame) {
+            if (this.#a_SceneActive[this.#a_SceneActive.length -1] == this.#m_SceneGame) {
                 this.#SwitchTo(this.#m_ScenePauseMenu);            
             }
-            else if (this.#m_SceneActive[this.#m_SceneActive.length - 1] == this.#m_ScenePauseMenu) {
+            else if (this.#a_SceneActive[this.#a_SceneActive.length - 1] == this.#m_ScenePauseMenu) {
                 this.#RemoveCurrentSceneFromSceneActiveArray();
             }
             KeyStates.esc = false;
@@ -130,25 +135,26 @@ export class Game {
 
     // Used to switch between scenes
     #SwitchTo(scene) {
-        this.#m_SceneActive[this.#m_SceneActive.length - 1].Disable();
-        this.#m_SceneActive.push(scene);
-        this.#m_SceneActive[this.#m_SceneActive.length - 1].Enable();
+        this.#a_SceneActive[this.#a_SceneActive.length - 1].Disable();
+        this.#a_SceneActive.push(scene);
+        this.#a_SceneActive[this.#a_SceneActive.length - 1].Enable();
     }
 
     #RemoveCurrentSceneFromSceneActiveArray() {
-        this.#m_SceneActive[this.#m_SceneActive.length - 1].Disable();
-        this.#m_SceneActive.pop();
-        this.#m_SceneActive[this.#m_SceneActive.length - 1].Enable();
+        this.#a_SceneActive[this.#a_SceneActive.length - 1].Disable();
+        this.#a_SceneActive.pop();
+        this.#a_SceneActive[this.#a_SceneActive.length - 1].Enable();
     }
 
     // Called from constructor
     #SetupGameScenes() {
         this.#m_SceneMainMenu = new SceneMainMenu(this.#m_Level, "mainMenuCanvas");
+        this.#m_SceneMainMenu.m_Grid.LoadLevel(this.#m_SceneMainMenu.m_Scene, this.#m_SceneMainMenu.m_Level);
         this.#m_SceneLevelSelect = new SceneLevelSelect(this.#m_Level);
         this.#m_SceneLevelCreate = new SceneLevelCreate(this.#m_Level);
         this.#m_ScenePauseMenu = new ScenePauseMenu();
 
-        this.#m_SceneActive.push(this.#m_SceneMainMenu);
+        this.#a_SceneActive.push(this.#m_SceneMainMenu);
     }
 
     // Called from Update

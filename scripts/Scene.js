@@ -44,7 +44,7 @@ function toWord(integer) {
 
 class Scene {
     // Threejs scene
-    _m_Scene;
+    m_Scene;
     // Threejs Camera
     _m_Camera;
     // Threejs PointLight object
@@ -62,6 +62,7 @@ class Scene {
     _m_Controls;
 
     constructor() {
+        this.Disable();
     }
 
     Update(deltaTime) {
@@ -104,12 +105,12 @@ class Scene {
         this._m_Light = new THREE.PointLight(0xbbbbbb);
         this._m_Light.position.set(this._m_Camera.position.x, this._m_Camera.position.y, this._m_Camera.position.z + 5);
         this._m_AmbientLight = new THREE.AmbientLight(0x909090);
-        this._m_Scene.add(this._m_Light, this._m_AmbientLight);
+        this.m_Scene.add(this._m_Light, this._m_AmbientLight);
     }
 
     // Run once from constructor
     _SetupScene() {
-        this._m_Scene = new THREE.Scene();
+        this.m_Scene = new THREE.Scene();
     }
 
     // Run once from constructor
@@ -132,7 +133,7 @@ class Scene {
         this._m_LightHelper = new THREE.PointLightHelper(this._m_Light);
         // Draws 2D grid 
         this._m_GridHelper = new THREE.GridHelper(200, 50);
-        this._m_Scene.add(this._m_LightHelper, this._m_GridHelper);
+        this.m_Scene.add(this._m_LightHelper, this._m_GridHelper);
 
         // OrbitControls messes with camera movement, only enable this if necessary
         this._m_Controls = new OrbitControls(this._m_Camera, this._m_Renderer.domElement);
@@ -142,7 +143,7 @@ class Scene {
 export class SceneGame extends Scene {
     // Threejs Renderer
     // Grid object 
-    _m_Grid;
+    m_Grid;
     // Bat object
     _m_Bat;
     // Ball object
@@ -152,14 +153,16 @@ export class SceneGame extends Scene {
     // Timer object 
     _m_Timer;
     _m_ScoreCounter;
-    _m_Level;
+    m_Level;
     _f_DeltaTime;
     _m_Canvas;
+    b_Won;
 
     constructor(canvasID, level) {
         super();
+        this.b_Won = false;
         this._m_Canvas;
-        this._m_Level = level;
+        this.m_Level = level;
         this._SetupThree(canvasID);
         this.#Initialize();
     }
@@ -171,8 +174,11 @@ export class SceneGame extends Scene {
         this._m_Bat.Update(this._f_DeltaTime);
         this.m_Ball.Update(this._f_DeltaTime);
 
-        this._m_Grid.Update();
+        this.m_Grid.Update();
         this._m_Timer.Update(this._f_DeltaTime);
+        if (this._CheckIfWon) {
+            this.#SetLevelCompleted();
+        }
     }
 
     Enable() {
@@ -186,7 +192,20 @@ export class SceneGame extends Scene {
     }
 
     Draw() {
-        this._m_Renderer.render(this._m_Scene, this._m_Camera);
+        this._m_Renderer.render(this.m_Scene, this._m_Camera);
+    }
+
+    #SetLevelCompleted() {
+        this.m_Level.m_ActiveLevel.b_Completed = true;
+        this.b_Won = true;
+    }
+
+    // Called from Update
+    _CheckIfWon() {
+        if (this.m_Level.m_ActiveLevel.a_Bricks == []) {
+            return true;
+        }
+        return false;
     }
 
     GetCamera() {
@@ -194,30 +213,39 @@ export class SceneGame extends Scene {
     }
 
     SetLevel(level) {
-        this._m_Level = level;
-    }
-
-    LoadLevel() {
-        this._m_Grid.LoadLevel(this._m_Scene, this._m_Level);
+        this.m_Level = level;
     }
 
     // Run once from constructor
     #Initialize() {
-        this._m_Grid = new Grid(this._m_Scene);
+        this.m_Grid = new Grid(this.m_Scene);
 
-        this._m_Bat = new Bat(this._m_Scene);
-        this._m_Frame = new Frame(this._m_Scene);
+        this._m_Bat = new Bat(this.m_Scene);
+        this._m_Frame = new Frame(this.m_Scene);
         this._m_Timer = new Timer("timer");
         this._m_ScoreCounter = new ScoreCounter("score");
 
-        this.m_Ball = new Ball(this._m_Scene, this._m_Grid, this._m_Frame, this._m_Bat, this._m_Timer, this._m_ScoreCounter);
+        this.m_Ball = new Ball(this.m_Scene, this.m_Grid, this._m_Frame, this._m_Bat, this._m_Timer, this._m_ScoreCounter);
+    }
+}
+
+export class SceneGameFinished extends Scene {
+    constructor() {
+        super();
+    }
+
+    Enable() {
+        document.getElementById("gameFinishedUI").style.display = "block";
+    }
+
+    Disable() {
+        document.getElementById("gameFinishedUI").style.display = "none";
     }
 }
 
 export class SceneMainMenu extends SceneGame {
     constructor(level, canvasID) {
         super(canvasID, level);
-        this.LoadLevel();
         this.m_Ball.b_Simulation = true;
     }
 
@@ -227,12 +255,19 @@ export class SceneMainMenu extends SceneGame {
     }
 
     Disable() {
-        this.#Hide();
+        document.getElementById("mainmenu").style.display = "none";
+        document.getElementById("mainMenuCanvas").style.display = "none";
+        document.getElementById("gameui").style.display = "none";
     }
 
     Enable() {
-        this.#Unhide();
-        this.#HideUI();
+        document.getElementById("mainmenu").style.display = "block";
+        document.getElementById("mainMenuCanvas").style.display = "block";
+    }
+
+    // Overrides
+    _CheckIfWon() {
+
     }
 
     // Run once from constructor
@@ -249,20 +284,6 @@ export class SceneMainMenu extends SceneGame {
         // Adds renderer to the html document
         document.body.appendChild(this._m_Renderer.domElement);
     }
-
-    #HideUI() {
-        document.getElementById("gameui").style.display = "none";
-    }
-
-    #Hide() {
-        document.getElementById("mainmenu").style.display = "none";
-        document.getElementById("mainMenuCanvas").style.display = "none";
-    }
-
-    #Unhide() {
-        document.getElementById("mainmenu").style.display = "block";
-        document.getElementById("mainMenuCanvas").style.display = "block";
-    }
 }
 
 export class SceneSettingsMenu extends Scene {
@@ -274,7 +295,6 @@ export class SceneSettingsMenu extends Scene {
 export class ScenePauseMenu extends Scene {
     constructor() {
         super();
-        this.Disable();
     }
 
     Enable() {
@@ -297,7 +317,6 @@ export class SceneLevelCreate extends Scene {
         this.#MakeGrid();
         this.#InitColours();
         this.#MakeBrickSelectionButtons();
-        this.Disable();
     }
 
     Enable() {
@@ -549,8 +568,6 @@ export class SceneLevelSelect extends Scene {
         // Change colours based on seasons
         this.#MakeGrid();
         this.UpdateColours();
-        // Starts off disabled
-        this.Disable();
     }
 
     Update() {
