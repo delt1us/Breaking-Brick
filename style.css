@@ -149,6 +149,10 @@
     background: transparent !important;
 }
 
+.period:hover .title, .period:hover .desc {
+    -webkit-text-fill-color: transparent !important;
+}
+
 .one {
     background: linear-gradient(to bottom right, #1BFFFF 0%, #2E3192 100%);
 }
