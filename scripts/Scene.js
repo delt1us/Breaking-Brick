@@ -373,9 +373,82 @@ export class SceneLevelCreate extends Scene {
         return colour;
     }
 
+    // Makes the "pallete" that lets you place bricks 
     #MakeBrickSelectionButtons() {
         let div = document.getElementById("selection");
+        
+        this.#AddHeadersToPallete(div);
+        // Adds selection bricks themselves
+        for (let health = -1; health < 9; health++) {
+            let colour = this.#GetColourFromHealth(health);
+            let brickDesc = this.#MakeBrickDescription(health);
+            let thisBrick = this.#MakeBrick(health, colour);
+            let row = this.#MakeRow(thisBrick, brickDesc);
+            div.appendChild(row);
+        }
+    }
 
+    // Makes a row div, called from MakeBrickSelectionButtons
+    #MakeRow(thisBrick, brickDesc) {
+        let row = document.createElement("div");
+        row.setAttribute("class", "selection-row");
+        row.appendChild(thisBrick);
+        row.appendChild(brickDesc);
+        return row;
+    }
+
+    // Makes a brick div, called from MakeBrickSelectionButtons
+    #MakeBrick(health, colour) {
+        let thisBrick = document.createElement("div");
+        thisBrick.setAttribute("class", "brick");
+        thisBrick.setAttribute("health", health);
+        // If first 
+        if (health == -1) {
+            thisBrick.style.backgroundColor = "#ffffff";
+        }
+        else {
+            thisBrick.style.backgroundColor = colour;
+        }
+
+        thisBrick.style.border = "5px solid transparent";
+
+        thisBrick.onclick = function (event) {
+            if (m_SelectedBrick.getAttribute("health") == -1) {
+                m_SelectedBrick.style.border = "5px solid transparent";
+            }
+            m_SelectedBrick.setAttribute("class", "brick");
+            m_SelectedBrick = event.currentTarget;
+            if (m_SelectedBrick.getAttribute("health") == -1) {
+                m_SelectedBrick.style.border = "5px solid #808080";
+            }
+            else {
+                event.currentTarget.setAttribute("class", "brick selected");
+            }
+        };
+
+        if (health == 0) {
+            m_SelectedBrick = thisBrick;
+            thisBrick.setAttribute("class", "brick selected");
+        }
+
+        return thisBrick;
+    }
+
+    // Makes a label div, called from MakeBrickSelectionButtons
+    #MakeBrickDescription(health) {
+        let brickDesc = document.createElement("div");
+        // If first
+        if (health == -1) {
+            brickDesc.innerHTML = "REMOVE";
+        }
+        else {
+            brickDesc.innerHTML = health;
+        }
+        brickDesc.setAttribute("class", "label");
+        return brickDesc;
+    }
+
+    #AddHeadersToPallete(div) {
         // Adds column headers
         let headerRow = document.createElement("div");
         headerRow.setAttribute("class", "selection-row");
@@ -390,59 +463,6 @@ export class SceneLevelCreate extends Scene {
         healthLabel.innerHTML = "Health";
         headerRow.appendChild(healthLabel);
         div.appendChild(headerRow);
-
-        // Adds selection bricks themselves
-        for (let health = -1; health < 9; health++) {
-            let colour = this.#GetColourFromHealth(health);
-            let row = document.createElement("div");
-            row.setAttribute("class", "selection-row");
-
-            let brickDesc = document.createElement("div");
-            // If first
-            if (health == -1) {
-                brickDesc.innerHTML = "REMOVE";
-            }
-            else {
-                brickDesc.innerHTML = health;
-            }
-            brickDesc.setAttribute("class", "label");
-
-            let thisBrick = document.createElement("div");
-            thisBrick.setAttribute("class", "brick");
-            thisBrick.setAttribute("health", health);
-            // If first 
-            if (health == -1) {
-                thisBrick.style.backgroundColor = "#ffffff";
-            }
-            else {
-                thisBrick.style.backgroundColor = colour;
-            }
-
-            thisBrick.style.border = "5px solid transparent";
-
-            thisBrick.onclick = function (event) {
-                if (m_SelectedBrick.getAttribute("health") == -1) {
-                    m_SelectedBrick.style.border = "5px solid transparent";
-                }
-                m_SelectedBrick.setAttribute("class", "brick");
-                m_SelectedBrick = event.currentTarget;
-                if (m_SelectedBrick.getAttribute("health") == -1) {
-                    m_SelectedBrick.style.border = "5px solid #808080";
-                }
-                else {
-                    event.currentTarget.setAttribute("class", "brick selected");
-                }
-            };
-
-            if (health == 0) {
-                m_SelectedBrick = thisBrick;
-                thisBrick.setAttribute("class", "brick selected");
-            }
-
-            row.appendChild(thisBrick);
-            row.appendChild(brickDesc);
-            div.appendChild(row);
-        }
     }
 
     // Called from constructor, makes html grid
