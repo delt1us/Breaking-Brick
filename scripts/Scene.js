@@ -559,6 +559,7 @@ export class SceneLevelSelect extends Scene {
             for (let index = 0; index < this.m_LevelHandler.a_Levels.length; index++) {
                 if (!this.m_LevelHandler.a_Levels[index].b_Completed) {
                     this.m_LevelHandler.a_Levels[index].b_Completed = true;
+                    this.m_LevelHandler.Save();
                     this.UpdateColours();
                     break;
                 }
