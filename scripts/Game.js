@@ -73,7 +73,6 @@ export class Game {
             }
 
             else {
-                this.#m_Level = this.#m_SceneLevelCreate.m_Level;
                 this.#m_Level.m_ActiveLevel.i_Level = m_SELECTED_LEVEL.level;
                 this.#m_Level.Save();
                 this.#m_SceneLevelSelect.ShowCreateButton();
@@ -144,12 +143,9 @@ export class Game {
 
     // Called from constructor
     #SetupGameScenes() {
-        this.#m_Level.Load(63);
-        this.#m_Level.Save();
-
         this.#m_SceneMainMenu = new SceneMainMenu(this.#m_Level, "mainMenuCanvas");
         this.#m_SceneLevelSelect = new SceneLevelSelect(this.#m_Level);
-        this.#m_SceneLevelCreate = new SceneLevelCreate();
+        this.#m_SceneLevelCreate = new SceneLevelCreate(this.#m_Level);
         this.#m_ScenePauseMenu = new ScenePauseMenu();
 
         this.#m_SceneActive.push(this.#m_SceneMainMenu);

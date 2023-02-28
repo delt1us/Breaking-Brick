@@ -63,7 +63,7 @@ export class LevelHandler {
     }
 }
 
-class Level {
+export class Level {
     a_Bricks;
     i_Level;
     b_Completed;

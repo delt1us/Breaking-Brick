@@ -5,7 +5,7 @@ import { Frame } from './Frame.js';
 import { Ball } from './Ball.js';
 import { Timer } from './Timer.js';
 import { ScoreCounter } from './Score.js';
-import { Brick, LevelHandler } from './Level.js';
+import { Brick, Level, LevelHandler } from './Level.js';
 import { KeyStates } from './Controls.js';
 
 export const m_SELECTED_LEVEL = {
@@ -290,10 +290,10 @@ export class SceneLevelCreate extends Scene {
     m_Level;
     #i_ActiveBrickHealth;
     #d_BrickColours;
-    constructor() {
+    constructor(m_LevelHandler) {
         super();
         this.#i_ActiveBrickHealth = 0;
-        this.m_Level = new LevelHandler();
+        this.m_Level = m_LevelHandler;
         this.#MakeGrid();
         this.#InitColours();
         this.#MakeBrickSelectionButtons();
@@ -318,7 +318,8 @@ export class SceneLevelCreate extends Scene {
         for (const brick of bricksDiv.children) {
             brick.style.backgroundColor = "#ffffff";
         }
-        this.m_Level.m_ActiveLevel.a_Bricks = [];
+        this.m_Level.a_Levels[64] = new Level([], 64, false);
+        this.m_Level.m_ActiveLevel = this.m_Level.a_Levels[64];
     }
 
     // Called from update
