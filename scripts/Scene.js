@@ -5,27 +5,27 @@ import { Frame } from './Frame.js';
 import { Ball } from './Ball.js';
 import { Timer } from './Timer.js';
 import { ScoreCounter } from './Score.js';
-import { Brick } from './Level.js';
+import { Brick, Level } from './Level.js';
 
 export const m_SELECTED_LEVEL = {
     level: 0
 };
 
-const a_Clicks = [];
-
+let a_Click = [];
+let m_ClickedBrick = null;
 let m_SelectedBrick = null;
 
 // Used to convert index into number for css class ids in level select scene
-function toWord (integer) {
+function toWord(integer) {
     let string;
-    switch (integer){
+    switch (integer) {
         case 1:
             string = "one";
             break;
         case 2:
             string = "two";
             break;
-        case 3: 
+        case 3:
             string = "three";
             break;
         case 4:
@@ -35,7 +35,7 @@ function toWord (integer) {
             string = "five";
             break;
         case 6:
-            string = "six"; 
+            string = "six";
             break;
     }
     return string;
@@ -63,7 +63,7 @@ class Scene {
     constructor() {
     }
 
-    Update(timeNow) { 
+    Update(timeNow) {
 
     }
 
@@ -73,7 +73,7 @@ class Scene {
     _SetupThree(canvasID) {
         this._SetupScene();
         this._SetupRenderer(canvasID);
-        this._SetupCamera();   
+        this._SetupCamera();
         this._SetupLighting();
     }
 
@@ -157,7 +157,7 @@ export class SceneGame extends Scene {
         this._SetupThree(canvasID);
         this.#Initialize();
     }
-    
+
     // Run every frame
     Update(deltaTime) {
         this._f_DeltaTime = deltaTime;
@@ -195,12 +195,12 @@ export class SceneGame extends Scene {
     // Run once from constructor
     #Initialize() {
         this._m_Grid = new Grid(this._m_Scene);
-        
+
         this._m_Bat = new Bat(this._m_Scene);
         this._m_Frame = new Frame(this._m_Scene);
-        this._m_Timer = new Timer("timer");    
+        this._m_Timer = new Timer("timer");
         this._m_ScoreCounter = new ScoreCounter("score");
-        
+
         this.m_Ball = new Ball(this._m_Scene, this._m_Grid, this._m_Frame, this._m_Bat, this._m_Timer, this._m_ScoreCounter);
     }
 }
@@ -211,12 +211,12 @@ export class SceneMainMenu extends SceneGame {
         this.LoadLevel();
         this.m_Ball.b_Simulation = true;
     }
-    
+
     Update(deltaTime) {
         this._m_Bat.m_BatCuboid.position.x = this.m_Ball.m_BallSphere.position.x;
         super.Update(deltaTime);
     }
-    
+
     Disable() {
         this.#Hide();
     }
@@ -225,14 +225,14 @@ export class SceneMainMenu extends SceneGame {
         this.#Unhide();
         this.#HideUI();
     }
-   
+
     // Run once from constructor
     _SetupRenderer(canvasID) {
         this._m_Canvas = document.getElementById(canvasID);
-   
+
         this._m_Canvas.setAttribute("width", "1200px");
         this._m_Canvas.setAttribute("height", "675px");
-        
+
         // Renderer
         this._m_Renderer = new THREE.WebGLRenderer({
             canvas: this._m_Canvas,
@@ -249,7 +249,7 @@ export class SceneMainMenu extends SceneGame {
         document.getElementById("mainmenu").style.display = "none";
         document.getElementById("mainMenuCanvas").style.display = "none";
     }
-    
+
     #Unhide() {
         document.getElementById("mainmenu").style.display = "block";
         document.getElementById("mainMenuCanvas").style.display = "block";
@@ -267,9 +267,11 @@ export class SceneLevelCreate extends Scene {
     #a_Grid;
     #i_ActiveBrickHealth;
     #d_BrickColours;
-    constructor(level) {
+    constructor() {
         super();
-        this.#m_Level = level;
+        this.#i_ActiveBrickHealth = 0;
+        this.#m_Level = new Level();
+        this.#a_Grid = [];
         this.#MakeGrid();
         this.#InitColours();
         this.#MakeBrickSelectionButtons();
@@ -280,23 +282,43 @@ export class SceneLevelCreate extends Scene {
         document.getElementById("levelCreate").style.display = "block";
     }
 
-    Disable () {
+    Disable() {
         document.getElementById("levelCreate").style.display = "none";
     }
 
     Update() {
+        this.#i_ActiveBrickHealth = Number(m_SelectedBrick.getAttribute("health"));
         this.#HandleInputs();
     }
-    
+
     // Called from update
     #HandleInputs() {
-        for (let index = 0; index < a_Clicks.length; index++) {
-    
+        if (m_ClickedBrick != null) {
+            let thisBrick = new Brick(new THREE.Vector2(a_Click[0], a_Click[1]), this.#i_ActiveBrickHealth);
+            m_ClickedBrick.style.backgroundColor = this.#GetColourFromHealth(this.#i_ActiveBrickHealth);
+            if (this.#i_ActiveBrickHealth != -1) {
+                this.#m_Level.a_Bricks.push(thisBrick);
+            }
+            // Removes clicked cuboid from m_Level.a_Bricks
+            else {
+                for (let index = 0; index < this.#m_Level.a_Bricks.length; index++) {
+                    if (this.#m_Level.a_Bricks[index].vec_GridLocation.x == a_Click[0]
+                        && this.#m_Level.a_Bricks[index].vec_GridLocation.y == a_Click[1]) {
+                        this.#m_Level.a_Bricks.splice(index, 1);
+                        console.log("removed");
+                        break;
+                    }
+                }
+            }
+            m_ClickedBrick = null;
+            a_Click = [];
+            console.log(this.#m_Level);
         }
         // This doesnt work as its a const
-        // a_Clicks = [];
-        for (let index = 0; index < a_Clicks.length; index++) {
-            a_Clicks.pop();            
+        // a_Click = [];
+        // So have to do this
+        for (let index = 0; index < a_Click.length; index++) {
+            a_Click.pop();
         }
     }
 
@@ -310,13 +332,13 @@ export class SceneLevelCreate extends Scene {
             "Hot Pink": "#FF89B3",
             "Yellow": "#FFED89",
             "Orange": "#FF834B",
-            "Grey": "#808080"       
+            "Grey": "#808080"
         };
     }
 
     #GetColourFromHealth(health) {
         let colour;
-        switch(health) {
+        switch (health) {
             default:
                 colour = this.#d_BrickColours["Grey"];
                 break;
@@ -341,13 +363,15 @@ export class SceneLevelCreate extends Scene {
             case 7:
                 colour = this.#d_BrickColours["Blue"];
                 break;
-            case 8: 
+            case 8:
                 colour = this.#d_BrickColours["Green"];
+                break;
+            case -1:
+                colour = "#ffffff";
                 break;
         }
         return colour;
     }
-
 
     #MakeBrickSelectionButtons() {
         let div = document.getElementById("selection");
@@ -368,54 +392,79 @@ export class SceneLevelCreate extends Scene {
         div.appendChild(headerRow);
 
         // Adds selection bricks themselves
-        for (let health = 0; health < 9; health++) {
+        for (let health = -1; health < 9; health++) {
             let colour = this.#GetColourFromHealth(health);
             let row = document.createElement("div");
             row.setAttribute("class", "selection-row");
 
             let brickDesc = document.createElement("div");
-            brickDesc.innerHTML = health;
+            // If first
+            if (health == -1) {
+                brickDesc.innerHTML = "REMOVE";
+            }
+            else {
+                brickDesc.innerHTML = health;
+            }
             brickDesc.setAttribute("class", "label");
-            
+
             let thisBrick = document.createElement("div");
             thisBrick.setAttribute("class", "brick");
-            thisBrick.style.backgroundColor = colour;
+            thisBrick.setAttribute("health", health);
+            // If first 
+            if (health == -1) {
+                thisBrick.style.backgroundColor = "#ffffff";
+            }
+            else {
+                thisBrick.style.backgroundColor = colour;
+            }
+
             thisBrick.style.border = "5px solid transparent";
-            
-            thisBrick.onclick = function(event) {
-                if (m_SelectedBrick != null) {
-                    m_SelectedBrick.setAttribute("class", "brick");
+
+            thisBrick.onclick = function (event) {
+                if (m_SelectedBrick.getAttribute("health") == -1) {
+                    m_SelectedBrick.style.border = "5px solid transparent";
                 }
+                m_SelectedBrick.setAttribute("class", "brick");
                 m_SelectedBrick = event.currentTarget;
-                event.currentTarget.setAttribute("class", "brick selected");
+                if (m_SelectedBrick.getAttribute("health") == -1) {
+                    m_SelectedBrick.style.border = "5px solid #808080";
+                }
+                else {
+                    event.currentTarget.setAttribute("class", "brick selected");
+                }
             };
+
+            if (health == 0) {
+                m_SelectedBrick = thisBrick;
+                thisBrick.setAttribute("class", "brick selected");
+            }
 
             row.appendChild(thisBrick);
             row.appendChild(brickDesc);
             div.appendChild(row);
         }
-
-        // TODO make bricks pickable
-        // TODO make selected brick have white border
     }
 
     // Called from constructor, makes html grid
     #MakeGrid() {
         let element = document.getElementById("bricks");
         for (let row = 0; row < 6; row++) {
+            let thisRow = [];
             for (let column = 0; column < 12; column++) {
                 let thisBrick = document.createElement("div");
                 thisBrick.setAttribute("class", "brick");
                 thisBrick.setAttribute("row", row);
                 thisBrick.setAttribute("column", column);
 
-                thisBrick.onclick = function(event) {
+                thisBrick.onclick = function (event) {
                     let x = Number(event.currentTarget.getAttribute("column"));
                     let y = Number(event.currentTarget.getAttribute("row"));
-                    a_Clicks.push([x, y]);
-                    console.log(a_Clicks);
+                    a_Click = [x, y];
+                    m_ClickedBrick = event.currentTarget;
+                    console.log(a_Click);
                 };
                 element.appendChild(thisBrick);
+                thisRow.push(thisBrick);
             }
         }
     }
@@ -447,202 +496,264 @@ export class SceneLevelSelect extends Scene {
         let season1 = [
             {
                 Name: "Pilot",
-                Abbreviation: "Pi"},
+                Abbreviation: "Pi"
+            },
             {
-                Name: "The Cat's in the Bag",  
-                Abbreviation: "Cb"},
+                Name: "The Cat's in the Bag",
+                Abbreviation: "Cb"
+            },
             {
                 Name: "And the Bag's in the River",
-                Abbreviation: "Br"},
+                Abbreviation: "Br"
+            },
             {
                 Name: "Cancer Man",
-                Abbreviation: "Cm"},
+                Abbreviation: "Cm"
+            },
             {
                 Name: "Gray Matter",
-                Abbreviation: "Gm"},
+                Abbreviation: "Gm"
+            },
             {
                 Name: "Crazy Handful of Nothin'",
-                Abbreviation: "Ch"},
+                Abbreviation: "Ch"
+            },
             {
                 Name: "A No-Rough-Stuff-Type Deal",
-                Abbreviation: "Nr"},
+                Abbreviation: "Nr"
+            },
         ];
 
         let season2 = [
             {
                 Name: "Seven Thirty-Seven",
-                Abbreviation: "Sv"},
+                Abbreviation: "Sv"
+            },
             {
                 Name: "Grilled",
-                Abbreviation: "G"},
+                Abbreviation: "G"
+            },
             {
                 Name: "Bit by a Dead Bee",
-                Abbreviation: "Bb"},
+                Abbreviation: "Bb"
+            },
             {
                 Name: "Down",
-                Abbreviation: "Dn"},
+                Abbreviation: "Dn"
+            },
             {
                 Name: "Breakage",
-                Abbreviation: "Bk"},
+                Abbreviation: "Bk"
+            },
             {
                 Name: "Peekaboo",
-                Abbreviation: "Pkb"},
+                Abbreviation: "Pkb"
+            },
             {
                 Name: "Negro y Azul",
-                Abbreviation: "Na"},
+                Abbreviation: "Na"
+            },
             {
                 Name: "Better Call Saul",
-                Abbreviation: "Bcs"},
+                Abbreviation: "Bcs"
+            },
             {
                 Name: "4 Days Out",
-                Abbreviation: "Do"},
+                Abbreviation: "Do"
+            },
             {
                 Name: "Over",
-                Abbreviation: "O"},
+                Abbreviation: "O"
+            },
             {
                 Name: "Mandala",
-                Abbreviation: "M"},
+                Abbreviation: "M"
+            },
             {
                 Name: "Phoenix",
-                Abbreviation: "P"},
+                Abbreviation: "P"
+            },
             {
                 Name: "ABQ",
-                Abbreviation: "Abq"},
+                Abbreviation: "Abq"
+            },
         ];
 
         let season3 = [
             {
                 Name: "No Mas",
-                Abbreviation: "Nm"},
+                Abbreviation: "Nm"
+            },
             {
                 Name: "Caballo Sin Nombre",
-                Abbreviation: "Cn"},
+                Abbreviation: "Cn"
+            },
             {
                 Name: "I.F.T",
-                Abbreviation: "If"},
+                Abbreviation: "If"
+            },
             {
                 Name: "Green Light",
-                Abbreviation: "Gl"},
+                Abbreviation: "Gl"
+            },
             {
                 Name: "Mas",
-                Abbreviation: "Ma"},
+                Abbreviation: "Ma"
+            },
             {
                 Name: "Sunset",
-                Abbreviation: "S"},
+                Abbreviation: "S"
+            },
             {
                 Name: "One Minute",
-                Abbreviation: "Om"},
+                Abbreviation: "Om"
+            },
             {
                 Name: "I See You",
-                Abbreviation: "Icu"},
+                Abbreviation: "Icu"
+            },
             {
                 Name: "Kafkaesque",
-                Abbreviation: "K"},
+                Abbreviation: "K"
+            },
             {
                 Name: "Fly",
-                Abbreviation: "F"},
+                Abbreviation: "F"
+            },
             {
                 Name: "Abiquiu",
-                Abbreviation: "Ab"},
+                Abbreviation: "Ab"
+            },
             {
                 Name: "Half Measures",
-                Abbreviation: "Hm"},
+                Abbreviation: "Hm"
+            },
             {
                 Name: "Full Measure",
-                Abbreviation: "Fm"},
+                Abbreviation: "Fm"
+            },
         ];
 
         let season4 = [
             {
                 Name: "Box Cutter",
-                Abbreviation: "Bc"},
+                Abbreviation: "Bc"
+            },
             {
                 Name: "Thirty-Eight Snub",
-                Abbreviation: "Ts"},
+                Abbreviation: "Ts"
+            },
             {
                 Name: "Open House",
-                Abbreviation: "Oh"},
+                Abbreviation: "Oh"
+            },
             {
                 Name: "Bullet Points",
-                Abbreviation: "Bp"},
+                Abbreviation: "Bp"
+            },
             {
                 Name: "Shotgun",
-                Abbreviation: "Sg"},
+                Abbreviation: "Sg"
+            },
             {
                 Name: "Cornered",
-                Abbreviation: "C"},
+                Abbreviation: "C"
+            },
             {
                 Name: "Problem Dog",
-                Abbreviation: "Pd"},
+                Abbreviation: "Pd"
+            },
             {
                 Name: "Hermanos",
-                Abbreviation: "H"},
+                Abbreviation: "H"
+            },
             {
                 Name: "Bug",
-                Abbreviation: "B"},
+                Abbreviation: "B"
+            },
             {
                 Name: "Salud",
-                Abbreviation: "Sa"},
+                Abbreviation: "Sa"
+            },
             {
                 Name: "Crawl Space",
-                Abbreviation: "Cs"},
+                Abbreviation: "Cs"
+            },
             {
                 Name: "End Times",
-                Abbreviation: "Et"},
+                Abbreviation: "Et"
+            },
             {
                 Name: "Face Off",
-                Abbreviation: "Fo"},
+                Abbreviation: "Fo"
+            },
         ];
 
         let season5 = [
             {
                 Name: "Live Free or Die",
-                Abbreviation: "Lfd"},
+                Abbreviation: "Lfd"
+            },
             {
                 Name: "Madrigal",
-                Abbreviation: "Ml"},
+                Abbreviation: "Ml"
+            },
             {
                 Name: "Hazard Pay",
-                Abbreviation: "Hp"},
+                Abbreviation: "Hp"
+            },
             {
                 Name: "Fifty One",
-                Abbreviation: "Fio"},
+                Abbreviation: "Fio"
+            },
             {
                 Name: "Dead Freight",
-                Abbreviation: "Df"},
+                Abbreviation: "Df"
+            },
             {
                 Name: "Buyout",
-                Abbreviation: "Bo"},
+                Abbreviation: "Bo"
+            },
             {
                 Name: "Say My Name",
-                Abbreviation: "Smn"},
+                Abbreviation: "Smn"
+            },
             {
                 Name: "Gliding Over All",
-                Abbreviation: "Go"},
+                Abbreviation: "Go"
+            },
             {
                 Name: "Blood Money",
-                Abbreviation: "Blm"},
+                Abbreviation: "Blm"
+            },
             {
                 Name: "Buried",
-                Abbreviation: "Bu"},
+                Abbreviation: "Bu"
+            },
             {
                 Name: "Confessions",
-                Abbreviation: "Co"},
+                Abbreviation: "Co"
+            },
             {
                 Name: "Rabid Dog",
-                Abbreviation: "Rd"},
+                Abbreviation: "Rd"
+            },
             {
                 Name: "To'hajilee",
-                Abbreviation: "Th"},
+                Abbreviation: "Th"
+            },
             {
                 Name: "Ozymandias",
-                Abbreviation: "Ozy"},
+                Abbreviation: "Ozy"
+            },
             {
                 Name: "Granite State",
-                Abbreviation: "Gs"},
+                Abbreviation: "Gs"
+            },
             {
                 Name: "Felina",
-                Abbreviation: "Fe"},
+                Abbreviation: "Fe"
+            },
         ];
 
         // Iterated through 
@@ -656,10 +767,10 @@ export class SceneLevelSelect extends Scene {
 
         let table = document.getElementById("table");
         let level = 0;
-        
+
         for (let seasonIndex = 0; seasonIndex < seasons.length; seasonIndex++) {
             let season = seasons[seasonIndex];
-            
+
             for (let index = 0; index < season.length; index++) {
                 level += 1;
 
@@ -679,14 +790,14 @@ export class SceneLevelSelect extends Scene {
                 title.setAttribute("class", "title");
                 title.innerHTML = season[index].Abbreviation;
                 let desc = document.createElement("div")
-                desc.setAttribute("class", "desc"); 
+                desc.setAttribute("class", "desc");
                 desc.innerHTML = "Level " + level;
 
                 period_inner.appendChild(title);
                 period_inner.appendChild(desc);
-             
+
                 period_inner.setAttribute("level", level)
-                period_inner.onclick = function(event) {
+                period_inner.onclick = function (event) {
                     m_SELECTED_LEVEL.level = Number(event.currentTarget.getAttribute("level"));
                     console.log(m_SELECTED_LEVEL.level);
                 };
@@ -701,7 +812,7 @@ export class SceneLevelSelect extends Scene {
             let gap = document.createElement("div");
             gap.setAttribute("class", "empty-space-" + (index + 1));
             table.appendChild(gap);
-        }        
+        }
     }
 }
 

@@ -155,7 +155,7 @@ export class Game {
         this.#m_SceneLevelSelect = new SceneLevelSelect();
         this.#m_SceneGame = new SceneGame("gameCanvas", this.#m_Level);
         this.#m_SceneGame.Disable();
-        this.#m_SceneLevelCreate = new SceneLevelCreate(this.#m_Level);    
+        this.#m_SceneLevelCreate = new SceneLevelCreate();    
     }
 
     // Called from Update
