@@ -13,6 +13,7 @@ export class LevelHandler {
         this.CreateSimulationLevel();
         this.Save();
         this.#LoadAllLevels();
+        this.a_Levels[0].b_Completed = true;
     }
 
     // Make empty levels

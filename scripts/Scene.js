@@ -6,6 +6,7 @@ import { Ball } from './Ball.js';
 import { Timer } from './Timer.js';
 import { ScoreCounter } from './Score.js';
 import { Brick, LevelHandler } from './Level.js';
+import { KeyStates } from './Controls.js';
 
 export const m_SELECTED_LEVEL = {
     level: 0
@@ -551,6 +552,19 @@ export class SceneLevelSelect extends Scene {
         this.Disable();
     }
 
+    Update() {
+        if (KeyStates.m) {
+            KeyStates.m = false;
+            for (let index = 0; index < this.m_LevelHandler.a_Levels.length; index++) {
+                if (!this.m_LevelHandler.a_Levels[index].b_Completed) {
+                    this.m_LevelHandler.a_Levels[index].b_Completed = true;
+                    this.UpdateColours();
+                    break;
+                }
+            }
+        }
+    }
+
     Enable() {
         document.getElementById("levelselect").style.display = "block";
     }
@@ -571,20 +585,20 @@ export class SceneLevelSelect extends Scene {
 
     UpdateColours() {
         // Sets all levels to unlocked
-        let a_LockedLevels = document.getElementsByClassName("locked");
-        for (let lockedIndex; lockedIndex < a_LockedLevels.length; lockedIndex++) {
-            let m_Level = a_LockedLevels[lockedIndex];
-            let newClassName = m_Level.getAttribute("class") - " locked";
-            m_Level.setAttribute("class", newClassName);
-        }
+        let a_LockedLevels = document.querySelectorAll(".locked");
+        a_LockedLevels.forEach(function (element) {
+            let newClassName = element.getAttribute("class").replace(" locked", "");
+            element.setAttribute("class", newClassName);
+        });
 
         // Sets locked levels
-        let a_Periods = document.getElementsByClassName("period");
+        let a_Periods = document.getElementsByClassName("period-inner");
         // The first will always be unlocked 
         for (let index = 1; index < a_Periods.length; index++) {
             let a_Period = a_Periods[index];
-            let i_Level = Number(a_Period.getAttribute("level"));
-            let m_PreviousLevel = this.m_LevelHandler.a_Levels[i_Level];
+            let str_Level = a_Period.getAttribute("level");
+            let i_Level = Number(str_Level);
+            let m_PreviousLevel = this.m_LevelHandler.a_Levels[i_Level - 1];
 
             if (!m_PreviousLevel.b_Completed) {
                 a_Period.setAttribute("class", a_Period.getAttribute("class") + " locked");
