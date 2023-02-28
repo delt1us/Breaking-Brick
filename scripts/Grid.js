@@ -37,8 +37,8 @@ export class Grid {
 
     // Loads bricks in Level object as actual Brick objects
     LoadLevel(scene, level) {
-        for (let index = 0; index < level.a_Bricks.length; index++) {
-            let brick = level.a_Bricks[index];
+        for (let index = 0; index < level.m_ActiveLevel.a_Bricks.length; index++) {
+            let brick = level.m_ActiveLevel.a_Bricks[index];
             let brickLocation = [this.#vec3_GRID_START_LOCATION.x + brick.vec_GridLocation.x * 140, this.#vec3_GRID_START_LOCATION.y - brick.vec_GridLocation.y * 80];
             this.a_GridArray.push(new Brick(scene, brickLocation, this.#d_Textures, brick.i_Health));
         }

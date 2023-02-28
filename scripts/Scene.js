@@ -317,7 +317,7 @@ export class SceneLevelCreate extends Scene {
         for (const brick of bricksDiv.children) {
             brick.style.backgroundColor = "#ffffff";
         }
-        this.m_Level.a_Bricks = [];
+        this.m_Level.m_ActiveLevel.a_Bricks = [];
     }
 
     // Called from update
@@ -325,9 +325,9 @@ export class SceneLevelCreate extends Scene {
         if (m_ClickedBrick != null) {
             let thisBrick = this.#MakeBrickForGrid();
             if (this.#i_ActiveBrickHealth != -1) {
-                this.m_Level.a_Bricks.push(thisBrick);
+                this.m_Level.m_ActiveLevel.a_Bricks.push(thisBrick);
             }
-            // Removes clicked cuboid from m_Level.a_Bricks
+            // Removes clicked cuboid from m_Level.m_ActiveLevel.a_Bricks
             else {
                 this.#RemoveBrickAtClick();
             }
@@ -354,10 +354,10 @@ export class SceneLevelCreate extends Scene {
     }
 
     #RemoveBrickAtClick() {
-        for (let index = 0; index < this.m_Level.a_Bricks.length; index++) {
-            if (this.m_Level.a_Bricks[index].vec_GridLocation.x == a_Click[0]
-                && this.m_Level.a_Bricks[index].vec_GridLocation.y == a_Click[1]) {
-                this.m_Level.a_Bricks.splice(index, 1);
+        for (let index = 0; index < this.m_Level.m_ActiveLevel.a_Bricks.length; index++) {
+            if (this.m_Level.m_ActiveLevel.a_Bricks[index].vec_GridLocation.x == a_Click[0]
+                && this.m_Level.m_ActiveLevel.a_Bricks[index].vec_GridLocation.y == a_Click[1]) {
+                this.m_Level.m_ActiveLevel.a_Bricks.splice(index, 1);
                 console.log("removed");
                 break;
             }

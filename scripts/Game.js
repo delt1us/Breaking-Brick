@@ -71,7 +71,7 @@ export class Game {
             }
             else {
                 this.#m_Level = this.#m_SceneLevelCreate.m_Level;
-                this.#m_Level.i_Level = m_SELECTED_LEVEL.level;
+                this.#m_Level.m_ActiveLevel.i_Level = m_SELECTED_LEVEL.level;
                 this.#m_Level.Save();
                 this.#m_SceneLevelSelect.ShowCreateButton();
                 this.#RemoveCurrentSceneFromSceneActiveArray();
@@ -88,7 +88,6 @@ export class Game {
             ButtonStates.Play = false;
         }
 
-        // !change this
         else if (ButtonStates.Back) {
             if (!this.#m_SceneLevelSelect.b_CreateButton) {
                 this.#m_SceneLevelSelect.ShowCreateButton();
@@ -142,7 +141,6 @@ export class Game {
 
     // Called from constructor
     #SetupGameScenes() {
-        this.#m_Level.CreateSimulationLevel();
         this.#m_Level.Load(63);
         this.#m_Level.Save();
 
@@ -169,8 +167,8 @@ export class Game {
     
     #UpdateLevelDiv() {
         let text = "";
-        if (this.#m_Level.i_Level > 0 && !this.#m_Level.b_Hidden) {
-            text = `LEVEL:${this.#m_Level.i_Level}`;
+        if (this.#m_Level.m_ActiveLevel.i_Level > 0 && !this.#m_Level.b_Hidden) {
+            text = `LEVEL:${this.#m_Level.m_ActiveLevel.i_Level}`;
         }
         document.getElementById("level").innerHTML = text;
     }
