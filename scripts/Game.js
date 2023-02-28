@@ -80,6 +80,7 @@ export class Game {
     
         else if (ButtonStates.Create) {
             this.#SwitchTo(this.#m_SceneLevelCreate);
+            this.#m_SceneLevelCreate.ResetCreationGrid();
             ButtonStates.Create = false;
         }
 

@@ -287,7 +287,6 @@ export class SceneLevelCreate extends Scene {
 
     Enable() {
         document.getElementById("levelCreate").style.display = "block";
-        this.ResetCreationGrid();
     }
 
     Disable() {
