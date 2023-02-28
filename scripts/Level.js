@@ -9,10 +9,9 @@ export class LevelHandler {
         this.a_Levels = [];
         this.b_Hidden = false;
 
-        this.#SetAllLevelsEmpty();
+        this.#LoadAllLevels();
         this.CreateSimulationLevel();
         this.Save();
-        this.#LoadAllLevels();
         this.a_Levels[0].b_Completed = true;
     }
 
