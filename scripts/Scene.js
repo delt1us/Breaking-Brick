@@ -13,6 +13,8 @@ export const m_SELECTED_LEVEL = {
 
 const a_Clicks = [];
 
+let m_SelectedBrick = null;
+
 // Used to convert index into number for css class ids in level select scene
 function toWord (integer) {
     let string;
@@ -263,10 +265,14 @@ export class SceneSettingsMenu extends Scene {
 export class SceneLevelCreate extends Scene {
     #m_Level;
     #a_Grid;
+    #i_ActiveBrickHealth;
+    #d_BrickColours;
     constructor(level) {
         super();
         this.#m_Level = level;
         this.#MakeGrid();
+        this.#InitColours();
+        this.#MakeBrickSelectionButtons();
         this.Disable();
     }
 
@@ -278,6 +284,122 @@ export class SceneLevelCreate extends Scene {
         document.getElementById("levelCreate").style.display = "none";
     }
 
+    Update() {
+        this.#HandleInputs();
+    }
+    
+    // Called from update
+    #HandleInputs() {
+        for (let index = 0; index < a_Clicks.length; index++) {
+    
+        }
+        // This doesnt work as its a const
+        // a_Clicks = [];
+        for (let index = 0; index < a_Clicks.length; index++) {
+            a_Clicks.pop();            
+        }
+    }
+
+    #InitColours() {
+        this.#d_BrickColours = {
+            "Blue": "#89a9ff",
+            "Pink": "#E589FF",
+            "Lime": "#A3FF89",
+            "Green": "#89FFBA",
+            "Purple": "#898DFF",
+            "Hot Pink": "#FF89B3",
+            "Yellow": "#FFED89",
+            "Orange": "#FF834B",
+            "Grey": "#808080"       
+        };
+    }
+
+    #GetColourFromHealth(health) {
+        let colour;
+        switch(health) {
+            default:
+                colour = this.#d_BrickColours["Grey"];
+                break;
+            case 1:
+                colour = this.#d_BrickColours["Purple"];
+                break;
+            case 2:
+                colour = this.#d_BrickColours["Lime"];
+                break;
+            case 3:
+                colour = this.#d_BrickColours["Pink"];
+                break;
+            case 4:
+                colour = this.#d_BrickColours["Yellow"];
+                break;
+            case 5:
+                colour = this.#d_BrickColours["Hot Pink"];
+                break;
+            case 6:
+                colour = this.#d_BrickColours["Orange"];
+                break;
+            case 7:
+                colour = this.#d_BrickColours["Blue"];
+                break;
+            case 8: 
+                colour = this.#d_BrickColours["Green"];
+                break;
+        }
+        return colour;
+    }
+
+
+    #MakeBrickSelectionButtons() {
+        let div = document.getElementById("selection");
+
+        // Adds column headers
+        let headerRow = document.createElement("div");
+        headerRow.setAttribute("class", "selection-row");
+
+        let brickLabel = document.createElement("div");
+        brickLabel.setAttribute("class", "column-header");
+        brickLabel.innerHTML = "Brick";
+        headerRow.appendChild(brickLabel);
+
+        let healthLabel = document.createElement("div");
+        healthLabel.setAttribute("class", "column-header");
+        healthLabel.innerHTML = "Health";
+        headerRow.appendChild(healthLabel);
+        div.appendChild(headerRow);
+
+        // Adds selection bricks themselves
+        for (let health = 0; health < 9; health++) {
+            let colour = this.#GetColourFromHealth(health);
+            let row = document.createElement("div");
+            row.setAttribute("class", "selection-row");
+
+            let brickDesc = document.createElement("div");
+            brickDesc.innerHTML = health;
+            brickDesc.setAttribute("class", "label");
+            
+            let thisBrick = document.createElement("div");
+            thisBrick.setAttribute("class", "brick");
+            thisBrick.style.backgroundColor = colour;
+            thisBrick.style.border = "5px solid transparent";
+            
+            thisBrick.onclick = function(event) {
+                if (m_SelectedBrick != null) {
+                    m_SelectedBrick.setAttribute("class", "brick");
+                }
+                m_SelectedBrick = event.currentTarget;
+                event.currentTarget.setAttribute("class", "brick selected");
+            };
+
+            row.appendChild(thisBrick);
+            row.appendChild(brickDesc);
+            div.appendChild(row);
+        }
+
+        // TODO make bricks pickable
+        // TODO make selected brick have white border
+    }
+
+    // Called from constructor, makes html grid
     #MakeGrid() {
         let element = document.getElementById("bricks");
         for (let row = 0; row < 6; row++) {
@@ -292,7 +414,7 @@ export class SceneLevelCreate extends Scene {
                     let y = Number(event.currentTarget.getAttribute("row"));
                     a_Clicks.push([x, y]);
                     console.log(a_Clicks);
-                }
+                };
                 element.appendChild(thisBrick);
             }
         }

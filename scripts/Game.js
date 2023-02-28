@@ -50,6 +50,9 @@ export class Game {
             case enum_GameState.Level:
                 this.#m_SceneLevelSelect.Update(this.#f_DeltaTime);
                 break;
+            case enum_GameState.Create:
+                this.#m_SceneLevelCreate.Update();
+                break;
         }
     }
 
@@ -64,6 +67,9 @@ export class Game {
                 break;
             case enum_GameState.Level:
                 this.#m_SceneLevelSelect.Draw();
+                break;
+            case enum_GameState.Create:
+                this.#m_SceneLevelCreate.Draw();
                 break;
         }
     }
