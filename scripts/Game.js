@@ -75,8 +75,9 @@ export class Game {
     // Used to check if buttons are pressed from Update()
     #CheckButtons() {
         if (m_SELECTED_LEVEL.level > 0) {
+            console.log(m_SELECTED_LEVEL.level);
             if (this.#m_SceneLevelSelect.b_CreateButton) {
-                if (m_SELECTED_LEVEL.level == 1 || this.#m_Level.a_Levels[m_SELECTED_LEVEL.level - 1].b_Completed) {
+                if (m_SELECTED_LEVEL.level == 1 || this.#m_Level.a_Levels[m_SELECTED_LEVEL.level - 2].b_Completed) {
                     this.#LoadLevel(m_SELECTED_LEVEL.level);
                 }
             }

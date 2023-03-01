@@ -213,10 +213,6 @@ export class SceneGame extends Scene {
         return this._m_Camera;
     }
 
-    SetLevel(level) {
-        this.m_Level = level;
-    }
-
     // Run once from constructor
     #Initialize() {
         this.m_Grid = new Grid(this.m_Scene);
@@ -622,7 +618,7 @@ export class SceneLevelSelect extends Scene {
             let a_Period = a_Periods[index];
             let str_Level = a_Period.getAttribute("level");
             let i_Level = Number(str_Level);
-            let m_PreviousLevel = this.m_LevelHandler.a_Levels[i_Level - 1];
+            let m_PreviousLevel = this.m_LevelHandler.a_Levels[i_Level - 2];
 
             if (!m_PreviousLevel.b_Completed) {
                 a_Period.setAttribute("class", a_Period.getAttribute("class") + " locked");
