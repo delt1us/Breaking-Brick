@@ -9,6 +9,7 @@ export class LevelHandler {
         this.a_Levels = [];
         this.b_Hidden = false;
 
+        localStorage.clear();
         this.LoadAllLevels();
         this.CreateSimulationLevel();
         this.Save();
@@ -23,14 +24,35 @@ export class LevelHandler {
     // Called from constructor
     LoadAllLevels() {
         this.a_Levels = JSON.parse(localStorage.getItem("levels"));
+   
+        // If localstorage is empty
+        if (this.a_Levels == null) {
+            this.#SetAllLevelsEmpty();
+            this.Save();
+            this.LoadAllLevels();
+        }
     }
 
     // Usually not run
     #SetAllLevelsEmpty() {
         this.a_Levels = [];
         for (let index = 0; index < 62; index++) {
-            let level = index + 1;
-            this.a_Levels.push(new Level([], level, false));
+            let a_Grid = [
+                new Brick(new THREE.Vector2(0, 0), 2),
+                new Brick(new THREE.Vector2(1, 0), 2),
+                new Brick(new THREE.Vector2(2, 0), 2),
+                new Brick(new THREE.Vector2(3, 0), 2),
+                new Brick(new THREE.Vector2(4, 0), 2),
+                new Brick(new THREE.Vector2(5, 0), 2),
+                new Brick(new THREE.Vector2(6, 0), 2),
+                new Brick(new THREE.Vector2(7, 0), 2),
+                new Brick(new THREE.Vector2(8, 0), 2),
+                new Brick(new THREE.Vector2(9, 0), 2),
+                new Brick(new THREE.Vector2(10, 0), 2),
+                new Brick(new THREE.Vector2(11, 0), 2)
+            ];
+            let level = new Level(a_Grid, index + 1, false);
+            this.a_Levels.push(level);
         }
     }
 
