@@ -5,7 +5,7 @@ export class Brick {
     vec3_BOX_SIZE;
     m_Cube;
     m_BoundingBox;
-    #i_Health;
+    i_Health;
     #i_ScoreValue;
     #a_Textures;
 
@@ -13,7 +13,7 @@ export class Brick {
         this.vec3_BOX_SIZE = new THREE.Vector3(120, 60, 60);
         this.#a_Textures = textures;
         this.#i_ScoreValue = 10 * health;
-        this.#i_Health = health;
+        this.i_Health = health;
 
         this.#MakeCuboid(m_Scene);
         this.#SetCuboidPosition(location);
@@ -21,14 +21,14 @@ export class Brick {
     }
 
     #AddHealth(health) {
-        this.#i_Health += health;
+        this.i_Health += health;
         this.#UpdateColour();
     }
 
     // Determines what colur the brick should be
     #UpdateColour() {
         let colour;
-        switch(this.#i_Health) {
+        switch(this.i_Health) {
             default:
                 colour = this.#a_Textures["Grey"];
                 break;
@@ -67,7 +67,7 @@ export class Brick {
     
     Hit(grid, scene, scoreCounter) {
         this.#AddHealth(-1);
-        if (this.#i_Health == 0) {
+        if (this.i_Health == 0) {
             this.#Destroy(grid, scene, scoreCounter);
         }
     }

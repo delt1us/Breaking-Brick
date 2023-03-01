@@ -203,10 +203,15 @@ export class SceneGame extends Scene {
 
     // Called from Update
     _CheckIfWon() {
-        if (this.m_Grid.a_GridArray.length == 0) {
-            return true;
+        let b_Won = true;
+
+        // Checks for any bricks with more than 0 health
+        for (let index = 0; index < this.m_Grid.a_GridArray.length; index++) {
+            if (this.m_Grid.a_GridArray[index].i_Health > 0) {
+                b_Won = false;
+            }
         }
-        return false;
+        return b_Won;
     }
 
     GetCamera() {
