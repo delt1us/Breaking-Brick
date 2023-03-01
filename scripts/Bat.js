@@ -1,8 +1,5 @@
-import * as THREE from 'three';
-import { KeyStates } from './Controls';
-
 // Bat is what the player controls
-export class Bat {
+class Bat {
     // THREE.Mesh object
     m_BatCuboid;
     // THREE.Box3 object used for detecting the size of the bat

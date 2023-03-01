@@ -1,14 +1,10 @@
-import * as THREE from 'three';
-import { LoaderUtils, Vector3 } from "three";
-import { Brick } from './Brick';
-
 // Grid that will be used to hold bricks
-export class Grid {
+class Grid {
     a_GridArray;
     #vec3_GRID_START_LOCATION;
     #d_Textures;
     constructor(m_Scene) {
-        this.#vec3_GRID_START_LOCATION = new Vector3(190, 980, 0)
+        this.#vec3_GRID_START_LOCATION = new THREE.Vector3(190, 980, 0)
         this.a_GridArray = [];
         this.#LoadColours();
     }

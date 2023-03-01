@@ -1,12 +1,4 @@
-import * as THREE from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import { LevelHandler } from './Level.js';
-import { SceneGame, SceneGameFinished, SceneLevelCreate, SceneLevelSelect, SceneMainMenu, ScenePauseMenu, SceneSettingsMenu } from './Scene.js';
-import { ButtonStates } from './Button.js';
-import { m_SELECTED_LEVEL } from './Scene.js';
-import { KeyStates } from './Controls.js';
-
-export class Game {
+class Game {
     // Level object
     #m_Level;
     #f_DeltaTime;

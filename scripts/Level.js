@@ -1,6 +1,4 @@
-import * as THREE from 'three';
-
-export class LevelHandler {
+class LevelHandler {
     b_Hidden;
     m_ActiveLevel;
     a_Levels;
@@ -38,18 +36,18 @@ export class LevelHandler {
         this.a_Levels = [];
         for (let index = 0; index < 62; index++) {
             let a_Grid = [
-                new Brick(new THREE.Vector2(0, 0), 2),
-                new Brick(new THREE.Vector2(1, 0), 2),
-                new Brick(new THREE.Vector2(2, 0), 2),
-                new Brick(new THREE.Vector2(3, 0), 2),
-                new Brick(new THREE.Vector2(4, 0), 2),
-                new Brick(new THREE.Vector2(5, 0), 2),
-                new Brick(new THREE.Vector2(6, 0), 2),
-                new Brick(new THREE.Vector2(7, 0), 2),
-                new Brick(new THREE.Vector2(8, 0), 2),
-                new Brick(new THREE.Vector2(9, 0), 2),
-                new Brick(new THREE.Vector2(10, 0), 2),
-                new Brick(new THREE.Vector2(11, 0), 2)
+                new LevelBrick(new THREE.Vector2(0, 0), 2),
+                new LevelBrick(new THREE.Vector2(1, 0), 2),
+                new LevelBrick(new THREE.Vector2(2, 0), 2),
+                new LevelBrick(new THREE.Vector2(3, 0), 2),
+                new LevelBrick(new THREE.Vector2(4, 0), 2),
+                new LevelBrick(new THREE.Vector2(5, 0), 2),
+                new LevelBrick(new THREE.Vector2(6, 0), 2),
+                new LevelBrick(new THREE.Vector2(7, 0), 2),
+                new LevelBrick(new THREE.Vector2(8, 0), 2),
+                new LevelBrick(new THREE.Vector2(9, 0), 2),
+                new LevelBrick(new THREE.Vector2(10, 0), 2),
+                new LevelBrick(new THREE.Vector2(11, 0), 2)
             ];
             let level = new Level(a_Grid, index + 1, false);
             this.a_Levels.push(level);
@@ -75,7 +73,7 @@ export class LevelHandler {
         for (let row = 0; row < 6; row++) {
             for (let column = 0; column < 12; column++) {
                 let location = new THREE.Vector2(column, row);
-                a_Bricks.push(new Brick(location, brickHealth));
+                a_Bricks.push(new LevelBrick(location, brickHealth));
             }
         }
         this.m_ActiveLevel = new Level(a_Bricks, 63, false);
@@ -83,7 +81,7 @@ export class LevelHandler {
     }
 }
 
-export class Level {
+class Level {
     a_Bricks;
     i_Level;
     b_Completed;
@@ -95,7 +93,7 @@ export class Level {
     }
 }
 
-export class Brick {
+class LevelBrick {
     vec_GridLocation;
     i_Health;
     constructor(gridLocation, health) {

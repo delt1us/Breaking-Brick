@@ -1,14 +1,4 @@
-import * as THREE from 'three';
-import { Grid } from './Grid.js'
-import { Bat } from './Bat';
-import { Frame } from './Frame.js';
-import { Ball } from './Ball.js';
-import { Timer } from './Timer.js';
-import { ScoreCounter } from './Score.js';
-import { Brick, Level } from './Level.js';
-import { KeyStates } from './Controls.js';
-
-export const m_SELECTED_LEVEL = {
+const m_SELECTED_LEVEL = {
     level: 0
 };
 
@@ -140,7 +130,7 @@ class Scene {
     }
 }
 
-export class SceneGame extends Scene {
+class SceneGame extends Scene {
     // Threejs Renderer
     // Grid object 
     m_Grid;
@@ -231,7 +221,7 @@ export class SceneGame extends Scene {
     }
 }
 
-export class SceneGameFinished extends Scene {
+class SceneGameFinished extends Scene {
     constructor() {
         super();
     }
@@ -249,7 +239,7 @@ export class SceneGameFinished extends Scene {
     }
 }
 
-export class SceneMainMenu extends SceneGame {
+class SceneMainMenu extends SceneGame {
     constructor(level, canvasID) {
         super(canvasID, level);
         this.m_Ball.b_Simulation = true;
@@ -292,13 +282,13 @@ export class SceneMainMenu extends SceneGame {
     }
 }
 
-export class SceneSettingsMenu extends Scene {
+class SceneSettingsMenu extends Scene {
     constructor() {
         super();
     }
 }
 
-export class ScenePauseMenu extends Scene {
+class ScenePauseMenu extends Scene {
     constructor() {
         super();
     }
@@ -312,7 +302,7 @@ export class ScenePauseMenu extends Scene {
     }
 }
 
-export class SceneLevelCreate extends Scene {
+class SceneLevelCreate extends Scene {
     m_Level;
     #i_ActiveBrickHealth;
     #d_BrickColours;
@@ -366,7 +356,7 @@ export class SceneLevelCreate extends Scene {
     }
 
     #MakeBrickForGrid() {
-        let thisBrick = new Brick(new THREE.Vector2(a_Click[0], a_Click[1]), this.#i_ActiveBrickHealth);
+        let thisBrick = new LevelBrick(new THREE.Vector2(a_Click[0], a_Click[1]), this.#i_ActiveBrickHealth);
         m_ClickedBrick.style.backgroundColor = this.#GetColourFromHealth(this.#i_ActiveBrickHealth);
         return thisBrick;
     }
@@ -559,7 +549,7 @@ export class SceneLevelCreate extends Scene {
     }
 }
 
-export class SceneLevelSelect extends Scene {
+class SceneLevelSelect extends Scene {
     b_CreateButton;
     m_LevelHandler;
     constructor(m_LevelHandler) {

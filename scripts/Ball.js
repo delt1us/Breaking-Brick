@@ -1,10 +1,6 @@
-import * as THREE from 'three';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { KeyStates } from './Controls';
-
 // TODO turn ball into walter's head
 // Class for ball
-export class Ball {
+class Ball {
     #i_RADIUS;
     // Sphere, THREE.Mesh object
     m_BallSphere;

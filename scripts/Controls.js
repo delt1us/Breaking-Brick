@@ -1,6 +1,6 @@
 // This file contains the event listeners and what happens when keys are pressed
 // KeySates object
-export const KeyStates = {
+const KeyStates = {
     d: false,
     a: false,
     space: false,

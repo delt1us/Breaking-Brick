@@ -1,4 +1,4 @@
-export class ScoreCounter {
+class ScoreCounter {
     i_Score;
     // Div object it will update
     #m_Div;

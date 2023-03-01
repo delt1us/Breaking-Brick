@@ -1,4 +1,4 @@
-export const ButtonStates = {
+const ButtonStates = {
     Play: false,
     Settings: false,
     Back: false,

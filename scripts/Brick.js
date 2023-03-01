@@ -1,7 +1,5 @@
-import * as THREE from 'three';
-
 // Brick superclass
-export class Brick {
+class Brick {
     vec3_BOX_SIZE;
     m_Cube;
     m_BoundingBox;

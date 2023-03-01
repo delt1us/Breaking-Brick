@@ -1,4 +1,4 @@
-export class Timer {
+class Timer {
     #f_Timer;
     #b_Paused;
     #m_Div;
