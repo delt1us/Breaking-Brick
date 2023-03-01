@@ -31,7 +31,6 @@ document.getElementById("levelDesignerButton").onclick = function() {
     ButtonStates.Create = true;
 };
 
-
 document.getElementById("backButtonLevelCreate").onclick = function() {
     console.log("back level designer pressed");
     ButtonStates.BackLevelCreate = true;
