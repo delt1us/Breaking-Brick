@@ -5,7 +5,7 @@ import { Frame } from './Frame.js';
 import { Ball } from './Ball.js';
 import { Timer } from './Timer.js';
 import { ScoreCounter } from './Score.js';
-import { Brick, Level, LevelHandler } from './Level.js';
+import { Brick, Level } from './Level.js';
 import { KeyStates } from './Controls.js';
 
 export const m_SELECTED_LEVEL = {
@@ -152,7 +152,7 @@ export class SceneGame extends Scene {
     _m_Frame;
     // Timer object 
     _m_Timer;
-    _m_ScoreCounter;
+    m_ScoreCounter;
     m_Level;
     _f_DeltaTime;
     _m_Canvas;
@@ -197,6 +197,7 @@ export class SceneGame extends Scene {
 
     #SetLevelCompleted() {
         this.m_Level.m_ActiveLevel.b_Completed = true;
+        this.m_Level.Save();
         this.b_Won = true;
     }
 
@@ -223,15 +224,19 @@ export class SceneGame extends Scene {
         this._m_Bat = new Bat(this.m_Scene);
         this._m_Frame = new Frame(this.m_Scene);
         this._m_Timer = new Timer("timer");
-        this._m_ScoreCounter = new ScoreCounter("score");
+        this.m_ScoreCounter = new ScoreCounter("score");
 
-        this.m_Ball = new Ball(this.m_Scene, this.m_Grid, this._m_Frame, this._m_Bat, this._m_Timer, this._m_ScoreCounter);
+        this.m_Ball = new Ball(this.m_Scene, this.m_Grid, this._m_Frame, this._m_Bat, this._m_Timer, this.m_ScoreCounter);
     }
 }
 
 export class SceneGameFinished extends Scene {
     constructor() {
         super();
+    }
+
+    SetScore(score) {
+        document.getElementById("scoreGameFinished").innerHTML = `SCORE: ${score}`;
     }
 
     Enable() {

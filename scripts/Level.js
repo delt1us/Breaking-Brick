@@ -9,7 +9,7 @@ export class LevelHandler {
         this.a_Levels = [];
         this.b_Hidden = false;
 
-        this.#LoadAllLevels();
+        this.LoadAllLevels();
         this.CreateSimulationLevel();
         this.Save();
         this.a_Levels[0].b_Completed = true;
@@ -21,7 +21,7 @@ export class LevelHandler {
     // Allow saving over individual levels
 
     // Called from constructor
-    #LoadAllLevels() {
+    LoadAllLevels() {
         this.a_Levels = JSON.parse(localStorage.getItem("levels"));
     }
 
@@ -36,7 +36,6 @@ export class LevelHandler {
 
     // Saving uses localstorage which is similar to cookies but they do not expire. Called from Game.Initialize() 
     Save() {
-        this.a_Levels[this.m_ActiveLevel.i_Level - 1] = this.m_ActiveLevel;
         // Converts this level to a JSON string
         let json = JSON.stringify(this.a_Levels);
         // Creates item in localstorage

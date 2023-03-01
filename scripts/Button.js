@@ -7,7 +7,8 @@ export const ButtonStates = {
     SaveLevel: false,
     QuitPauseMenu: false,
     ContinuePauseMenu: false,
-    SettingsPauseMenu: false
+    SettingsPauseMenu: false,
+    BackFinishedMenu: false
 };
 
 document.getElementById("playbutton").onclick = function () {
@@ -21,37 +22,42 @@ document.getElementById("settingsbutton").onclick = function () {
 };
 
 document.getElementById("backButtonLevelSelect").onclick = function() {
-    console.log("back button pressed");
+    console.log("back level select pressed");
     ButtonStates.Back = true;
 };
 
 document.getElementById("levelDesignerButton").onclick = function() {
-    console.log("create button pressed");
+    console.log("level designer pressed");
     ButtonStates.Create = true;
 };
 
 
 document.getElementById("backButtonLevelCreate").onclick = function() {
-    console.log("back button pressed");
+    console.log("back level designer pressed");
     ButtonStates.BackLevelCreate = true;
 };
 
 document.getElementById("saveLevelButton").onclick = function() {
-    console.log("save button pressed");
+    console.log("save pressed");
     ButtonStates.SaveLevel = true;
 };
 
 document.getElementById("quitButtonPauseUI").onclick = function() {
-    console.log("quit button pressed");
+    console.log("quit pause menu pressed");
     ButtonStates.QuitPauseMenu = true;
 };
 
 document.getElementById("settingsButtonPauseUI").onclick = function() {
-    console.log("settings button pressed");
+    console.log("settings button pause menu pressed");
     ButtonStates.SettingsPauseMenu = true;
 };
 
 document.getElementById("continueButtonPauseUI").onclick = function() {
-    console.log("back button pressed");
+    console.log("continue pause menu pressed");
     ButtonStates.ContinuePauseMenu = true;
+};
+
+document.getElementById("backButtonGameFinished").onclick = function() {
+    console.log("back game finished pressed");
+    ButtonStates.BackFinishedMenu = true;
 };

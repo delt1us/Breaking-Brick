@@ -37,7 +37,10 @@ export class Game {
 
         this.#a_SceneActive[this.#a_SceneActive.length - 1].Update(this.#f_DeltaTime);
 
-        if (this.#m_SceneGame != null && this.#m_SceneGame.b_Won) {
+        if (this.#m_SceneGame != null && this.#m_SceneGame.b_Won && this.#a_SceneActive[this.#a_SceneActive.length - 1] != this.#m_SceneGameFinished) {
+            this.#m_SceneGameFinished.SetScore(this.#m_SceneGame.m_ScoreCounter.i_Score);
+            this.#m_Level.LoadAllLevels();
+            this.#m_SceneLevelSelect.UpdateColours();
             this.#SwitchTo(this.#m_SceneGameFinished);
         }
     }
@@ -78,6 +81,7 @@ export class Game {
                 }
             }
 
+            // If was in level creation
             else {
                 this.#m_Level.m_ActiveLevel.i_Level = m_SELECTED_LEVEL.level;
                 this.#m_Level.Save();
@@ -91,46 +95,55 @@ export class Game {
         }
     
         if (ButtonStates.Play) {
+            ButtonStates.Play = false;
             this.#m_SceneLevelSelect.ShowCreateButton();
             this.#SwitchTo(this.#m_SceneLevelSelect);
-            ButtonStates.Play = false;
         }
 
         else if (ButtonStates.Back) {
+            ButtonStates.Back = false;
             if (!this.#m_SceneLevelSelect.b_CreateButton) {
                 this.#m_SceneLevelSelect.ShowCreateButton();
             }
             this.#RemoveCurrentSceneFromSceneActiveArray();
-            ButtonStates.Back = false;
         }        
     
         else if (ButtonStates.Create) {
+            ButtonStates.Create = false;
             this.#SwitchTo(this.#m_SceneLevelCreate);
             this.#m_SceneLevelCreate.ResetCreationGrid();
-            ButtonStates.Create = false;
         }
 
         else if (ButtonStates.BackLevelCreate) {
+            ButtonStates.BackLevelCreate = false;
             this.#m_SceneLevelSelect.ShowCreateButton();
             this.#RemoveCurrentSceneFromSceneActiveArray();
-            ButtonStates.BackLevelCreate = false;
         }
         
         else if (ButtonStates.SaveLevel) {
+            ButtonStates.SaveLevel = false;
             this.#m_SceneLevelSelect.HideCreateButton();
             this.#SwitchTo(this.#m_SceneLevelSelect);
-            ButtonStates.SaveLevel = false;
         }
 
         else if (ButtonStates.QuitPauseMenu) {
-            this.#RemoveCurrentSceneFromSceneActiveArray();
-            this.#RemoveCurrentSceneFromSceneActiveArray();
             ButtonStates.QuitPauseMenu = false;
+            this.#RemoveCurrentSceneFromSceneActiveArray();
+            this.#RemoveCurrentSceneFromSceneActiveArray();
         }
 
         else if (ButtonStates.ContinuePauseMenu) {
-            this.#RemoveCurrentSceneFromSceneActiveArray();
             ButtonStates.ContinuePauseMenu = false;
+            this.#RemoveCurrentSceneFromSceneActiveArray();
+        }
+
+        // !Game crashes if you retry the same level and then press back. Don't know what causes this bug
+        // WebGL warning: uniform setter: UniformLocation is not from the current active Program. (32 times)
+        else if (ButtonStates.BackFinishedMenu) {
+            ButtonStates.BackFinishedMenu = false;
+            this.#RemoveCurrentSceneFromSceneActiveArray();
+            this.#RemoveCurrentSceneFromSceneActiveArray();
+            this.#m_SceneGame = null;
         }
     }
 
