@@ -87,6 +87,7 @@ export class Game {
                 this.#m_Level.m_ActiveLevel.i_Level = m_SELECTED_LEVEL.level;
                 this.#m_Level.a_Levels[m_SELECTED_LEVEL.level - 1] = this.#m_Level.m_ActiveLevel;
                 this.#m_Level.Save();
+                this.#m_SceneLevelSelect.UpdateColours();
                 this.#m_SceneLevelSelect.ShowCreateButton();
                 this.#RemoveCurrentSceneFromSceneActiveArray();
                 this.#RemoveCurrentSceneFromSceneActiveArray();
